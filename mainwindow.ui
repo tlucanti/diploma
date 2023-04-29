@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QHBoxLayout" name="horizontalLayout" stretch="15,1">
+    <item>
+     <layout class="QVBoxLayout" name="layoutPlots">
+      <item>
+       <widget class="AdcQwtPlot" name="qwtPlotter" native="true"/>
+      </item>
+      <item>
+       <widget class="AdcQwtPlot" name="qwtSpectr" native="true"/>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QVBoxLayout" name="layoutControl">
+      <item>
+       <widget class="QLineEdit" name="editRemoteIp">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="inputMask">
+         <string>000.000.000.000;_</string>
+        </property>
+        <property name="text">
+         <string>192.168.0.100</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="chkRfPwr">
+        <property name="layoutDirection">
+         <enum>Qt::RightToLeft</enum>
+        </property>
+        <property name="text">
+         <string>Питание СВЧ вкл.</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="bttnLoadVga">
+        <property name="text">
+         <string>Считать</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QFormLayout" name="formLayout">
+        <item row="0" column="1">
+         <widget class="QSpinBox" name="editVgaCh1">
+          <property name="suffix">
+           <string> мВ</string>
+          </property>
+          <property name="maximum">
+           <number>1250</number>
+          </property>
+          <property name="singleStep">
+           <number>10</number>
+          </property>
+          <property name="value">
+           <number>800</number>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0">
+         <widget class="QLabel" name="labelCh1">
+          <property name="text">
+           <string>Канал 1</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="labelCh2">
+          <property name="text">
+           <string>Канал 2</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QSpinBox" name="editVgaCh2">
+          <property name="suffix">
+           <string> мВ</string>
+          </property>
+          <property name="maximum">
+           <number>1250</number>
+          </property>
+          <property name="singleStep">
+           <number>10</number>
+          </property>
+          <property name="value">
+           <number>800</number>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="labelCh3">
+          <property name="text">
+           <string>Канал 3</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QSpinBox" name="editVgaCh3">
+          <property name="suffix">
+           <string> мВ</string>
+          </property>
+          <property name="maximum">
+           <number>1250</number>
+          </property>
+          <property name="singleStep">
+           <number>10</number>
+          </property>
+          <property name="value">
+           <number>800</number>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="0">
+         <widget class="QLabel" name="labelCh4">
+          <property name="text">
+           <string>Канал 4</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1">
+         <widget class="QSpinBox" name="editVgaCh4">
+          <property name="suffix">
+           <string> мВ</string>
+          </property>
+          <property name="maximum">
+           <number>1250</number>
+          </property>
+          <property name="singleStep">
+           <number>10</number>
+          </property>
+          <property name="value">
+           <number>800</number>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="QPushButton" name="bttnSetVga">
+        <property name="text">
+         <string>Установить</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="bttnStoreVga">
+        <property name="text">
+         <string>Сохранить</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="verticalSpacer">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>40</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="editSetIP">
+        <property name="inputMask">
+         <string>000.000.000.000;_</string>
+        </property>
+        <property name="text">
+         <string>192.168.0.2</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="editSetMAC">
+        <property name="inputMask">
+         <string>HH:HH:HH:HH:HH:HH;_</string>
+        </property>
+        <property name="text">
+         <string>00:ad:24:16:89:59</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="bttnSendIP">
+        <property name="text">
+         <string>Записать</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>AdcQwtPlot</class>
+   <extends>QWidget</extends>
+   <header>adcqwtplot.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>bttnSetVga</sender>
+   <signal>pressed()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>setVga()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>714</x>
+     <y>201</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>795</x>
+     <y>182</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>bttnLoadVga</sender>
+   <signal>pressed()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>loadVga()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>725</x>
+     <y>45</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>794</x>
+     <y>48</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>bttnStoreVga</sender>
+   <signal>pressed()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>storeVga()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>716</x>
+     <y>233</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>795</x>
+     <y>211</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>bttnSendIP</sender>
+   <signal>pressed()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>setUdpHost()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>719</x>
+     <y>578</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>795</x>
+     <y>493</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>editRemoteIp</sender>
+   <signal>editingFinished()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>remoteAddrEdited()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>723</x>
+     <y>16</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>797</x>
+     <y>19</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>chkRfPwr</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>setRfPower(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>716</x>
+     <y>72</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>796</x>
+     <y>85</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>setVga()</slot>
+  <slot>loadVga()</slot>
+  <slot>storeVga()</slot>
+  <slot>setUdpHost()</slot>
+  <slot>remoteAddrEdited()</slot>
+  <slot>setRfPower(bool)</slot>
+ </slots>
+</ui>
