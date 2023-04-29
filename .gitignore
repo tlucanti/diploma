@@ -1,2 +1,10 @@
 
-src/.qmake.stash
+.qmake.stash
+Makefile
+
+AdcunitMonitor
+*.o
+
+*.swp
+*.swo
+*.swn

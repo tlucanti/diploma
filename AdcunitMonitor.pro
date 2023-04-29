@@ -39,5 +39,7 @@ qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
-LIBS += -L "$$_PRO_FILE_PWD_/3rdparty/fftw3/bin/" -lfftw3-3
-INCLUDEPATH += "$$_PRO_FILE_PWD_/3rdparty/fftw3/include/"
+LIBS += -L "$$_PRO_FILE_PWD_/3rdparty/fftw3/" -lfftw3
+LIBS +=  "$$_PRO_FILE_PWD_/3rdparty/qwt/libqwt.so"
+INCLUDEPATH += "$$_PRO_FILE_PWD_/3rdparty/qwt/"
+INCLUDEPATH += "$$_PRO_FILE_PWD_/3rdparty/fftw3/"
