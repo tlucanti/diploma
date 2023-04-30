@@ -1,10 +1,12 @@
 #include <math.h>
+#include <iostream>
 
 #include "dataprocessor.h"
 
 
 QVector<QPointF> DataScaleProcessor::process(const QVector<float> &din)
 {
+    std::cout << __PRETTY_FUNCTION__ << "\n";
     QVector<QPointF> dout(din.size());
 
     for (int i = 0; i < din.size(); ++i)
@@ -15,6 +17,7 @@ QVector<QPointF> DataScaleProcessor::process(const QVector<float> &din)
 
 DataFFTProcessor::DataFFTProcessor(int num) : _num(num), fftin(num), fftout(num / 2 + 1)
 {
+    std::cout << __PRETTY_FUNCTION__ << "\n";
     plan = fftw_plan_dft_r2c_1d(_num, &fftin[0],
             reinterpret_cast<fftw_complex *>(&fftout[0]), FFTW_ESTIMATE);
 
@@ -23,11 +26,13 @@ DataFFTProcessor::DataFFTProcessor(int num) : _num(num), fftin(num), fftout(num 
 
 DataFFTProcessor::~DataFFTProcessor()
 {
+    std::cout << __PRETTY_FUNCTION__ << "\n";
     fftw_destroy_plan(plan);
 }
 
 QVector<QPointF> DataFFTProcessor::process(const QVector<float> &din)
 {
+    std::cout << __PRETTY_FUNCTION__ << "\n";
     auto squared = [](double x){ return x * x; };
 
     const double Ulsb = 2. / 65536;

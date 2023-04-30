@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <iostream>
 
 #include <qwt_text.h>
 #include <qwt_plot_textlabel.h>

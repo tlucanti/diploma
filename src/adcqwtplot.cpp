@@ -1,9 +1,11 @@
 #include "adcqwtplot.h"
+#include <iostream>
 
 AdcQwtPlot::AdcQwtPlot(QWidget *parent) :
     QwtPlot(parent)
     , proc(nullptr)
 {
+    std::cout << __PRETTY_FUNCTION__ << "\n";
     setCanvasBackground(Qt::white);
 
 //    setAxisScale(QwtAxis::Position::YLeft, -130, 10);
@@ -29,6 +31,7 @@ AdcQwtPlot::~AdcQwtPlot()
 
 void AdcQwtPlot::setCurves(int num)
 {
+    std::cout << __PRETTY_FUNCTION__ << "\n";
     for (int i = 0; i < num; ++i)
     {
         QwtPlotCurve * curve = new QwtPlotCurve();
@@ -51,6 +54,7 @@ void AdcQwtPlot::setCurves(int num)
 
 void AdcQwtPlot::setSamples(const QVector<QVector<float>>& yData)
 {
+    std::cout << __PRETTY_FUNCTION__ << "\n";
     for (int i = 0; i < curves.size(); ++i)
     {
         if (proc)
@@ -70,6 +74,7 @@ void AdcQwtPlot::setSamples(const QVector<QVector<float>>& yData)
 
 void PlotPowerMeasure::process(const QVector<QPointF> &data)
 {
+    std::cout << __PRETTY_FUNCTION__ << "\n";
     const auto m = std::max_element(data.cbegin(), data.cend(), [](const QPointF &pt1, const QPointF &pt2){
         return pt2.y() > pt1.y();
     });

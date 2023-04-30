@@ -64,15 +64,18 @@ MainWindow::MainWindow(QWidget *parent)
 
     adc->setAddress(QHostAddress(ui->editRemoteIp->text()));
     connect(adc, &AdcRemoteCtrl::readyLoadVga, this, &MainWindow::readyLoadVga);
+    std::cout << "window started\n";
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+    std::cout << "window destroyed\n";
 }
 
 void MainWindow::measureCh(int i, double pwr)
 {
+    std::cout << __PRETTY_FUNCTION__ << "\n";
     powers[i] = pwr;
 
     QwtText txt(
@@ -88,6 +91,7 @@ void MainWindow::measureCh(int i, double pwr)
 
 void MainWindow::tempChanged(int temperature)
 {
+    std::cout << __PRETTY_FUNCTION__ << "\n";
     QwtText temp(QString("FPGA Temperature: %1°C").arg(QString::number(temperature, 'f', 1)));
     temp.setRenderFlags(Qt::AlignLeft | Qt::AlignTop);
     temp.setFont(QFont("Calibri", 12, QFont::Bold));
@@ -96,11 +100,13 @@ void MainWindow::tempChanged(int temperature)
 
 void MainWindow::remoteAddrEdited()
 {
+    std::cout << __PRETTY_FUNCTION__ << "\n";
     adc->setAddress(QHostAddress(ui->editRemoteIp->text()));
 }
 
 void MainWindow::setVga()
 {
+    std::cout << __PRETTY_FUNCTION__ << "\n";
     std::array<int, 4> vga;
     vga[0] = ui->editVgaCh1->value();
     vga[1] = ui->editVgaCh2->value();
@@ -112,11 +118,13 @@ void MainWindow::setVga()
 
 void MainWindow::loadVga()
 {
+    std::cout << __PRETTY_FUNCTION__ << "\n";
     adc->loadVga();
 }
 
 void MainWindow::readyLoadVga(const std::array<int, 4> &vga)
 {
+    std::cout << "Mainwindow:" << __func__ << "\n";
     ui->editVgaCh1->setValue(vga[0]);
     ui->editVgaCh2->setValue(vga[1]);
     ui->editVgaCh3->setValue(vga[2]);
@@ -125,6 +133,7 @@ void MainWindow::readyLoadVga(const std::array<int, 4> &vga)
 
 void MainWindow::storeVga()
 {
+    std::cout << __PRETTY_FUNCTION__ << "\n";
     std::array<int, 4> vga;
     vga[0] = ui->editVgaCh1->value();
     vga[1] = ui->editVgaCh2->value();
@@ -136,6 +145,7 @@ void MainWindow::storeVga()
 
 void MainWindow::setUdpHost()
 {
+    std::cout << __PRETTY_FUNCTION__ << "\n";
     std::array<uint8_t, 4> ip;
     std::array<uint8_t, 6> mac;
 
@@ -152,6 +162,7 @@ void MainWindow::setUdpHost()
 
 void MainWindow::setRfPower(bool pwr)
 {
+    std::cout << __PRETTY_FUNCTION__ << "\n";
     adc->setRfPower(pwr);
 }
 

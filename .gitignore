@@ -4,8 +4,9 @@ Makefile
 
 AdcunitMonitor
 autogen
-*.o
+build
 
 *.swp
 *.swo
 *.swn
+tags

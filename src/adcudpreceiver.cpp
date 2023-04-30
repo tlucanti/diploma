@@ -10,6 +10,7 @@
 AdcUdpReceiver::AdcUdpReceiver(QObject * parent) :
     QUdpSocket(parent)
 {
+    std::cout << __PRETTY_FUNCTION__ << "\n";
     yData.resize(4);
     for (auto &d: yData)
         d.resize(NUM_SAMPLES);
@@ -21,6 +22,7 @@ AdcUdpReceiver::AdcUdpReceiver(QObject * parent) :
 
 void AdcUdpReceiver::readPendingDatagrams()
 {
+    std::cout << __PRETTY_FUNCTION__ << "\n";
     static int num_impulses = 0;
     static int cycle_capt = 0;
 

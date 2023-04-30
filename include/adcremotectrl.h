@@ -9,7 +9,7 @@ class AdcRemoteCtrl : public QObject
 {
     Q_OBJECT
 
-    enum { TCP_PORT = 10100 };
+    enum { TCP_PORT = 2000 };
 
 public:
     explicit AdcRemoteCtrl(QObject *parent = nullptr);

@@ -1,5 +1,7 @@
 #include <QNetworkProxy>
 #include <QtEndian>
+#include <iostream>
+#include <color.h>
 
 #include "adcremotectrl.h"
 
@@ -18,6 +20,7 @@ AdcRemoteCtrl::AdcRemoteCtrl(QObject *parent) :
     QObject(parent)
     , socket(new QTcpSocket(parent))
 {
+    std::cout << __PRETTY_FUNCTION__ << "\n";
     QNetworkProxy proxy;
     QNetworkProxy::setApplicationProxy(proxy);
 
@@ -31,6 +34,7 @@ AdcRemoteCtrl::~AdcRemoteCtrl()
 
 void AdcRemoteCtrl::setAddress(const QHostAddress &addr)
 {
+    std::cout << __PRETTY_FUNCTION__ << "\n";
     if (this->addr != addr)
         socket->disconnectFromHost();
 
@@ -39,6 +43,7 @@ void AdcRemoteCtrl::setAddress(const QHostAddress &addr)
 
 void AdcRemoteCtrl::readyRead()
 {
+    std::cout << __PRETTY_FUNCTION__ << "\n";
     struct cmd cmdin;
 
     while (socket->bytesAvailable() > 0)
@@ -58,20 +63,24 @@ void AdcRemoteCtrl::readyRead()
 
 void AdcRemoteCtrl::sendCommand(const QByteArray& ba)
 {
+    std::cout << __PRETTY_FUNCTION__ << "\n";
     if (socket->state() != QAbstractSocket::ConnectedState)
     {
         socket->connectToHost(addr, TCP_PORT);
-        socket->waitForConnected(1000);
+        socket->waitForConnected(100);
     }
 
-    if (socket->state() == QAbstractSocket::ConnectedState)
-    {
+    if (socket->state() == QAbstractSocket::ConnectedState) {
         socket->write(ba);
+        std::cout << ANSI_GREEN "write success\n" ANSI_RESET;
+    } else {
+        std::cout << ANSI_RED "write error\n" ANSI_RESET;
     }
 }
 
 void AdcRemoteCtrl::loadVga()
 {
+    std::cout << __PRETTY_FUNCTION__ << "\n";
     QByteArray ba(2, 0);
 
     struct cmd * cmdout = reinterpret_cast<struct cmd *>(ba.data());
@@ -82,6 +91,7 @@ void AdcRemoteCtrl::loadVga()
 
 void AdcRemoteCtrl::sendVga(const std::array<int, 4> &vga)
 {
+    std::cout << __PRETTY_FUNCTION__ << "\n";
     QByteArray ba(10, 0);
 
     struct cmd * cmdout = reinterpret_cast<struct cmd *>(ba.data());
@@ -94,6 +104,7 @@ void AdcRemoteCtrl::sendVga(const std::array<int, 4> &vga)
 
 void AdcRemoteCtrl::storeVga(const std::array<int, 4> &vga)
 {
+    std::cout << __PRETTY_FUNCTION__ << "\n";
     QByteArray ba(10, 0);
 
     struct cmd * cmdout = reinterpret_cast<struct cmd *>(ba.data());
@@ -106,6 +117,7 @@ void AdcRemoteCtrl::storeVga(const std::array<int, 4> &vga)
 
 void AdcRemoteCtrl::setRemoteAddr(const std::array<uint8_t, 4> &ip, const std::array<uint8_t, 6> &mac)
 {
+    std::cout << __PRETTY_FUNCTION__ << "\n";
     QByteArray ba;
     struct cmd * cmdout;
 
@@ -128,6 +140,7 @@ void AdcRemoteCtrl::setRemoteAddr(const std::array<uint8_t, 4> &ip, const std::a
 
 void AdcRemoteCtrl::setRfPower(bool pwr)
 {
+    std::cout << __PRETTY_FUNCTION__ << "\n";
     QByteArray ba(4, 0);
 
     struct cmd * cmdout = reinterpret_cast<struct cmd *>(ba.data());
