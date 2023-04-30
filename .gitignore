@@ -3,6 +3,7 @@
 Makefile
 
 AdcunitMonitor
+autogen
 *.o
 
 *.swp

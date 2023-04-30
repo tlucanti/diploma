@@ -17,22 +17,26 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    adcqwtplot.cpp \
-    adcremotectrl.cpp \
-    adcudpreceiver.cpp \
-    dataprocessor.cpp \
-    main.cpp \
-    mainwindow.cpp
+    src/adcqwtplot.cpp \
+    src/adcremotectrl.cpp \
+    src/adcudpreceiver.cpp \
+    src/dataprocessor.cpp \
+    src/main.cpp \
+    src/mainwindow.cpp
 
 HEADERS += \
-    adcqwtplot.h \
-    adcremotectrl.h \
-    adcudpreceiver.h \
-    dataprocessor.h \
-    mainwindow.h
+    include/adcqwtplot.h \
+    include/adcremotectrl.h \
+    include/adcudpreceiver.h \
+    include/dataprocessor.h \
+    include/mainwindow.h
 
 FORMS += \
     mainwindow.ui
+
+OBJECTS_DIR = build
+MOC_DIR = autogen
+UI_DIR = autogen
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -41,5 +45,6 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 LIBS += -L "$$_PRO_FILE_PWD_/3rdparty/fftw3/" -lfftw3
 LIBS +=  "$$_PRO_FILE_PWD_/3rdparty/qwt/libqwt.so"
+INCLUDEPATH += "include"
 INCLUDEPATH += "$$_PRO_FILE_PWD_/3rdparty/qwt/"
 INCLUDEPATH += "$$_PRO_FILE_PWD_/3rdparty/fftw3/"
