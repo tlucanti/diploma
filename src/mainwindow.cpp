@@ -75,7 +75,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::measureCh(int i, double pwr)
 {
-    std::cout << __PRETTY_FUNCTION__ << "\n";
+    function_trace();
     powers[i] = pwr;
 
     QwtText txt(
@@ -91,7 +91,7 @@ void MainWindow::measureCh(int i, double pwr)
 
 void MainWindow::tempChanged(int temperature)
 {
-    std::cout << __PRETTY_FUNCTION__ << "\n";
+    function_trace();
     QwtText temp(QString("FPGA Temperature: %1°C").arg(QString::number(temperature, 'f', 1)));
     temp.setRenderFlags(Qt::AlignLeft | Qt::AlignTop);
     temp.setFont(QFont("Calibri", 12, QFont::Bold));
@@ -100,13 +100,13 @@ void MainWindow::tempChanged(int temperature)
 
 void MainWindow::remoteAddrEdited()
 {
-    std::cout << __PRETTY_FUNCTION__ << "\n";
+    function_trace();
     adc->setAddress(QHostAddress(ui->editRemoteIp->text()));
 }
 
 void MainWindow::setVga()
 {
-    std::cout << __PRETTY_FUNCTION__ << "\n";
+    function_trace();
     std::array<int, 4> vga;
     vga[0] = ui->editVgaCh1->value();
     vga[1] = ui->editVgaCh2->value();
@@ -118,7 +118,7 @@ void MainWindow::setVga()
 
 void MainWindow::loadVga()
 {
-    std::cout << __PRETTY_FUNCTION__ << "\n";
+    function_trace();
     adc->loadVga();
 }
 
@@ -133,7 +133,7 @@ void MainWindow::readyLoadVga(const std::array<int, 4> &vga)
 
 void MainWindow::storeVga()
 {
-    std::cout << __PRETTY_FUNCTION__ << "\n";
+    function_trace();
     std::array<int, 4> vga;
     vga[0] = ui->editVgaCh1->value();
     vga[1] = ui->editVgaCh2->value();
@@ -145,7 +145,7 @@ void MainWindow::storeVga()
 
 void MainWindow::setUdpHost()
 {
-    std::cout << __PRETTY_FUNCTION__ << "\n";
+    function_trace();
     std::array<uint8_t, 4> ip;
     std::array<uint8_t, 6> mac;
 
@@ -162,7 +162,6 @@ void MainWindow::setUdpHost()
 
 void MainWindow::setRfPower(bool pwr)
 {
-    std::cout << __PRETTY_FUNCTION__ << "\n";
+    function_trace();
     adc->setRfPower(pwr);
 }
-

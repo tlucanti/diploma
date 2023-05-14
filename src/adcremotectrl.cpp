@@ -4,6 +4,7 @@
 #include <color.h>
 
 #include "adcremotectrl.h"
+#include <common.hpp>
 
 struct cmd {
     uint16_t opcode;
@@ -20,7 +21,7 @@ AdcRemoteCtrl::AdcRemoteCtrl(QObject *parent) :
     QObject(parent)
     , socket(new QTcpSocket(parent))
 {
-    std::cout << __PRETTY_FUNCTION__ << "\n";
+    trace_function();
     QNetworkProxy proxy;
     QNetworkProxy::setApplicationProxy(proxy);
 
@@ -34,7 +35,7 @@ AdcRemoteCtrl::~AdcRemoteCtrl()
 
 void AdcRemoteCtrl::setAddress(const QHostAddress &addr)
 {
-    std::cout << __PRETTY_FUNCTION__ << "\n";
+    function_trace();
     if (this->addr != addr)
         socket->disconnectFromHost();
 
@@ -43,14 +44,17 @@ void AdcRemoteCtrl::setAddress(const QHostAddress &addr)
 
 void AdcRemoteCtrl::readyRead()
 {
-    std::cout << __PRETTY_FUNCTION__ << "\n";
+    function_trace();
+    std::cout << ANSI_YELLOW << "ready reaad\n" ANSI_RESET;
     struct cmd cmdin;
 
     while (socket->bytesAvailable() > 0)
     {
-        socket->read(reinterpret_cast<char *>(&cmdin), sizeof(cmdin));
-        int opcode = qFromBigEndian(cmdin.opcode);
-        if (opcode == 0x06)
+        int rb = socket->read(reinterpret_cast<char *>(&cmdin), sizeof(cmdin));
+        std::cout << "read " << rb << '/' << sizeof(cmdin) << " bytes\n";
+        //int opcode = qFromBigEndian(cmdin.opcode);
+        //if (opcode == 0x06)
+        if (true)
         {
             std::array<int, 4> ret;
             for (size_t i = 0; i < ret.size(); ++i)
@@ -63,10 +67,11 @@ void AdcRemoteCtrl::readyRead()
 
 void AdcRemoteCtrl::sendCommand(const QByteArray& ba)
 {
-    std::cout << __PRETTY_FUNCTION__ << "\n";
+    function_trace();
     if (socket->state() != QAbstractSocket::ConnectedState)
     {
-        socket->connectToHost(addr, TCP_PORT);
+        //socket->connectToHost(addr, TCP_PORT);
+        socket->connectToHost("0.0.0.0", 10000);
         socket->waitForConnected(100);
     }
 
@@ -80,7 +85,7 @@ void AdcRemoteCtrl::sendCommand(const QByteArray& ba)
 
 void AdcRemoteCtrl::loadVga()
 {
-    std::cout << __PRETTY_FUNCTION__ << "\n";
+    function_trace();
     QByteArray ba(2, 0);
 
     struct cmd * cmdout = reinterpret_cast<struct cmd *>(ba.data());
@@ -91,7 +96,7 @@ void AdcRemoteCtrl::loadVga()
 
 void AdcRemoteCtrl::sendVga(const std::array<int, 4> &vga)
 {
-    std::cout << __PRETTY_FUNCTION__ << "\n";
+    function_trace();
     QByteArray ba(10, 0);
 
     struct cmd * cmdout = reinterpret_cast<struct cmd *>(ba.data());
@@ -104,7 +109,7 @@ void AdcRemoteCtrl::sendVga(const std::array<int, 4> &vga)
 
 void AdcRemoteCtrl::storeVga(const std::array<int, 4> &vga)
 {
-    std::cout << __PRETTY_FUNCTION__ << "\n";
+    function_trace();
     QByteArray ba(10, 0);
 
     struct cmd * cmdout = reinterpret_cast<struct cmd *>(ba.data());
@@ -117,7 +122,7 @@ void AdcRemoteCtrl::storeVga(const std::array<int, 4> &vga)
 
 void AdcRemoteCtrl::setRemoteAddr(const std::array<uint8_t, 4> &ip, const std::array<uint8_t, 6> &mac)
 {
-    std::cout << __PRETTY_FUNCTION__ << "\n";
+    function_trace();
     QByteArray ba;
     struct cmd * cmdout;
 
@@ -140,7 +145,7 @@ void AdcRemoteCtrl::setRemoteAddr(const std::array<uint8_t, 4> &ip, const std::a
 
 void AdcRemoteCtrl::setRfPower(bool pwr)
 {
-    std::cout << __PRETTY_FUNCTION__ << "\n";
+    function_trace();
     QByteArray ba(4, 0);
 
     struct cmd * cmdout = reinterpret_cast<struct cmd *>(ba.data());
@@ -149,4 +154,3 @@ void AdcRemoteCtrl::setRfPower(bool pwr)
 
     sendCommand(ba);
 }
-

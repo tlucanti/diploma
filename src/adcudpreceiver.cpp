@@ -1,5 +1,6 @@
 #include <stdint.h>
 #include <iostream>
+#include <cmath>
 
 #include <QNetworkDatagram>
 #include <QtEndian>
@@ -10,19 +11,19 @@
 AdcUdpReceiver::AdcUdpReceiver(QObject * parent) :
     QUdpSocket(parent)
 {
-    std::cout << __PRETTY_FUNCTION__ << "\n";
+    function_trace();
     yData.resize(4);
     for (auto &d: yData)
         d.resize(NUM_SAMPLES);
 
-    bind(10000);
+    bind(QHostAddress("0.0.0.0"), (qint16)10001);
     setSocketOption(QAbstractSocket::ReceiveBufferSizeSocketOption, 4 * 1024 * 1024);
     connect(this, &QUdpSocket::readyRead, this, &AdcUdpReceiver::readPendingDatagrams);
 }
 
 void AdcUdpReceiver::readPendingDatagrams()
 {
-    std::cout << __PRETTY_FUNCTION__ << "\n";
+    function_trace();
     static int num_impulses = 0;
     static int cycle_capt = 0;
 
@@ -31,6 +32,24 @@ void AdcUdpReceiver::readPendingDatagrams()
         qint64 sz = pendingDatagramSize();
         std::vector<char> datagram(sz);
         readDatagram(datagram.data(), sz);
+
+        std::cout << "read diagram\n";
+        {
+            /* fill arrays with random values */
+            for (auto &d : yData) {
+                float i = 0;
+                float di = (float)rand() / RAND_MAX;
+                for (auto &f : d) {
+                    i += di;
+                    f = std::sin(i);
+                    f += (float)rand() / RAND_MAX;
+                }
+            }
+            temperature = rand();
+            emit dataReady(yData);
+            emit tempReady(temperature);
+            continue;
+        }
 
         const struct AdcMsg * msg = reinterpret_cast<AdcMsg *>(datagram.data());
         int offset = qFromBigEndian(msg->offset);
@@ -91,4 +110,3 @@ void AdcUdpReceiver::readPendingDatagrams()
         }
     }
 }
-

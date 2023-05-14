@@ -21,7 +21,7 @@ struct AdcMsg {
     uint16_t flags;
     uint16_t temperature;
     uint8_t data[1408];
-};
+} __attribute__((__packed__));
 
 class AdcUdpReceiver : public QUdpSocket
 {

@@ -10,3 +10,7 @@ build
 *.swo
 *.swn
 tags
+
+*.o
+*.a
+a.out
