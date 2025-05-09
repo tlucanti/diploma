@@ -3,17 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
+
     <title>Discover Primorye - Откройте Приморский край</title>
-    
+
     <!-- Added Font -->
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
-    
+
     <!-- Added Animation Library -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
-    
+
     <link rel="icon" href="favicon.ico" type="image/x-icon">
-    
+
     <style>
         :root {
             --pastel-blue: #a5d8ff;
@@ -25,20 +25,20 @@
             --background-color: #f8f9fa;
             --box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
-        
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: 'Nunito', sans-serif;
         }
-        
+
         body {
             background-color: var(--background-color);
             color: var(--text-color);
             line-height: 1.6;
         }
-        
+
         header {
             background-color: white;
             box-shadow: var(--box-shadow);
@@ -47,13 +47,13 @@
             top: 0;
             z-index: 100;
         }
-        
+
         header > div {
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-        
+
         .logo-placeholder {
             width: 120px;
             height: 60px;
@@ -66,24 +66,24 @@
             font-weight: bold;
             color: var(--pastel-blue);
         }
-        
+
         nav ul {
             display: flex;
             list-style: none;
             gap: 20px;
         }
-        
+
         nav a {
             text-decoration: none;
             color: var(--text-color);
             font-weight: 600;
             transition: color 0.3s;
         }
-        
+
         nav a:hover {
             color: var(--pastel-blue);
         }
-        
+
         .flag-placeholder {
             width: 20px;
             height: 15px;
@@ -93,19 +93,19 @@
             vertical-align: middle;
             border-radius: 3px;
         }
-        
+
         .search-form {
             display: flex;
             align-items: center;
         }
-        
+
         .search-form input {
             border: 2px solid var(--pastel-blue);
             border-radius: 20px 0 0 20px;
             padding: 8px 15px;
             outline: none;
         }
-        
+
         .search-form button {
             background-color: var(--pastel-blue);
             border: none;
@@ -114,11 +114,11 @@
             cursor: pointer;
             transition: background-color 0.3s;
         }
-        
+
         .search-form button:hover {
             background-color: #8ac5ff;
         }
-        
+
         .button {
             background-color: var(--pastel-blue);
             color: white;
@@ -131,16 +131,16 @@
             text-decoration: none;
             display: inline-block;
         }
-        
+
         .button:hover {
             transform: translateY(-3px);
             box-shadow: 0 10px 20px rgba(0,0,0,0.1);
         }
-        
+
         main section {
             padding: 80px 5%;
         }
-        
+
         /* HERO SECTION SLIDESHOW STYLES */
         .hero-section {
             position: relative;
@@ -149,7 +149,7 @@
             margin-bottom: 30px;
             overflow: hidden;
         }
-        
+
         .slideshow {
             position: absolute;
             top: 0;
@@ -158,7 +158,7 @@
             height: 100%;
             z-index: -1;
         }
-        
+
         .slide {
             position: absolute;
             top: 0;
@@ -171,29 +171,29 @@
             transition: transform 1s ease, opacity 1s ease;
             transform: translateX(100%);
         }
-        
+
         .slide.active {
             opacity: 1;
             transform: translateX(0);
         }
-        
+
         .slide.prev {
             opacity: 0;
             transform: translateX(-100%);
         }
-        
+
         .hero-content {
             position: relative;
             z-index: 2;
         }
-        
+
         .hero-section h1 {
             font-size: 3rem;
             margin-bottom: 20px;
             color: white;
             text-shadow: 0px 0px 8px rgba(0, 0, 0, 0.6);
         }
-        
+
         .hero-section p {
             font-size: 1.2rem;
             margin-bottom: 30px;
@@ -203,7 +203,7 @@
             color: white;
             text-shadow: 0px 0px 6px rgba(0, 0, 0, 0.7);
         }
-        
+
         /* Slideshow navigation arrows */
         .slide-arrow {
             position: absolute;
@@ -222,17 +222,17 @@
             border-radius: 50%;
             box-shadow: 0 0 10px rgba(0,0,0,0.2);
         }
-        
+
         .slide-arrow.prev {
             left: 20px;
             background: linear-gradient(to right, rgba(255,255,255,0.5), rgba(255,255,255,0));
         }
-        
+
         .slide-arrow.next {
             right: 20px;
             background: linear-gradient(to left, rgba(255,255,255,0.5), rgba(255,255,255,0));
         }
-        
+
         /* Slideshow dot indicators */
         .slide-dots {
             position: absolute;
@@ -244,7 +244,7 @@
             gap: 10px;
             z-index: 10;
         }
-        
+
         .dot {
             width: 12px;
             height: 12px;
@@ -253,12 +253,12 @@
             cursor: pointer;
             transition: background-color 0.3s, transform 0.3s;
         }
-        
+
         .dot.active {
             background-color: white;
             transform: scale(1.2);
         }
-        
+
         .popular-places {
             background-color: white;
             border-radius: 20px;
@@ -266,13 +266,13 @@
             padding: 40px;
             margin-bottom: 30px;
         }
-        
+
         .popular-places h2 {
             text-align: center;
             margin-bottom: 40px;
             position: relative;
         }
-        
+
         .popular-places h2:after {
             content: '';
             display: block;
@@ -281,13 +281,58 @@
             background-color: var(--pastel-blue);
             margin: 10px auto;
         }
-        
-        .places-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
+
+        /* Popular places carousel styles */
+        .carousel-container {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
         }
-        
+
+        .carousel-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 50px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 2rem;
+            background: linear-gradient(to right, rgba(255,255,255,0.5), rgba(255,255,255,0));
+            cursor: pointer;
+            z-index: 10;
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        }
+
+        .carousel-arrow.prev {
+            left: 20px;
+            background: linear-gradient(to right, rgba(255,255,255,0.5), rgba(255,255,255,0));
+        }
+
+        .carousel-arrow.next {
+            right: 20px;
+            background: linear-gradient(to left, rgba(255,255,255,0.5), rgba(255,255,255,0));
+        }
+
+        .places-grid {
+            display: flex;
+            transition: transform 0.5s ease;
+            gap: 20px;
+        }
+
+        .place-card {
+            flex: 0 0 calc(50% - 10px);
+            min-width: calc(50% - 10px);
+        }
+
+        .place-img {
+            background-size: cover;
+            background-position: center;
+        }
+
         .place-card {
             background-color: white;
             border-radius: 15px;
@@ -295,11 +340,11 @@
             box-shadow: var(--box-shadow);
             transition: transform 0.3s;
         }
-        
+
         .place-card:hover {
             transform: translateY(-10px);
         }
-        
+
         .place-img {
             height: 200px;
             width: 100%;
@@ -312,12 +357,12 @@
             color: white;
             font-weight: bold;
         }
-        
+
         .place-card h3 {
             padding: 20px;
             text-align: center;
         }
-        
+
         .place-card a {
             display: block;
             text-align: center;
@@ -328,36 +373,36 @@
             font-weight: bold;
             transition: background-color 0.3s;
         }
-        
+
         .place-card a:hover {
             background-color: #ffacc8;
         }
-        
+
         .vacation-types {
             padding: 50px 5%;
             background-color: var(--pastel-purple);
             border-radius: 20px;
         }
-        
+
         .vacation-types h2 {
             text-align: center;
             margin-bottom: 40px;
             color: white;
         }
-        
+
         .vacation-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 20px;
         }
-        
+
         .vacation-type {
             display: flex;
             flex-direction: column;
             align-items: center;
             text-decoration: none;
         }
-        
+
         .type-img {
             width: 120px;
             height: 120px;
@@ -370,38 +415,38 @@
             border: 3px solid var(--pastel-blue);
             transition: transform 0.3s;
         }
-        
+
         .vacation-type:hover .type-img {
             transform: scale(1.1);
         }
-        
+
         .vacation-type span {
             color: white;
             font-weight: bold;
         }
-        
+
         footer {
             background-color: #343a40;
             color: white;
             padding: 50px 5% 20px;
         }
-        
+
         .footer-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 30px;
             margin-bottom: 40px;
         }
-        
+
         footer h4 {
             margin-bottom: 20px;
             color: var(--pastel-blue);
         }
-        
+
         footer ul {
             list-style: none;
         }
-        
+
         footer a {
             color: #ddd;
             text-decoration: none;
@@ -409,18 +454,18 @@
             margin-bottom: 10px;
             transition: color 0.3s;
         }
-        
+
         footer a:hover {
             color: var(--pastel-blue);
         }
-        
+
         .partner-logos {
             display: flex;
             flex-wrap: wrap;
             gap: 15px;
             margin-bottom: 20px;
         }
-        
+
         .partner-logo {
             width: 80px;
             height: 40px;
@@ -428,12 +473,12 @@
             border-radius: 5px;
             border: 1px solid #777;
         }
-        
+
         .social-icons {
             display: flex;
             gap: 15px;
         }
-        
+
         .social-icon {
             width: 40px;
             height: 40px;
@@ -442,7 +487,7 @@
             border: 1px solid #777;
             display: inline-block;
         }
-        
+
         .chat-button {
             background-color: var(--pastel-green);
             color: var(--text-color);
@@ -454,17 +499,17 @@
             margin-top: 15px;
             transition: background-color 0.3s;
         }
-        
+
         .chat-button:hover {
             background-color: #8ce99a;
         }
-        
+
         .copyright {
             text-align: center;
             padding-top: 20px;
             border-top: 1px solid #555;
         }
-        
+
         .mobile-nav {
             display: none;
             position: fixed;
@@ -475,13 +520,13 @@
             box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
             z-index: 100;
         }
-        
+
         .mobile-nav ul {
             display: flex;
             justify-content: space-around;
             list-style: none;
         }
-        
+
         .mobile-nav a {
             display: flex;
             flex-direction: column;
@@ -490,46 +535,46 @@
             text-decoration: none;
             color: var(--text-color);
         }
-        
+
         @media (max-width: 768px) {
             .mobile-nav {
                 display: block;
             }
-            
+
             header nav {
                 display: none;
             }
         }
-        
+
         /* Animation classes */
         .fade-in {
             opacity: 0;
             transform: translateY(20px);
             transition: opacity 0.8s ease, transform 0.8s ease;
         }
-        
+
         .fade-in.active {
             opacity: 1;
             transform: translateY(0);
         }
-        
+
         .slide-in-left {
             opacity: 0;
             transform: translateX(-50px);
             transition: opacity 0.8s ease, transform 0.8s ease;
         }
-        
+
         .slide-in-left.active {
             opacity: 1;
             transform: translateX(0);
         }
-        
+
         .slide-in-right {
             opacity: 0;
             transform: translateX(50px);
             transition: opacity 0.8s ease, transform 0.8s ease;
         }
-        
+
         .slide-in-right.active {
             opacity: 1;
             transform: translateX(0);
@@ -539,7 +584,7 @@
 <body>
     <header>
         <div>
-            <a href="#"> 
+            <a href="#">
                 <div class="logo-placeholder">Discover Primorye</div>
             </a>
 
@@ -557,17 +602,17 @@
                 <div style="position: relative;">
                     <button class="current-lang" aria-label="Выбрать язык" style="background: none; border: none; cursor: pointer; display: flex; align-items: center;">
                         <div class="flag-placeholder"></div>
-                        <span>▼</span> 
+                        <span>▼</span>
                     </button>
                 </div>
 
                 <form action="/search" method="get" class="search-form" role="search">
                     <input type="search" name="query" placeholder="Поиск по сайту..." aria-label="Поиск по сайту">
-                    <button type="submit" aria-label="Найти">🔍</button> 
+                    <button type="submit" aria-label="Найти">🔍</button>
                 </form>
 
                 <a href="#" style="text-decoration: none; color: var(--text-color); display: flex; align-items: center; gap: 5px;">
-                    <span>👤</span> 
+                    <span>👤</span>
                     <span>Войти</span>
                 </a>
 
@@ -583,11 +628,11 @@
                 <div class="slide active" style="background-image: url('./hero1.jpg');"></div>
                 <div class="slide" style="background-image: url('./hero2.jpg');"></div>
                 <div class="slide" style="background-image: url('./hero3.jpg');"></div>
-                
+
                 <!-- Navigation arrows -->
                 <div class="slide-arrow prev" onclick="changeSlide(-1)">❮</div>
                 <div class="slide-arrow next" onclick="changeSlide(1)">❯</div>
-                
+
                 <!-- Dot indicators -->
                 <div class="slide-dots">
                     <div class="dot active" onclick="goToSlide(0)"></div>
@@ -595,7 +640,7 @@
                     <div class="dot" onclick="goToSlide(2)"></div>
                 </div>
             </div>
-            
+
             <!-- Hero content -->
             <div class="hero-content">
                 <h1>Откройте для себя Приморский край!</h1>
@@ -607,19 +652,53 @@
         <section class="popular-places fade-in">
             <div>
                 <h2>Популярные места</h2>
-                <div class="places-grid"> 
-                    <article class="place-card slide-in-left">
-                        <div class="place-img">Земля леопарда</div>
-                        <h3>Нацпарк «Земля леопарда»</h3>
-                        <a href="#">Узнать больше</a>
-                    </article>
-                    <article class="place-card slide-in-right">
-                        <div class="place-img">Владивостокская крепость</div>
-                        <h3>Владивостокская крепость</h3>
-                        <a href="#">Узнать больше</a>
-                    </article>
-                </div>
-            </div>
+                <div class="carousel-container">
+                    <div class="carousel-arrow prev" onclick="changeCard(-1)">❮</div>
+                    <div class="carousel-arrow next" onclick="changeCard(1)">❯</div>
+                    <div class="places-grid">
+                        <article class="place-card">
+                            <div class="place-img" style="background-image: url('./place1.jpg');">Card 1</div>
+                            <h3>Card 1</h3>
+                            <a href="#">Узнать больше</a>
+                        </article>
+                        <article class="place-card">
+                            <div class="place-img" style="background-image: url('./place2.jpg');">Card 2</div>
+                            <h3>Card 2</h3>
+                            <a href="#">Узнать больше</a>
+                        </article>
+                        <article class="place-card">
+                            <div class="place-img" style="background-image: url('./place3.jpg');">Card 3</div>
+                            <h3>Card 3</h3>
+                            <a href="#">Узнать больше</a>
+                        </article>
+                        <article class="place-card">
+                            <div class="place-img" style="background-image: url('./place4.jpg');">Card 4</div>
+                            <h3>Card 4</h3>
+                            <a href="#">Узнать больше</a>
+                        </article>
+                        <article class="place-card">
+                            <div class="place-img" style="background-image: url('./place5.jpg');">Card 5</div>
+                            <h3>Card 5</h3>
+                            <a href="#">Узнать больше</a>
+                        </article>
+                        <article class="place-card">
+                            <div class="place-img" style="background-image: url('./place6.jpg');">Card 6</div>
+                            <h3>Card 6</h3>
+                            <a href="#">Узнать больше</a>
+                        </article>
+                        <article class="place-card">
+                            <div class="place-img" style="background-image: url('./place7.jpg');">Card 7</div>
+                            <h3>Card 7</h3>
+                            <a href="#">Узнать больше</a>
+                        </article>
+                        <article class="place-card">
+                            <div class="place-img" style="background-image: url('./place8.jpg');">Card 8</div>
+                            <h3>Card 8</h3>
+                            <a href="#">Узнать больше</a>
+                        </article>
+                    </div>
+                 </div>
+             </div>
         </section>
 
         <section class="vacation-types fade-in">
@@ -708,25 +787,25 @@
         <ul>
             <li>
                 <a href="#">
-                    <span>🧭</span> 
+                    <span>🧭</span>
                     <span>Гид</span>
                 </a>
             </li>
             <li>
                 <a href="#">
-                    <span>🎟️</span> 
+                    <span>🎟️</span>
                     <span>Бронирование</span>
                 </a>
             </li>
             <li>
                 <a href="#">
-                    <span>💬</span> 
+                    <span>💬</span>
                     <span>Сообщество</span>
                 </a>
             </li>
             <li>
                 <a href="#">
-                    <span>👤</span> 
+                    <span>👤</span>
                     <span>Профиль</span>
                 </a>
             </li>
@@ -736,81 +815,110 @@
     <script>
         // Set current year in footer
         document.getElementById('current-year').textContent = new Date().getFullYear();
-        
+
         // Slideshow functionality
         let currentSlide = 0;
         const slides = document.querySelectorAll('.slide');
         const dots = document.querySelectorAll('.dot');
         let slideInterval;
-        
+
         // Function to show a specific slide
         function showSlide(n) {
             // Remove all classes first
             slides.forEach(slide => {
                 slide.classList.remove('active', 'prev');
             });
-            
+
             dots.forEach(dot => {
                 dot.classList.remove('active');
             });
-            
+
             // Update current slide index
             currentSlide = (n + slides.length) % slides.length;
-            
+
             // Mark the previous slide
             const prevSlideIndex = (currentSlide - 1 + slides.length) % slides.length;
             slides[prevSlideIndex].classList.add('prev');
-            
+
             // Set the active slide and dot
             slides[currentSlide].classList.add('active');
             dots[currentSlide].classList.add('active');
         }
-        
+
         // Function to change slide with navigation
         function changeSlide(moveStep) {
             showSlide(currentSlide + moveStep);
             resetInterval();
         }
-        
+
         // Function to go to a specific slide (for dot navigation)
         function goToSlide(slideIndex) {
             showSlide(slideIndex);
             resetInterval();
         }
-        
+
         // Function to reset the auto-slide interval
         function resetInterval() {
             clearInterval(slideInterval);
             startSlideInterval();
         }
-        
+
         // Function to start the auto-slide interval
         function startSlideInterval() {
             slideInterval = setInterval(() => {
                 changeSlide(1);
             }, 3000); // Change slide every 3 seconds
         }
-        
+
         // Start the slideshow
         startSlideInterval();
-        
+
         // Scroll animation functionality
         const animateOnScroll = () => {
             const elements = document.querySelectorAll('.fade-in, .slide-in-left, .slide-in-right');
-            
+
             elements.forEach(element => {
                 const elementPosition = element.getBoundingClientRect().top;
                 const windowHeight = window.innerHeight;
-                
+
                 if (elementPosition < windowHeight * 0.9) {
                     element.classList.add('active');
                 }
             });
         };
-        
+
         // Run animation check on load and scroll
         window.addEventListener('load', animateOnScroll);
         window.addEventListener('scroll', animateOnScroll);
+
+        // Popular places carousel functionality
+        let currentCard = 0;
+        const totalCards = document.querySelectorAll('.place-card').length;
+        const placesGrid = document.querySelector('.places-grid');
+        const cardsVisible = 2;
+        let carouselInterval;
+
+        // Function to change cards
+        function changeCard(moveStep) {
+            currentCard = (currentCard + moveStep + totalCards) % (totalCards - cardsVisible + 1);
+            updateCarousel();
+            resetCarouselInterval();
+        }
+
+        // Function to update carousel position
+        function updateCarousel() {
+            const cardWidth = document.querySelector('.place-card').offsetWidth + 20; // card width + gap
+            placesGrid.style.transform = `translateX(-${currentCard * cardWidth}px)`;
+        }
+
+        // Function to start and reset the interval
+        function resetCarouselInterval() {
+            clearInterval(carouselInterval);
+            carouselInterval = setInterval(() => changeCard(1), 1500);
+        }
+
+        // Initialize carousel
+        resetCarouselInterval();
     </script>
 </body>
 </html>
