@@ -1,0 +1,484 @@
+
+html
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discover Primorye - Откройте Приморский край</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <style>
+        /* Pastel Color Palette */
+        :root {
+            --primary-color: #a6d8f0; /* Light blue */
+            --secondary-color: #f9c7c7; /* Light pink */
+            --accent-color: #f8e9a1; /* Light yellow */
+            --background-color: #f5f5f5; /* Light gray */
+            --text-color: #5a5a5a; /* Dark gray */
+            --border-radius: 20px;
+            --button-radius: 30px;
+            --box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        /* Header Styles */
+        .site-header {
+            background-color: white;
+            box-shadow: var(--box-shadow);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            padding: 15px 0;
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+        }
+
+        .logo-rectangle {
+            width: 150px;
+            height: 50px;
+            border: 2px solid var(--primary-color);
+            border-radius: var(--border-radius);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        /* Navigation */
+        .main-navigation ul {
+            display: flex;
+            list-style: none;
+            gap: 20px;
+        }
+
+        .main-navigation a {
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: 500;
+            padding: 8px 15px;
+            border-radius: var(--button-radius);
+            transition: var(--transition);
+        }
+
+        .main-navigation a:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        /* Header Controls */
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        /* Language Switcher */
+        .language-switcher {
+            position: relative;
+        }
+
+        .current-lang {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: var(--button-radius);
+            background-color: var(--accent-color);
+            transition: var(--transition);
+        }
+
+        .current-lang:hover {
+            background-color: #f0dc7a;
+        }
+
+        .flag-icon-rect {
+            width: 24px;
+            height: 16px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+        }
+
+        .lang-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            list-style: none;
+
+Genesis Test Bot, [5/6/25 9:58 AM]
+min-width: 150px;
+            z-index: 1000;
+            padding: 10px 0;
+        }
+
+        .lang-dropdown li a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 15px;
+            text-decoration: none;
+            color: var(--text-color);
+            transition: var(--transition);
+        }
+
+        .lang-dropdown li a:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        /* Search Form */
+        .search-form {
+            display: flex;
+            align-items: center;
+        }
+
+        .search-form input {
+            padding: 10px 15px;
+            border: none;
+            border-radius: var(--button-radius) 0 0 var(--button-radius);
+            background-color: var(--background-color);
+            width: 150px;
+            transition: var(--transition);
+        }
+
+        .search-form input:focus {
+            width: 200px;
+            outline: none;
+        }
+
+        .search-form button {
+            padding: 10px 15px;
+            border: none;
+            background-color: var(--secondary-color);
+            border-radius: 0 var(--button-radius) var(--button-radius) 0;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .search-form button:hover {
+            background-color: #f5b0b0;
+        }
+
+        /* User Auth Link */
+        .user-auth-link {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            text-decoration: none;
+            color: var(--text-color);
+            padding: 8px 15px;
+            border-radius: var(--button-radius);
+            background-color: var(--primary-color);
+            transition: var(--transition);
+        }
+
+        .user-auth-link:hover {
+            background-color: #8cc5e9;
+            color: white;
+        }
+
+        /* Mobile Menu Toggle */
+        .mobile-menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-color);
+        }
+
+        /* Main Content */
+        main {
+            margin-top: 100px;
+            padding: 30px 0;
+        }
+
+        /* Animation Classes */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .fade-in.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Example Hero Section */
+        .hero-section {
+            padding: 80px 0;
+            text-align: center;
+            background-color: var(--primary-color);
+            border-radius: var(--border-radius);
+            margin-bottom: 50px;
+        }
+
+        .hero-section h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            color: white;
+        }
+
+        .hero-section p {
+            font-size: 18px;
+            max-width: 700px;
+            margin: 0 auto 30px;
+            color: white;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 12px 30px;
+            background-color: white;
+            color: var(--primary-color);
+            border-radius: var(--button-radius);
+            text-decoration: none;
+            font-weight: bold;
+            transition: var(--transition);
+            box-shadow: var(--box-shadow);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Featured Sections */
+        .featured-section {
+            padding: 50px 0;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 32px;
+            color: var(--primary-color);
+        }
+
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, min
+
+Genesis Test Bot, [5/6/25 9:58 AM]
+max(280px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-image {
+            width: 100%;
+            height: 200px;
+            border: 2px solid var(--primary-color);
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        .card-content {
+            padding: 20px;
+        }
+
+        .card-title {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: var(--text-color);
+        }
+
+        .card-description {
+            color: #757575;
+            margin-bottom: 15px;
+        }
+
+        .card-link {
+            display: inline-block;
+            padding: 8px 15px;
+            background-color: var(--accent-color);
+            color: var(--text-color);
+            border-radius: var(--button-radius);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .card-link:hover {
+            background-color: #f0dc7a;
+        }
+
+        @media (max-width: 992px) {
+            .desktop-nav {
+                display: none;
+            }
+
+            .mobile-menu-toggle {
+                display: block;
+            }
+
+            .search-form {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero-section h1 {
+                font-size: 36px;
+            }
+
+            .hero-section p {
+                font-size: 16px;
+            }
+
+            .section-title {
+                font-size: 28px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .header-controls {
+                gap: 10px;
+            }
+
+            .language-switcher {
+                display: none;
+            }
+
+            .user-auth-link .auth-text {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ==================== Шапка Сайта (Header) ==================== -->
+    <header class="site-header">
+        <div class="container header-container">
+            <a href="index.html" class="logo">
+                <div class="logo-rectangle">Discover Primorye</div>
+            </a>
+
+            <!-- Навигация для Десктопа -->
+            <nav class="main-navigation desktop-nav" aria-label="Основная навигация">
+                <ul>
+                    <li><a href="guide.html">Интерактивный гид</a></li>
+                    <li><a href="booking.html">Бронирование</a></li>
+                    <li><a href="community.html">Сообщество</a></li>
+                    <li><a href="business.html">Для бизнеса</a></li>
+                    <li><a href="info.html">Информация</a></li>
+                </ul>
+            </nav>
+
+            <div class="header-controls">
+                 <!-- Переключатель Языка -->
+                 <div class="language-switcher">
+                    <button class="current-lang" aria-label="Выбрать язык">
+                        <div class="flag-icon-rect">RU</div>
+                        <span class="arrow-down">▼</span>
+                    </button>
+                    <ul class="lang-dropdown" hidden>
+                        <li><a href="#" data-lang="ru"><div class="flag-icon-rect">RU</div> Русский</a></li>
+                        <li><a href="#" data-lang="zh"><div class="flag-icon-rect">CN</div> 中文 (简体)</a></li>
+                        <li><a href="#" data-lang="ko"><div class="flag-icon-rect">KR</div>
+
+Genesis Test Bot, [5/6/25 9:58 AM]
+한국어</a></li>
+                        <li><a href="#" data-lang="en"><div class="flag-icon-rect">EN</div> English</a></li>
+                    </ul>
+                </div>
+
+                <!-- Поиск -->
+                <form action="/search" method="get" class="search-form" role="search">
+                    <input type="search" name="query" placeholder="Поиск по сайту..." aria-label="Поиск по сайту">
+                    <button type="submit" aria-label="Найти">🔍</button>
+                </form>
+
+                <!-- Вход / Профиль -->
+                <a href="profile.html" class="user-auth-link" aria-label="Войти или перейти в профиль">
+                    <span class="icon-user">👤</span>
+                    <span class="auth-text">Войти</span>
+                </a>
+
+                <!-- Кнопка для открытия мобильного меню (гамбургер) -->
+                <button class="mobile-menu-toggle" aria-label="Открыть меню" aria-expanded="false">☰</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ==================== Основное Содержимое (Main) ==================== -->
+    <main>
+        <!-- Hero Section -->
+        <section class="hero-section fade-in">
+            <div class="container">
+                <h1>Откройте Приморский край</h1>
+                <p>Исследуйте удивительную природу, культуру и историю дальневосточной жемчужины России. От прибрежных городов до диких лесов — здесь каждый найдет что-то особенное.</p>
+                <a href="#" class="cta-button">Начать путешествие</a>
+            </div>
+        </section>
+
+        <!-- Popular Destinations -->
+        <section class="featured-section container fade-in">
+            <h2 class="section-title">Популярные направления</h2>
+            <div class="cards-container">
+                <div class="card">
+                    <div class="card-image">Владивосток</div>
+                    <div class="card-content">
+                        <h3 class="card-title">Владивосток</h3>
+                        <p class="card-description">Морской город на краю России с потрясающими мостами и богатой историей.</p>
+                        <a href="#" class="card-link">Подробнее</a>
+                    </div>
+                </div>
+                <div class="card">

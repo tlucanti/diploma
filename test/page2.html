@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>Discover Primorye - Откройте Приморский край</title>
+    
+    <!-- Added Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Added Animation Library -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    
+    <style>
+        :root {
+            --pastel-blue: #a5d8ff;
+            --pastel-pink: #fcc2d7;
+            --pastel-yellow: #ffec99;
+            --pastel-green: #b2f2bb;
+            --pastel-purple: #d0bfff;
+            --text-color: #343a40;
+            --background-color: #f8f9fa;
+            --box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Nunito', sans-serif;
+        }
+        
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+        
+        header {
+            background-color: white;
+            box-shadow: var(--box-shadow);
+            padding: 15px 5%;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        header > div {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo-placeholder {
+            width: 120px;
+            height: 60px;
+            border: 2px solid var(--pastel-blue);
+            border-radius: 12px;
+            background-color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            color: var(--pastel-blue);
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 20px;
+        }
+        
+        nav a {
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+        
+        nav a:hover {
+            color: var(--pastel-blue);
+        }
+        
+        .flag-placeholder {
+            width: 20px;
+            height: 15px;
+            border: 1px solid #ddd;
+            background-color: #f1f1f1;
+            display: inline-block;
+            vertical-align: middle;
+            border-radius: 3px;
+        }
+        
+        .search-form {
+            display: flex;
+            align-items: center;
+        }
+        
+        .search-form input {
+            border: 2px solid var(--pastel-blue);
+            border-radius: 20px 0 0 20px;
+            padding: 8px 15px;
+            outline: none;
+        }
+        
+        .search-form button {
+            background-color: var(--pastel-blue);
+            border: none;
+            border-radius: 0 20px 20px 0;
+            padding: 10px 15px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .search-form button:hover {
+            background-color: #8ac5ff;
+        }
+        
+        .button {
+            background-color: var(--pastel-blue);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            padding: 12px 25px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        
+        main section {
+            padding: 80px 5%;
+        }
+        
+        .hero-section {
+            background-color: var(--pastel-yellow);
+            text-align: center;
+            padding: 150px 5%;
+            margin-bottom: 30px;
+        }
+        
+        .hero-section h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: var(--text-color);
+        }
+        
+        .hero-section p {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .popular-places {
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: var(--box-shadow);
+            padding: 40px;
+            margin-bottom: 30px;
+        }
+        
+        .popular-places h2 {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
+        
+        .popular-places h2:after {
+            content: '';
+            display: block;
+            width: 50px;
+            height: 3px;
+            background-color: var(--pastel-blue);
+            margin: 10px auto;
+        }
+        
+        .places-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .place-card {
+            background-color: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: var(--box-shadow);
+            transition: transform 0.3s;
+        }
+        
+        .place-card:hover {
+            transform: translateY(-10px);
+        }
+        
+        .place-img {
+            height: 200px;
+            width: 100%;
+            border: 2px solid var(--pastel-green);
+            background-color: var(--pastel-green);
+            border-radius: 12px 12px 0 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .place-card h3 {
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .place-card a {
+            display: block;
+            text-align: center;
+            background-color: var(--pastel-pink);
+            color: var(--text-color);
+            padding: 10px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        
+        .place-card a:hover {
+            background-color: #ffacc8;
+        }
+        
+        .vacation-types {
+            padding: 50px 5%;
+            background-color: var(--pastel-purple);
+            border-radius: 20px;
+        }
+        
+        .vacation-types h2 {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+        
+        .vacation-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        
+        .vacation-type {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+        }
+        
+        .type-img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background-color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 15px;
+            border: 3px solid var(--pastel-blue);
+            transition: transform 0.3s;
+        }
+        
+        .vacation-type:hover .type-img {
+            transform: scale(1.1);
+        }
+        
+        .vacation-type span {
+            color: white;
+            font-weight: bold;
+        }
+        
+        footer {
+            background-color: #343a40;
+            color: white;
+            padding: 50px 5% 20px;
+        }
+        
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        footer h4 {
+            margin-bottom: 20px;
+            color: var(--pastel-blue);
+        }
+        
+        footer ul {
+            list-style: none;
+        }
+        
+        footer a {
+            color: #ddd;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 10px;
+            transition: color 0.3s;
+        }
+        
+        footer a:hover {
+            color: var(--pastel-blue);
+        }
+        
+        .partner-logos {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .partner-logo {
+            width: 80px;
+            height: 40px;
+            background-color: #555;
+            border-radius: 5px;
+            border: 1px solid #777;
+        }
+        
+        .social-icons {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .social-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #555;
+            border: 1px solid #777;
+            display: inline-block;
+        }
+        
+        .chat-button {
+            background-color: var(--pastel-green);
+            color: var(--text-color);
+            border: none;
+            border-radius: 25px;
+            padding: 10px 20px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: background-color 0.3s;
+        }
+        
+        .chat-button:hover {
+            background-color: #8ce99a;
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid #555;
+        }
+        
+        .mobile-nav {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: white;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            z-index: 100;
+        }
+        
+        .mobile-nav ul {
+            display: flex;
+            justify-content: space-around;
+            list-style: none;
+        }
+        
+        .mobile-nav a {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px;
+            text-decoration: none;
+            color: var(--text-color);
+        }
+        
+        @media (max-width: 768px) {
+            .mobile-nav {
+                display: block;
+            }
+            
+            header nav {
+                display: none;
+            }
+        }
+        
+        /* Animation classes */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+        
+        .fade-in.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .slide-in-left {
+            opacity: 0;
+            transform: translateX(-50px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+        
+        .slide-in-left.active {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        
+        .slide-in-right {
+            opacity: 0;
+            transform: translateX(50px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+        
+        .slide-in-right.active {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div>
+            <a href="#"> 
+                <div class="logo-placeholder">Discover Primorye</div>
+            </a>
+
+            <nav>
+                <ul>
+                    <li><a href="#">Интерактивный гид</a></li>
+                    <li><a href="#">Бронирование</a></li>
+                    <li><a href="#">Сообщество</a></li>
+                    <li><a href="#">Для бизнеса</a></li>
+                    <li><a href="#">Информация</a></li>
+                </ul>
+            </nav>
+
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <div style="position: relative;">
+                    <button class="current-lang" aria-label="Выбрать язык" style="background: none; border: none; cursor: pointer; display: flex; align-items: center;">
+                        <div class="flag-placeholder"></div>
+                        <span>▼</span> 
+                    </button>
+                </div>
+
+                <form action="/search" method="get" class="search-form" role="search">
+                    <input type="search" name="query" placeholder="Поиск по сайту..." aria-label="Поиск по сайту">
+                    <button type="submit" aria-label="Найти">🔍</button> 
+                </form>
+
+                <a href="#" style="text-decoration: none; color: var(--text-color); display: flex; align-items: center; gap: 5px;">
+                    <span>👤</span> 
+                    <span>Войти</span>
+                </a>
+
+                <button class="mobile-menu-toggle" aria-label="Открыть меню" aria-expanded="false" style="display: none;">☰</button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero-section fade-in">
+            <div>
+                <h1>Откройте для себя Приморский край!</h1>
+                <p>Уникальная природа, богатая история и незабываемые впечатления ждут вас.</p>
+                <a href="#" class="button">Начать путешествие</a>
+            </div>
+        </section>
+
+        <section class="popular-places fade-in">
+            <div>
+                <h2>Популярные места</h2>
+                <div class="places-grid"> 
+                    <article class="place-card slide-in-left">
+                        <div class="place-img">Земля леопарда</div>
+                        <h3>Нацпарк «Земля леопарда»</h3>
+                        <a href="#">Узнать больше</a>
+                    </article>
+                    <article class="place-card slide-in-right">
+                        <div class="place-img">Владивостокская крепость</div>
+                        <h3>Владивостокская крепость</h3>
+                        <a href="#">Узнать больше</a>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section class="vacation-types fade-in">
+            <div>
+                <h2>Выберите тип отдыха</h2>
+                <div class="vacation-grid">
+                    <a href="#" class="vacation-type">
+                        <div class="type-img">Природа</div>
+                        <span>Природа</span>
+                    </a>
+                    <a href="#" class="vacation-type">
+                        <div class="type-img">История</div>
+                        <span>История</span>
+                    </a>
+                    <a href="#" class="vacation-type">
+                        <div class="type-img">Гастрономия</div>
+                        <span>Гастрономия</span>
+                    </a>
+                    <a href="#" class="vacation-type">
+                        <div class="type-img">Активный отдых</div>
+                        <span>Активный отдых</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-grid">
+            <div>
+                <h4>О проекте</h4>
+                <p>Discover Primorye - ваш гид по Приморскому краю. Помогаем туристам из Азии открыть для себя Дальний Восток России.</p>
+                <nav>
+                    <ul>
+                        <li><a href="#">О нас</a></li>
+                        <li><a href="#">Контакты</a></li>
+                        <li><a href="#">Политика конфиденциальности</a></li>
+                        <li><a href="#">Пользовательское соглашение</a></li>
+                        <li><a href="#">Карта сайта</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div>
+                <h4>Быстрые ссылки</h4>
+                <nav>
+                    <ul>
+                        <li><a href="#">Достопримечательности</a></li>
+                        <li><a href="#">Забронировать отель</a></li>
+                        <li><a href="#">Экскурсии</a></li>
+                        <li><a href="#">Культурные советы</a></li>
+                        <li><a href="#">Форум</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div>
+                <h4>Наши партнеры</h4>
+                <div class="partner-logos">
+                    <div class="partner-logo"></div>
+                    <div class="partner-logo"></div>
+                    <div class="partner-logo"></div>
+                    <div class="partner-logo"></div>
+                </div>
+                <h4>Мы в соцсетях</h4>
+                <nav>
+                    <ul class="social-icons">
+                        <li><a href="#"><div class="social-icon"></div></a></li>
+                        <li><a href="#"><div class="social-icon"></div></a></li>
+                        <li><a href="#"><div class="social-icon"></div></a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div>
+                <h4>Поддержка</h4>
+                <p>Есть вопросы? Свяжитесь с нами!</p>
+                <a href="tel:+7XXXXXXXXXX">+7 XXX XXX XX XX</a>
+                <a href="mailto:support@discoverprimorye.ru">support@discoverprimorye.ru</a>
+                <button class="chat-button">Чат поддержки</button>
+            </div>
+        </div>
+        <div class="copyright">
+            <p>&copy; <span id="current-year">2024</span> Discover Primorye. Все права защищены.</p>
+        </div>
+    </footer>
+
+    <nav class="mobile-nav">
+        <ul>
+            <li>
+                <a href="#">
+                    <span>🧭</span> 
+                    <span>Гид</span>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <span>🎟️</span> 
+                    <span>Бронирование</span>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <span>💬</span> 
+                    <span>Сообщество</span>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <span>👤</span> 
+                    <span>Профиль</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <script>
+        // Set current year in footer
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+        
+        // Scroll animation functionality
+        const animateOnScroll = () => {
+            const elements = document.querySelectorAll('.fade-in, .slide-in-left, .slide-in-right');
+            
+            elements.forEach(element => {
+                const elementPosition = element.getBoundingClientRect().top;
+                const windowHeight = window.innerHeight;
+                
+                if (elementPosition < windowHeight * 0.9) {
+                    element.classList.add('active');
+                }
+            });
+        };
+        
+        // Run animation check on load and scroll
+        window.addEventListener('load', animateOnScroll);
+        window.addEventListener('scroll', animateOnScroll);
+    </script>
+</body>
+</html>
