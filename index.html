@@ -342,7 +342,7 @@
         }
 
         .place-card:hover {
-            transform: translateY(-10px);
+             transform: translateY(-10px);
         }
 
         .place-img {
@@ -355,6 +355,19 @@
             align-items: center;
             color: white;
             font-weight: bold;
+            transition: transform 0.3s;
+        }
+
+        .place-card:hover .place-img {
+            transform: translateY(10px) scale(1.1)
+        }
+
+        .place-name {
+            transition: transform 0.3s;
+        }
+
+        .place-card:hover .place-name {
+            transform: translateY(10px)
         }
 
         .place-card h3 {
@@ -557,6 +570,17 @@
             transform: translateY(0);
         }
 
+        .fade-in-cards {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s 0.5s ease, transform 0.8s 0.5s ease;
+        }
+
+        .fade-in-cards.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
         .slide-in-left {
             opacity: 0;
             transform: translateX(-50px);
@@ -648,7 +672,7 @@
             </div>
         </section>
 
-        <section class="popular-places fade-in">
+        <section class="popular-places fade-in-cards">
             <div>
                 <h2>Популярные места</h2>
                 <div class="carousel-container">
@@ -657,42 +681,42 @@
                     <div class="places-grid">
                         <article class="place-card">
                             <div class="place-img" style="background-image: url('./place1.jpg');"></div>
-                            <h3>Полуостров Гамова</h3>
+                            <h3 class="place-name">Полуостров Гамова</h3>
                             <a href="#">Узнать больше</a>
                         </article>
                         <article class="place-card">
                             <div class="place-img" style="background-image: url('./place2.jpg');"></div>
-                            <h3>Национальный парк «Земля леопарда»</h3>
+                            <h3 class="place-name">Национальный парк «Земля леопарда»</h3>
                             <a href="#">Узнать больше</a>
                         </article>
                         <article class="place-card">
                             <div class="place-img" style="background-image: url('./place3.jpg');"></div>
-                            <h3>Остров Петрова</h3>
+                            <h3 class="place-name">Остров Петрова</h3>
                             <a href="#">Узнать больше</a>
                         </article>
                         <article class="place-card">
                             <div class="place-img" style="background-image: url('./place4.jpg');"></div>
-                            <h3>Маяк Токаревского</h3>
+                            <h3 class="place-name">Маяк Токаревского</h3>
                             <a href="#">Узнать больше</a>
                         </article>
                         <article class="place-card">
                             <div class="place-img" style="background-image: url('./place5.jpg');"></div>
-                            <h3>Бухта Стеклянная</h3>
+                            <h3 class="place-name">Бухта Стеклянная</h3>
                             <a href="#">Узнать больше</a>
                         </article>
                         <article class="place-card">
                             <div class="place-img" style="background-image: url('./place6.jpg');"></div>
-                            <h3>Гора Пидан (Ливадийская)</h3>
+                            <h3 class="place-name">Гора Пидан (Ливадийская)</h3>
                             <a href="#">Узнать больше</a>
                         </article>
                         <article class="place-card">
                             <div class="place-img" style="background-image: url('./place7.jpg');"></div>
-                            <h3>Остров Фуругельма</h3>
+                            <h3 class="place-name">Остров Фуругельма</h3>
                             <a href="#">Узнать больше</a>
                         </article>
                         <article class="place-card">
                             <div class="place-img" style="background-image: url('./place8.jpg');"></div>
-                            <h3>Мыс Тобизина</h3>
+                            <h3 class="place-name">Мыс Тобизина</h3>
                             <a href="#">Узнать больше</a>
                         </article>
                     </div>
@@ -731,25 +755,22 @@
                 <h4>О проекте</h4>
                 <p>Discover Primorye - ваш гид по Приморскому краю. Помогаем туристам из Азии открыть для себя Дальний Восток России.</p>
                 <nav>
-                    <ul>
-                        <li><a href="#">О нас</a></li>
-                        <li><a href="#">Контакты</a></li>
-                        <li><a href="#">Политика конфиденциальности</a></li>
-                        <li><a href="#">Пользовательское соглашение</a></li>
-                        <li><a href="#">Карта сайта</a></li>
-                    </ul>
+                        <a></a>
+                        <a href="#">О нас</a>
+                        <a href="#">Контакты</a>
+                        <a href="#">Политика конфиденциальности</a>
+                        <a href="#">Пользовательское соглашение</a>
+                        <a href="#">Карта сайта</a>
                 </nav>
             </div>
             <div>
                 <h4>Быстрые ссылки</h4>
                 <nav>
-                    <ul>
-                        <li><a href="#">Достопримечательности</a></li>
-                        <li><a href="#">Забронировать отель</a></li>
-                        <li><a href="#">Экскурсии</a></li>
-                        <li><a href="#">Культурные советы</a></li>
-                        <li><a href="#">Форум</a></li>
-                    </ul>
+                    <a href="#">Достопримечательности</a>
+                    <a href="#">Забронировать отель</a>
+                    <a href="#">Экскурсии</a>
+                    <a href="#">Культурные советы</a>
+                    <a href="#">Форум</a>
                 </nav>
             </div>
             <div>
@@ -874,7 +895,7 @@
 
         // Scroll animation functionality
         const animateOnScroll = () => {
-            const elements = document.querySelectorAll('.fade-in, .slide-in-left, .slide-in-right');
+            const elements = document.querySelectorAll('.fade-in, .fade-in-cards, .slide-in-left, .slide-in-right');
 
             elements.forEach(element => {
                 const elementPosition = element.getBoundingClientRect().top;
