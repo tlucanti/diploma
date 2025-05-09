@@ -22,7 +22,7 @@
             --pastel-green: #b2f2bb;
             --pastel-purple: #d0bfff;
             --text-color: #343a40;
-            --background-color: #f8f9fa;
+            --background-color: #e8e9ea;
             --box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
 
@@ -276,7 +276,7 @@
         .popular-places h2:after {
             content: '';
             display: block;
-            width: 50px;
+            width: 300px;
             height: 3px;
             background-color: var(--pastel-blue);
             margin: 10px auto;
@@ -324,8 +324,8 @@
         }
 
         .place-card {
-            flex: 0 0 calc(50% - 10px);
-            min-width: calc(50% - 10px);
+            flex: 0 0 calc(25% - 10px);
+            min-width: calc(25% - 10px);
         }
 
         .place-img {
@@ -348,8 +348,7 @@
         .place-img {
             height: 200px;
             width: 100%;
-            border: 2px solid var(--pastel-green);
-            background-color: var(--pastel-green);
+            /* background-color: var(--pastel-green); */
             border-radius: 12px 12px 0 0;
             display: flex;
             justify-content: center;
@@ -657,43 +656,43 @@
                     <div class="carousel-arrow next" onclick="changeCard(1)">❯</div>
                     <div class="places-grid">
                         <article class="place-card">
-                            <div class="place-img" style="background-image: url('./place1.jpg');">Card 1</div>
-                            <h3>Card 1</h3>
+                            <div class="place-img" style="background-image: url('./place1.jpg');"></div>
+                            <h3>Полуостров Гамова</h3>
                             <a href="#">Узнать больше</a>
                         </article>
                         <article class="place-card">
-                            <div class="place-img" style="background-image: url('./place2.jpg');">Card 2</div>
-                            <h3>Card 2</h3>
+                            <div class="place-img" style="background-image: url('./place2.jpg');"></div>
+                            <h3>Национальный парк «Земля леопарда»</h3>
                             <a href="#">Узнать больше</a>
                         </article>
                         <article class="place-card">
-                            <div class="place-img" style="background-image: url('./place3.jpg');">Card 3</div>
-                            <h3>Card 3</h3>
+                            <div class="place-img" style="background-image: url('./place3.jpg');"></div>
+                            <h3>Остров Петрова</h3>
                             <a href="#">Узнать больше</a>
                         </article>
                         <article class="place-card">
-                            <div class="place-img" style="background-image: url('./place4.jpg');">Card 4</div>
-                            <h3>Card 4</h3>
+                            <div class="place-img" style="background-image: url('./place4.jpg');"></div>
+                            <h3>Маяк Токаревского</h3>
                             <a href="#">Узнать больше</a>
                         </article>
                         <article class="place-card">
-                            <div class="place-img" style="background-image: url('./place5.jpg');">Card 5</div>
-                            <h3>Card 5</h3>
+                            <div class="place-img" style="background-image: url('./place5.jpg');"></div>
+                            <h3>Бухта Стеклянная</h3>
                             <a href="#">Узнать больше</a>
                         </article>
                         <article class="place-card">
-                            <div class="place-img" style="background-image: url('./place6.jpg');">Card 6</div>
-                            <h3>Card 6</h3>
+                            <div class="place-img" style="background-image: url('./place6.jpg');"></div>
+                            <h3>Гора Пидан (Ливадийская)</h3>
                             <a href="#">Узнать больше</a>
                         </article>
                         <article class="place-card">
-                            <div class="place-img" style="background-image: url('./place7.jpg');">Card 7</div>
-                            <h3>Card 7</h3>
+                            <div class="place-img" style="background-image: url('./place7.jpg');"></div>
+                            <h3>Остров Фуругельма</h3>
                             <a href="#">Узнать больше</a>
                         </article>
                         <article class="place-card">
-                            <div class="place-img" style="background-image: url('./place8.jpg');">Card 8</div>
-                            <h3>Card 8</h3>
+                            <div class="place-img" style="background-image: url('./place8.jpg');"></div>
+                            <h3>Мыс Тобизина</h3>
                             <a href="#">Узнать больше</a>
                         </article>
                     </div>
@@ -895,12 +894,12 @@
         let currentCard = 0;
         const totalCards = document.querySelectorAll('.place-card').length;
         const placesGrid = document.querySelector('.places-grid');
-        const cardsVisible = 2;
+        const cardsVisible = 4;
         let carouselInterval;
 
         // Function to change cards
         function changeCard(moveStep) {
-            currentCard = (currentCard + moveStep + totalCards) % (totalCards - cardsVisible + 1);
+            currentCard = (currentCard + moveStep) % (totalCards - cardsVisible + 1);
             updateCarousel();
             resetCarouselInterval();
         }
@@ -914,7 +913,7 @@
         // Function to start and reset the interval
         function resetCarouselInterval() {
             clearInterval(carouselInterval);
-            carouselInterval = setInterval(() => changeCard(1), 1500);
+            carouselInterval = setInterval(() => changeCard(1), 4000);
         }
 
         // Initialize carousel
