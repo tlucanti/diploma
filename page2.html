@@ -142,7 +142,11 @@
         }
         
         .hero-section {
-            background-color: var(--pastel-yellow);
+            /* background-color: var(--pastel-yellow); */ /* Removed old background color */
+            background-image: url('./hero1.jpg'); /* Added background image */
+            background-size: cover; /* Ensures the image covers the entire section */
+            background-position: center; /* Centers the image */
+            background-repeat: no-repeat; /* Prevents the image from repeating */
             text-align: center;
             padding: 150px 5%;
             margin-bottom: 30px;
@@ -151,7 +155,8 @@
         .hero-section h1 {
             font-size: 3rem;
             margin-bottom: 20px;
-            color: var(--text-color);
+            color: white; /* You might want to change this to white or add a text-shadow if the image is dark */
+            text-shadow: 0px 0px 8px rgba(0, 0, 0, 0.6); /* Example text shadow for better readability */
         }
         
         .hero-section p {
@@ -160,6 +165,8 @@
             max-width: 700px;
             margin-left: auto;
             margin-right: auto;
+            color: white; /* You might want to change this too */
+            text-shadow: 0px 0px 6px rgba(0, 0, 0, 0.7); /* Example text shadow */
         }
         
         .popular-places {
