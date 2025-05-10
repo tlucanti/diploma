@@ -157,7 +157,7 @@
             overflow: hidden;
             background-size: cover;
             background-position: center;
-            background-image: url('./place5.jpg');
+            background-image: url('./glass-bay-hero.jpg');
         }
 
         .hero-section::before {
@@ -271,13 +271,15 @@
             box-shadow: var(--box-shadow);
             padding: 40px;
             margin-bottom: 30px;
+            position: relative;
         }
 
         .gallery-section h2 {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 40px;
             position: relative;
             color: var(--text-color);
+            font-weight: bold;
         }
 
         .gallery-section h2:after {
@@ -289,13 +291,50 @@
             margin: 10px auto;
         }
 
+        /* Carousel container styles */
+        .carousel-container {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .carousel-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 50px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 2rem;
+            background: linear-gradient(to right, rgba(255,255,255,0.5), rgba(255,255,255,0));
+            cursor: pointer;
+            z-index: 10;
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        }
+
+        .carousel-arrow.prev {
+            left: 20px;
+            background: linear-gradient(to right, rgba(255,255,255,0.5), rgba(255,255,255,0));
+        }
+
+        .carousel-arrow.next {
+            right: 20px;
+            background: linear-gradient(to left, rgba(255,255,255,0.5), rgba(255,255,255,0));
+        }
+
         .photo-gallery {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            display: flex;
+            transition: transform 0.5s ease;
             gap: 20px;
         }
 
         .gallery-item {
+            flex: 0 0 calc(25% - 15px);
+            min-width: calc(25% - 15px);
             height: 200px;
             border-radius: 10px;
             overflow: hidden;
@@ -304,7 +343,7 @@
         }
 
         .gallery-item:hover {
-            transform: scale(1.05);
+            transform: translateY(-10px);
         }
 
         .gallery-item img {
@@ -544,8 +583,9 @@
                 grid-template-columns: 1fr;
             }
             
-            .photo-gallery {
-                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            .gallery-item {
+                flex: 0 0 calc(50% - 10px);
+                min-width: calc(50% - 10px);
             }
         }
 
@@ -677,24 +717,34 @@
 
         <section class="gallery-section fade-in-delay">
             <h2>Фотографии</h2>
-            <div class="photo-gallery">
-                <div class="gallery-item">
-                    <img src="./glass-bay-1.jpg" alt="Бухта Стеклянная - разноцветные стеклянные камни">
-                </div>
-                <div class="gallery-item">
-                    <img src="./glass-bay-2.jpg" alt="Бухта Стеклянная - вид на побережье">
-                </div>
-                <div class="gallery-item">
-                    <img src="./glass-bay-3.jpg" alt="Бухта Стеклянная - стеклянные камни крупным планом">
-                </div>
-                <div class="gallery-item">
-                    <img src="./glass-bay-4.jpg" alt="Бухта Стеклянная - восход солнца">
-                </div>
-                <div class="gallery-item">
-                    <img src="./glass-bay-5.jpg" alt="Бухта Стеклянная - панорамный вид">
-                </div>
-                <div class="gallery-item">
-                    <img src="./glass-bay-6.jpg" alt="Бухта Стеклянная - отдыхающие на пляже">
+            <div class="carousel-container">
+                <div class="carousel-arrow prev" onclick="changePhoto(-1)">❮</div>
+                <div class="carousel-arrow next" onclick="changePhoto(1)">❯</div>
+                <div class="photo-gallery">
+                    <div class="gallery-item">
+                        <img src="./glass-bay-1.jpg" alt="Бухта Стеклянная - разноцветные стеклянные камни">
+                    </div>
+                    <div class="gallery-item">
+                        <img src="./glass-bay-2.jpg" alt="Бухта Стеклянная - вид на побережье">
+                    </div>
+                    <div class="gallery-item">
+                        <img src="./glass-bay-3.jpg" alt="Бухта Стеклянная - стеклянные камни крупным планом">
+                    </div>
+                    <div class="gallery-item">
+                        <img src="./glass-bay-4.jpg" alt="Бухта Стеклянная - восход солнца">
+                    </div>
+                    <div class="gallery-item">
+                        <img src="./glass-bay-5.jpg" alt="Бухта Стеклянная - панорамный вид">
+                    </div>
+                    <div class="gallery-item">
+                        <img src="./glass-bay-6.jpg" alt="Бухта Стеклянная - отдыхающие на пляже">
+                    </div>
+                    <div class="gallery-item">
+                        <img src="./glass-bay-7.jpg" alt="Бухта Стеклянная - морской прибой">
+                    </div>
+                    <div class="gallery-item">
+                        <img src="./glass-bay-8.jpg" alt="Бухта Стеклянная - закат">
+                    </div>
                 </div>
             </div>
         </section>
@@ -851,10 +901,57 @@
             });
         });
         
+        // Photo gallery carousel functionality
+        let currentPhoto = 0;
+        const totalPhotos = document.querySelectorAll('.gallery-item').length;
+        const photoGallery = document.querySelector('.photo-gallery');
+        const photosVisible = 4;
+        let photoInterval;
+
+        // Function to change photos
+        function changePhoto(moveStep) {
+            currentPhoto = (currentPhoto + moveStep + totalPhotos) % (totalPhotos - photosVisible + 1);
+            if (currentPhoto < 0) currentPhoto = 0;
+            updatePhotoCarousel();
+            resetPhotoInterval();
+        }
+
+        // Function to update photo carousel position
+        function updatePhotoCarousel() {
+            const itemWidth = document.querySelector('.gallery-item').offsetWidth + 20; // item width + gap
+            photoGallery.style.transform = `translateX(-${currentPhoto * itemWidth}px)`;
+        }
+
+        // Function to start and reset the interval
+        function resetPhotoInterval() {
+            clearInterval(photoInterval);
+            startPhotoInterval();
+        }
+
+        // Function to start the auto-slide interval
+        function startPhotoInterval() {
+            photoInterval = setInterval(() => {
+                // Only move forward if not at the end
+                if (currentPhoto < totalPhotos - photosVisible) {
+                    changePhoto(1);
+                } else {
+                    // Reset to first slide if at the end
+                    currentPhoto = -1;
+                    changePhoto(1);
+                }
+            }, 4000); // Change slide every 4 seconds
+        }
+
+        // Initialize photo carousel
+        startPhotoInterval();
+        
         // Map pin click event
         document.querySelector('.map-pin').addEventListener('click', function() {
             window.open('https://maps.google.com/?q=бухта+стеклянная+владивосток', '_blank');
         });
+        
+        // Make photos responsive
+        window.addEventListener('resize', updatePhotoCarousel);
     </script>
 </body>
 </html>
