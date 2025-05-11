@@ -146,51 +146,73 @@
    - Early Stage of Standardization and Development: lacking wide hardware and software support
    - Limited Ecosystem and Tooling Support: Unlike ARM TrustZone or Intel SGX, which have mature SDKs, secure OSes, middleware, and developer tools, World Guard currently lacks a rich ecosystem
    - Need for Accompanying Secure Software Stack: Hardware support alone is insufficient; a complete trusted execution environment requires well-designed Secure OS, runtime environments, drivers, and APIs — these are still under development or experimental for World Guard
-   -
-
-
-
-   - Still young and in development phase with limited ecosystem support
-   -
-  ### Summmary on existing TEEs
-   - compare
+   - Adoption and Interoperability Challenges: Fragmentation or vendor-specific variations could impede standardization and cross-platform TEE portability
+  ### Summary and Comparative Analysis
+   - *Side-by-side comparison table or structured summary across key dimensions*
+   - ...
 
  ## Related Work
   ### Academic Research on RISC-V TEEs
+   #### Survey of recent research on trusted execution for RISC-V
    - some papers on RISC-V, like
    - SoK: Understanding the Prevailing Security Vulnerabilities in TrustZone-assisted TEE Systems
    - Enclave-Aware Compartmentalization and Secure Sharing with Sirius
+   #### Gaps identified in academia researches
+   - Lack of ...
   ### Proprietary vs- Opsn-Source TEE Solutions
-   - Alibaba Cloud Link (Alibaba Cloud, IoT Platform, IoT Edge Computing)
-   - Apple Secure Enclave (all apple devices)
-   - Huawei iTrustee (all Huawei devices)
-   - Google Trusty (google pixel, chromebook)
-   - Samsung TEEgris (all samsung devices, sell to automotive)
-   - SiFive Secure OS
+   #### Alibaba Cloud Link
+   - tightly integrated with Alibaba ecosystem
+   - used in:
+   - Alibaba Cloud
+   - IoT Platform
+   - IoT Edge Computing
+   #### Apple Secure Enclave
+   - Hardware-backed TEE in Apple SoCs
+   - used in:
+   - all apple devices: phones, TVs, ...
+   #### Huawei iTrustee
+   - Platform security solution deployed across Huawei devices; proprietary and closed ecosystem
+   - used in:
+   - all huawei devices: phones, TVs, ...
+   #### Google Trusty
+   - Android’s open-source TEE OS managed by Google
+   - used in:
+   - google pixel
+   - chromebook
+   #### Samsung TEEgris
+   - Samsung's own TEE implementation
+   - used in:
+   - all samsung devices: phones, TVs, ...
+   - also licensed to automotive OEMs
+   #### SiFive's private Secure OS for WorldGuard
+   - proprietary
+   - ...
   ### Complementary Papers
-   - paper about Linux Integration
-   - paper about TEE Interface and SBI
+   #### Linux Integration for Secure OS Communication
+   - Prior art and current solutions enabling Linux driver support for TEE communication, IPC, and session management
+   #### TEE Interface and OpenSBI Extensions
+   - Existing works on modifying trusted firmware (like OpenSBI) to support new RISC-V security extensions (including WorldGuard)
 
  ## Organization of the Paper
-   #### Chapter 1: Introduction
+   ### Chapter 1: Introduction
    - background
    - brief introduction to TEE
    - problem statement
    - relevance of the work
    - possible applications of TEE
    - comparison with other architectures
-   #### Chapter 2: Trusted Execution Enviroment
+   ### Chapter 2: Trusted Execution Enviroment
    - TEE in general
    - threat model
    - isolation mechanisms
    - World Guard extension
    - Trusted User Interface
-   #### Chapter 3: Implementation Dedails
+   ### Chapter 3: Implementation Dedails
    - Project architecutre
    - Secure userspace
    - Secure kernel
    - Capability based approach
-   #### Chapter 4: Demonstration
+   ### Chapter 4: Demonstration
    - Showing communication
    - Security analysis
    - future work
@@ -201,7 +223,7 @@
  ## TEE Overview
   ### Definition and Core Principles
    #### Trusted Execution Environment
-   - descrption
+   - descrption: secure area of a main processor ...
    - list core principles
    #### Isolation
    - separaion on Rich Environment and Trusted Environment
@@ -247,7 +269,7 @@
    #### Secure APIs
    - Interfaces through which normal applications or the Rich Execution Environment can request services from the TEE
 
- ## Thread Model
+ ## Threat Model
   ### Normal World Assumptions
    #### untrasted OS
    - The Normal World is assumed to be fully untrusted
