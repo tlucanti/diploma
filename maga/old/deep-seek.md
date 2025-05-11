@@ -1,15 +1,15 @@
 # Chapter 1: Introduction
- ## 1.1 Background and Motivation
+ ## + 1.1 Background and Motivation
   - Emergence of Trusted Execution Environments (TEEs) in modern computing.
   - Security challenges in heterogeneous computing environments.
   - Role of hardware extensions like RISC-V World Guard in enhancing secure computing.
 
- ## 1.2 Problem Statement
+ ## + 1.2 Problem Statement
   - Limitations of existing TEE implementations (e.g., ARM TrustZone, Intel SGX).
   - Gaps in RISC-V ecosystem for lightweight, flexible TEE frameworks.
   - Need for cross-world communication with minimal performance overhead.
 
- ## 1.3 Relevance of the Work
+ ## + 1.3 Relevance of the Work
   - Addressing RISC-V’s growing adoption and security demands.
   - Enabling secure IoT, edge computing, and confidential machine learning.
 

@@ -1,14 +1,14 @@
 # 1. Introduction
- ## Background
+ ## + Background
   - Evolution of Trusted Execution Environments (TEEs)
   - The Role of TEEs in Modern Security Architectures
   - Open-Source Hardware and RISC-V’s Emergence
 
- ## Problem Statement
+ ## + Problem Statement
   - Gaps in RISC-V’s Security Ecosystem
   - Lack of Standardized TEE Interfaces and Implementations
 
- ## Relevance and Applications
+ ## + Relevance and Applications
   - IoT, Edge Computing, and Secure Cloud Services
   - Data Privacy in Open-Source Hardware
 
