@@ -317,64 +317,54 @@
   ### Architectural Features and Components
   ### Worlds
 
+ ## TEE Interface Considerations
 
-  - Software
-  - Hardware
-  - Physical
-  - Side-channel attacks
-  - memory corruption
-  - IPI spoofing
+ ## Trusted User Interface (TUI)
 
+ ## Boot Sequence and Chain of Trust
 
+---
 
+# Chapter 3: Design and Implementation of the Secure OS**
 
+ ## System Architecture Overview
 
+ ## World Guard Integration
 
+ ## Secure Boot Process and Initialization
 
+ ## Cross-World Communication Protocol
 
+ ## Linux Driver Implementation
 
+ ## Secure Kernel Design
 
+ ## Capability-Based Security Model
 
+ ## Secure Syscalls
 
+ ## Secure Userspace for Trusted Applications
 
+ ## Trusted Application Framework
 
- ## RISC-V World Guard Extension
-  ### Architectural Overview
-   - brief description
-  ### Security domains
-   - multiple security domains or worlds per cpu
-  ### World IDs
-   - World switching
-   - exceptions and traps
-  ### Hardware Tags
-   - per region access control policies
+ ## Implementation Challenges and Optimizations
 
- ## Isolation Mechanisms
-  ### Hardware-enforced isolation
-   - memory domains
-   - privilege levels.
-  ### Dedicated Secure Cores and Memory Regions
+ ## Summary of Implementation
 
- ## Boot Process and Chain of Trust
-  ### Secure Boot from ROM to Secure OS
-   -
-  ### Secure boot process: OpenSBI, bootloader, and secure OS handoff.
-   -
-  ### Measurement and attestation of TEE components.
-   -
+---
 
- ## TEE Interfaces and Trusted User Interface (TUI)
-  ### APIs for trusted application management
-   - session lifecycle
-   - resource allocation
-  ### Secure storage, cryptographic primitives, and real-time attestation.
+# Chapter 4: Evaluation and Security Analysis
 
- ## Thread model
-  ### Attack Surfaces: Software, Physical, Side-Channel
-   - Software
-   - Physical
-   - Side-Channel
-  ### Protection Goals: Confidentiality, Integrity, Availability
-   - Confidentiality
-   - Integrity
-   - Availability
+ ## Software Stack Setup
+
+ ## Demonstration of Secure OS Functionality
+
+ ## Security Analysis
+
+ ## Attempted Attacks and Results
+
+ ## Performance Evaluation
+
+ ## Conclusions
+
+ ## Future Work
