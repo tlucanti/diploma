@@ -72,7 +72,7 @@
  ## Relevance and Applications
   ### Rapid Growth of RISC-V in Commercial and Industrial Domains
    #### Wide Deployment Across Diverse Product Areas
-   - -V has seen accelerating adoption in real-world commercial products, including
+   - RISC-V has seen accelerating adoption in real-world commercial products, including
    - Industrial control and factory automation systems
    - On-premise and edge cloud computing platforms
    - Networking equipment and embedded consumer electronics
@@ -313,9 +313,33 @@
    - Secure boot, cryptographic verification of firmware and Secure World images should be used
 
  ## World Guard Extension
-  ### Overview and Motivation
-  ### Architectural Features and Components
-  ### Worlds
+  ### Overview of the World Guard Concept
+   #### ...
+   - *chapter 1 from wg spec*
+  ### RISC-V ISA WorldGuard
+   #### ISA WorldGuard Extensions
+   - *chapter 2.0 from wg spec*
+   #### WorldGuard CSRs
+   - *chapter 2.1*
+   #### One world per hart
+   - *chapter 2.2*
+   #### Response to permission violations
+   - *chapter 2.5*
+  ### Non-ISA WorldGuard Hardware Platform Components
+   #### WorldGuard Markers and Checkers
+   - *chapter 3.0*
+   #### Generic WG Checker
+   - *chapter 3.1.0*
+   #### Configuration Register Memory Map
+   - *chapter 3.1.1*
+   #### Rule Slot Format
+   - *chapter 3.1.2*
+   #### Error-reporting registers
+   - *chapter 3.1.4*
+   #### Operation of the Checker
+   - *chapter 3.1.5*
+   #### Checker Reset
+   - *chapter 3.1.6*
 
  ## TEE Interface Considerations
 
@@ -330,6 +354,14 @@
  ## System Architecture Overview
 
  ## World Guard Integration
+  ### Integration in the Secure OS
+   #### World Configuration
+   - Two-World Design
+   - Static Memory Partitioning
+   #### Checker Configuration for Secure Isolation
+   - Secure RAM Slots configuration
+   #### Communication Mechanism
+   - Shared Memory Pages with permissions for both worlds
 
  ## Secure Boot Process and Initialization
 
