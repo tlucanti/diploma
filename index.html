@@ -896,15 +896,23 @@
         }
 
         .lang-dropdown-btn {
-            background: none;
-            border: none;
+            background: white;
+            border: 1px solid #e0e0e0;
             cursor: pointer;
             display: flex;
             align-items: center;
             gap: 5px;
             padding: 8px 12px;
-            border-radius: 20px;
+            border-radius: 8px;
             transition: all 0.3s;
+            width: 160px;
+            justify-content: space-between;
+        }
+
+        .lang-dropdown-btn .flag-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         .lang-dropdown-btn:hover {
@@ -912,8 +920,8 @@
         }
 
         .flag-icon {
-            width: 20px;
-            height: 15px;
+            width: 24px;
+            height: 18px;
             border-radius: 3px;
             object-fit: cover;
             box-shadow: 0 1px 3px rgba(0,0,0,0.2);
@@ -929,9 +937,9 @@
             position: absolute;
             right: 0;
             background-color: white;
-            min-width: 160px;
+            width: 160px;
             box-shadow: var(--box-shadow);
-            border-radius: 10px;
+            border-radius: 8px;
             z-index: 101;
             overflow: hidden;
             transform: translateY(10px);
@@ -1016,25 +1024,27 @@
                 <!-- REPLACED with language dropdown -->
                 <div class="lang-dropdown">
                     <button class="lang-dropdown-btn" aria-label="Выбрать язык">
-                        <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NDAgNDgwIj48ZyBmaWxsLXJ1bGU9ImV2ZW5vZGQiIHN0cm9rZS13aWR0aD0iMXB0Ij48cGF0aCBmaWxsPSIjZmZmIiBkPSJNMCAwaDY0MHY0ODBIMHoiLz48cGF0aCBmaWxsPSIjMDAzOWE2IiBkPSJNMCAxNjBoNjQwdjMyMEgweiIvPjxwYXRoIGZpbGw9IiNkNTJiMWUiIGQ9Ik0wIDMyMGg2NDB2MTYwSDB6Ii8+PC9nPjwvc3ZnPg==" alt="Russian Flag" class="flag-icon">
-                        <span>RU</span>
+                        <div class="flag-wrapper">
+                            <img src="./ru.webp" alt="Russian Flag" class="flag-icon">
+                            <span>Русский</span>
+                        </div>
                         <span class="dropdown-arrow">▼</span>
                     </button>
                     <div class="lang-dropdown-content">
                         <a href="index.ru.html" class="lang-option">
-                            <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NDAgNDgwIj48ZyBmaWxsLXJ1bGU9ImV2ZW5vZGQiIHN0cm9rZS13aWR0aD0iMXB0Ij48cGF0aCBmaWxsPSIjZmZmIiBkPSJNMCAwaDY0MHY0ODBIMHoiLz48cGF0aCBmaWxsPSIjMDAzOWE2IiBkPSJNMCAxNjBoNjQwdjMyMEgweiIvPjxwYXRoIGZpbGw9IiNkNTJiMWUiIGQ9Ik0wIDMyMGg2NDB2MTYwSDB6Ii8+PC9nPjwvc3ZnPg==" alt="Russian Flag" class="flag-icon">
+                            <img src="ru.webp" alt="Russian Flag" class="flag-icon">
                             <span>Русский</span>
                         </a>
                         <a href="index.en.html" class="lang-option">
-                            <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NDAgNDgwIj48ZGVmcz48Y2xpcFBhdGggaWQ9ImEiPjxwYXRoIGZpbGwtb3BhY2l0eT0iLjciIGQ9Ik0tODUuMyAwaGY2ODIuNnY1MTJILTg1LjN6Ii8+PC9jbGlwUGF0aD48L2RlZnM+PGcgY2xpcC1wYXRoPSJ1cmwoI2EpIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSg4MCkgc2NhbGUoLjk0KSI+PGcgc3Ryb2tlLXdpZHRoPSIxcHQiPjxwYXRoIGZpbGw9IiMwMTIxNjkiIGQ9Ik0tMjU2IDBINzY4djUxMkgtMjU2eiIvPjxwYXRoIGZpbGw9IiNmZmYiIGQ9Ik0tMjU2IDBsMzIwIDI1Ni0zMjAgMjU2SDc2OEw0NDggMjU2IDc2OCAwSC0yNTZ6Ii8+PHBhdGggZmlsbD0iI2MwMGQyMyIgZD0iTS0yNTYgMTcwLjdINzY4djE3MC42SC0yNTZ6Ii8+PHBhdGggZmlsbD0iI2ZmZiIgZD0iTTIgMGg2NHY1MTJIMnoiLz48cGF0aCBmaWxsPSIjZmZmIiBkPSJNLTI1NiAyMDhoMTAyNHY5NkgtMjU2eiIvPjxwYXRoIGZpbGw9IiNjMDBkMjMiIGQ9Ik0tMjU2IDIyNGgxMDI0djY0SC0yNTZ6Ii8+PHBhdGggZmlsbD0iI2MwMGQyMyIgZD0iTTE4IDBIODJ2NTEySDE4eiIvPjwvZz48L2c+PC9zdmc+" alt="UK Flag" class="flag-icon">
+                            <img src="en.webp" alt="UK Flag" class="flag-icon">
                             <span>English</span>
                         </a>
                         <a href="index.cn.html" class="lang-option">
-                            <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NDAgNDgwIj48ZGVmcz48cGF0aCBpZD0iYSIgZmlsbD0iI2ZmZGUwMCIgZD0iTTAtMWwxMCAyMkgzMkwxMyA3bDEwIDIxLTIxLTgtMjAgOSA5LTIyTDEtMWgyOSIvPjwvZGVmcz48cGF0aCBmaWxsPSIjZGUyOTEwIiBkPSJNMCAwaDY0MHY0ODBIMHoiLz48dXNlIHhsaW5rOmhyZWY9IiNhIiB0cmFuc2Zvcm09Im1hdHJpeCg3MS45OTkxIDAgMCA3MiAxMjAgMTIwKSIvPjx1c2UgeGxpbms6aHJlZj0iI2EiIHRyYW5zZm9ybT0ibWF0cml4KC0xMi4zMzU2MiAtMjAuNTg3MSAyMC41ODcxIC0xMi4zMzU2MiAyNDAgNDgpIi8+PHVzZSB4bGluazpocmVmPSIjYSIgdHJhbnNmb3JtPSJyb3RhdGUoMjMwLjcgLTE0Ny42IFTC4yKSBzY2FsZSg2MC4yNTAwKSIvPjx1c2UgeGxpbms6aHJlZj0iI2EiIHRyYW5zZm9ybT0ibWF0cml4KDEyLjMzNTYyIC0yMC41ODcxIC0yMC41ODcxIC0xMi4zMzU2MiAzMjggMjA0KSIvPjx1c2UgeGxpbms6aHJlZj0iI2EiIHRyYW5zZm9ybT0ibWF0cml4KDIzLjgzOTM1IDMuOTY1NzEgLTMuOTY1NzEgMjMuODM5MzUgMjg4IDE2MCkiLz48L3N2Zz4=" alt="Chinese Flag" class="flag-icon">
+                            <img src="cn.webp" alt="Chinese Flag" class="flag-icon">
                             <span>中文</span>
                         </a>
                         <a href="index.kr.html" class="lang-option">
-                            <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NDAgNDgwIj48ZGVmcz48Y2xpcFBhdGggaWQ9ImEiPjxwYXRoIGZpbGwtb3BhY2l0eT0iLjciIGQ9Ik0tOTUuOC0xaDg2NXY1MTNoLTg2NXoiLz48L2NsaXBQYXRoPjwvZGVmcz48ZyBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGNsaXAtcGF0aD0idXJsKCNhKSIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoODkuOCAxKSBzY2FsZSguOTM3MzcpIj48cGF0aCBmaWxsPSIjZmZmIiBkPSJNMTM4LjYgMGg2MDZ2NTEyaC02MDZ6Ii8+PHBhdGggZD0iTTEzOC42IDI1NmgzMDMuMnYyNTZIMTM4LjZ6Ii8+PHBhdGggc3Ryb2tlPSIjZmZmIiBkPSJNMTM4LjYgMTI2LjhoMTc4LjdMNjkgMHY1MTJsMTM4LjYtNDIuN2gxOTMuNiIvPjxwYXRoIGZpbGw9IiNjODEzMmYiIGQ9Ik00NDEuOCAyODIuMWgtMTM0TDQ0MS45IDM4NGwtODYuNy00Mi43TDMxOS0yNS41bC0xNS40IDQ1LjctMTcuOC00NS43LTM5IDEwOC44TDEwMXYxMzYuNGwxNTYuNiA1Mi4zLTMxLjYgMTkuNiAxMC41IDE5LjYgOA===" alt="Korean Flag" class="flag-icon">
+                            <img src="kr.webp" alt="Korean Flag" class="flag-icon">
                             <span>한국어</span>
                         </a>
                     </div>
