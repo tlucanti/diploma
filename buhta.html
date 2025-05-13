@@ -391,10 +391,10 @@
             margin-bottom: 30px;
         }
 
-        .map-container img {
+        .map-container iframe {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            border: 0;
         }
 
         .map-pin {
@@ -746,8 +746,16 @@
         <section class="map-section fade-in-delay">
             <h2>Как добраться</h2>
             <div class="map-container">
-                <img src="./glass-bay-map.jpg" alt="Карта расположения бухты Стеклянная">
-                <div class="map-pin" title="Бухта Стеклянная"></div>
+                <iframe 
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d12000!2d132.056439!3d43.145365!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNDPCsDA4JzQzLjMiTiAxMzLCsDAzJzIzLjIiRQ!5e0!3m2!1sru!2sru!4v1620000000000!5m2!1sru!2sru" 
+                    width="100%" 
+                    height="400" 
+                    style="border:0; border-radius: 10px;" 
+                    allowfullscreen="" 
+                    loading="lazy"
+                    referrerpolicy="no-referrer-when-downgrade"
+                    title="Карта расположения бухты Стеклянная">
+                </iframe>
             </div>
             
             <div class="directions-container">
@@ -768,7 +776,7 @@
             </div>
             
             <div style="text-align: center; margin-top: 40px;">
-                <a href="https://maps.google.com/?q=бухта+стеклянная+владивосток" target="_blank" class="button purple-button">Открыть в Google Maps</a>
+                <a href="https://maps.google.com/?q=43.145365,132.056439" target="_blank" class="button purple-button">Открыть в Google Maps</a>
             </div>
         </section>
     </main>
@@ -939,10 +947,7 @@
         // Initialize photo carousel
         startPhotoInterval();
         
-        // Map pin click event
-        document.querySelector('.map-pin').addEventListener('click', function() {
-            window.open('https://maps.google.com/?q=бухта+стеклянная+владивосток', '_blank');
-        });
+        // Map pin click event - No longer needed as Google Maps handles this
         
         // Make photos responsive
         window.addEventListener('resize', updatePhotoCarousel);
