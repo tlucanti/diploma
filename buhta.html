@@ -57,8 +57,11 @@
         }
 
         .logo-placeholder {
+            background-size: cover;
+            background-position: center;
+
             width: 120px;
-            height: 60px;
+            height: 80px;
             border: 2px solid var(--pastel-blue);
             border-radius: 12px;
             background-color: white;
@@ -633,13 +636,126 @@
             opacity: 1;
             transform: translateX(0);
         }
+
+        /* Language Dropdown Styles */
+        .lang-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .lang-dropdown-btn {
+            background: white;
+            border: 1px solid #e0e0e0;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            transition: all 0.3s;
+            width: 160px;
+            justify-content: space-between;
+        }
+
+        .lang-dropdown-btn .flag-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .lang-dropdown-btn:hover {
+            background-color: rgba(197, 216, 255, 0.2);
+        }
+
+        .flag-icon {
+            width: 24px;
+            height: 18px;
+            border-radius: 3px;
+            object-fit: cover;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+
+        .dropdown-arrow {
+            margin-left: 5px;
+            transition: transform 0.3s;
+        }
+
+        .lang-dropdown-content {
+            visibility: hidden;
+            position: absolute;
+            right: 0;
+            background-color: white;
+            width: 160px;
+            box-shadow: var(--box-shadow);
+            border-radius: 8px;
+            z-index: 101;
+            overflow: hidden;
+            transform: translateY(10px);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .lang-dropdown:hover .lang-dropdown-content {
+            visibility: visible;
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .lang-dropdown:hover .dropdown-arrow {
+            transform: rotate(180deg);
+        }
+
+        .lang-option {
+            color: var(--text-color);
+            padding: 12px 16px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: background-color 0.3s;
+            animation: fadeInDown 0.3s forwards;
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+
+        .lang-option:hover {
+            background-color: var(--pastel-blue);
+            color: white;
+        }
+
+        .lang-option:nth-child(1) {
+            animation-delay: 0.05s;
+        }
+
+        .lang-option:nth-child(2) {
+            animation-delay: 0.1s;
+        }
+
+        .lang-option:nth-child(3) {
+            animation-delay: 0.15s;
+        }
+
+        .lang-option:nth-child(4) {
+            animation-delay: 0.2s;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
     </style>
 </head>
 <body>
     <header>
         <div>
-            <a href="index.html">
-                <div class="logo-placeholder">Discover Primorye</div>
+            <a href="#">
+                <div class="logo-placeholder" style="background-image: url('./logo.jpg');"></div>
             </a>
 
             <nav>
@@ -653,11 +769,33 @@
             </nav>
 
             <div style="display: flex; align-items: center; gap: 15px;">
-                <div style="position: relative;">
-                    <button class="current-lang" aria-label="Выбрать язык" style="background: none; border: none; cursor: pointer; display: flex; align-items: center;">
-                        <div class="flag-placeholder"></div>
-                        <span>▼</span>
+                <!-- REPLACED with language dropdown -->
+                <div class="lang-dropdown">
+                    <button class="lang-dropdown-btn" aria-label="Выбрать язык">
+                        <div class="flag-wrapper">
+                            <img src="./ru.webp" alt="Russian Flag" class="flag-icon">
+                            <span>Русский</span>
+                        </div>
+                        <span class="dropdown-arrow">▼</span>
                     </button>
+                    <div class="lang-dropdown-content">
+                        <a href="index.html" class="lang-option">
+                            <img src="ru.webp" alt="Russian Flag" class="flag-icon">
+                            <span>Русский</span>
+                        </a>
+                        <a href="index.en.html" class="lang-option">
+                            <img src="en.webp" alt="UK Flag" class="flag-icon">
+                            <span>English</span>
+                        </a>
+                        <a href="index.cn.html" class="lang-option">
+                            <img src="cn.webp" alt="Chinese Flag" class="flag-icon">
+                            <span>中文</span>
+                        </a>
+                        <a href="index.kr.html" class="lang-option">
+                            <img src="kr.webp" alt="Korean Flag" class="flag-icon">
+                            <span>한국어</span>
+                        </a>
+                    </div>
                 </div>
 
                 <form action="/search" method="get" class="search-form" role="search">
@@ -673,7 +811,6 @@
                 <button class="mobile-menu-toggle" aria-label="Открыть меню" aria-expanded="false" style="display: none;">☰</button>
             </div>
         </div>
-    </header>
 
     <main>
         <section class="hero-section fade-in">
