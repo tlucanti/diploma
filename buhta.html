@@ -157,7 +157,7 @@
             overflow: hidden;
             background-size: cover;
             background-position: center;
-            background-image: url('./glass-bay-hero.jpg');
+            background-image: url('./place5.jpg');
         }
 
         .hero-section::before {
@@ -722,28 +722,22 @@
                 <div class="carousel-arrow next" onclick="changePhoto(1)">❯</div>
                 <div class="photo-gallery">
                     <div class="gallery-item">
-                        <img src="./glass-bay-1.jpg" alt="Бухта Стеклянная - разноцветные стеклянные камни">
+                        <img src="./buhta1.jpg" alt="Бухта Стеклянная - разноцветные стеклянные камни">
                     </div>
                     <div class="gallery-item">
-                        <img src="./glass-bay-2.jpg" alt="Бухта Стеклянная - вид на побережье">
+                        <img src="./buhta2.jpg" alt="Бухта Стеклянная - вид на побережье">
                     </div>
                     <div class="gallery-item">
-                        <img src="./glass-bay-3.jpg" alt="Бухта Стеклянная - стеклянные камни крупным планом">
+                        <img src="./buhta3.jpg" alt="Бухта Стеклянная - стеклянные камни крупным планом">
                     </div>
                     <div class="gallery-item">
-                        <img src="./glass-bay-4.jpg" alt="Бухта Стеклянная - восход солнца">
+                        <img src="./buhta4.jpg" alt="Бухта Стеклянная - восход солнца">
                     </div>
                     <div class="gallery-item">
-                        <img src="./glass-bay-5.jpg" alt="Бухта Стеклянная - панорамный вид">
+                        <img src="./buhta5.jpg" alt="Бухта Стеклянная - панорамный вид">
                     </div>
                     <div class="gallery-item">
-                        <img src="./glass-bay-6.jpg" alt="Бухта Стеклянная - отдыхающие на пляже">
-                    </div>
-                    <div class="gallery-item">
-                        <img src="./glass-bay-7.jpg" alt="Бухта Стеклянная - морской прибой">
-                    </div>
-                    <div class="gallery-item">
-                        <img src="./glass-bay-8.jpg" alt="Бухта Стеклянная - закат">
+                        <img src="./buhta6.jpg" alt="Бухта Стеклянная - отдыхающие на пляже">
                     </div>
                 </div>
             </div>
@@ -910,8 +904,8 @@
 
         // Function to change photos
         function changePhoto(moveStep) {
-            currentPhoto = (currentPhoto + moveStep + totalPhotos) % (totalPhotos - photosVisible + 1);
-            if (currentPhoto < 0) currentPhoto = 0;
+            currentPhoto = (currentPhoto + moveStep) % (totalPhotos - photosVisible + 1);
+            if (currentPhoto < 0) currentPhoto = totalPhotos - photosVisible;
             updatePhotoCarousel();
             resetPhotoInterval();
         }
