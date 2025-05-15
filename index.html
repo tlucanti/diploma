@@ -1001,6 +1001,58 @@
                 transform: translateY(0);
             }
         }
+
+        /* Button styling for "Сделай приморье лучше!" */
+        .improve-primorye-button {
+            background-color: var(--pastel-blue);
+            color: white !important;
+            border: none;
+            border-radius: 20px;
+            padding: 8px 15px;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            animation: pulsate 2s infinite;
+            transition: background-color 0.3s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-left: 15px;
+        }
+
+        .improve-primorye-button:hover {
+            background-color: #8ac5ff !important;
+            color: white !important;
+            animation: none;
+        }
+
+        /* Pulsating animation */
+        @keyframes pulsate {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(165, 216, 255, 0.7);
+            }
+            50% {
+                transform: scale(1.05);
+                box-shadow: 0 0 0 10px rgba(165, 216, 255, 0);
+            }
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(165, 216, 255, 0);
+            }
+        }
+
+        /* Adjust spacing in navigation links */
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 15px; /* Reduced from 20px to create more space */
+        }
+        
+        /* Make nav a flex container to properly position the button */
+        nav {
+            display: flex;
+            align-items: center;
+        }
     </style>
 </head>
 <body>
@@ -1017,7 +1069,12 @@
                     <li><a href="#">Сообщество</a></li>
                     <li><a href="#">Для бизнеса</a></li>
                     <li><a href="#">Информация</a></li>
+                    <li><a href="#"></a></li>
+                    <li><a href="#"></a></li>
+                    <li><a href="#"></a></li>
+                    <li><a href="#"></a></li>
                 </ul>
+                <a href="https://forms.gle/fSoC15HMfdq7R1d68" class="improve-primorye-button">Сделай приморье лучше!</a>
             </nav>
 
             <div style="display: flex; align-items: center; gap: 15px;">
