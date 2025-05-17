@@ -341,62 +341,298 @@
    #### Checker Reset
    - *chapter 3.1.6*
 
- ## TEE Interface Considerations
+ ## Interface Considerations
+  ### TEE Interface Considerations
+   #### Global Platform TEE API
+   #### OP-TEE
+   #### Experemental or own API
+   #### Summary
 
- ## Trusted User Interface (TUI)
+  ### Trusted Application Framework Interface Considerations
+   ####
+
+  ### Trusted OS Syscall Interface Considerations
+   ####
+
 
  ## Boot Sequence and Chain of Trust
+  ### Boot Sequence
+   #### Background on Booting
+   #### Boot Loader
+   #### OpenSBI
+   #### Secure OS
+   #### Rich OS
+
+  ### Chain of Trust
+   #### Secure boot principles
+   #### RISC-V Root of Trust
+   #### Onetime Programmable Memory
+   #### First Stage Bootloader
 
 ---
 
 # Chapter 3: Design and Implementation of the Secure OS**
 
  ## System Architecture Overview
+  ### High Level Component Diagram
+   #### ...
+  ### Interaction Model between components
+   #### ...
+  ### TA Lifecycle
+   #### Creation
+   #### Compute
+   #### Teardown
 
  ## World Guard Integration
-  ### Integration in the Secure OS
+  ### WorldGuard Configuration
    #### World Configuration
    - Two-World Design
-   - Static Memory Partitioning
-   #### Checker Configuration for Secure Isolation
+   #### WorldGuard Checker Configuration for Secure Isolation
    - Secure RAM Slots configuration
+   - enclave partitioning
+  ### Integration in the Secure OS
+   #### Error reporting
+   #### Managing World Transitions
+   - Entry/Exit to Secure World)
    #### Communication Mechanism
    - Shared Memory Pages with permissions for both worlds
 
  ## Secure Boot Process and Initialization
+  ### Secure OS Early Initialization
+   #### OpenSBI Handover
+   #### Kernel Mapping
+   #### Firsr Kernel Relocation
+   #### Enable MMU
+  ### Secure OS Initialization
+   #### Register Console
+   #### Initialize Page Tables
+   #### Second Kernel Relocation
+   #### Initialize Trap Handler
+   #### Initialize Timers
+   #### Initialize Page Allocator
+   #### Initialize Slab Allocator
+   #### Initiazlie Scheduler
+   #### Initialize Root Task
+   #### Initialize Normal World Communication Channel
+   #### Initialize Trasted Applications
+  ### Rich OS Initialization
+   #### Initialization by OpenSBI
 
- ## Cross-World Communication Protocol
+ ## OpenSBI modifications
+  ### ...
+
+ ## Cross-World Communication
+  ### Shared Memory Queues
+   #### LockFree Queue Algorithm
+   #### Shared Memory Ring Buffers
+   #### Requests Queue
+   #### Responses Queue
+  ### IPI Based Signaling
+   #### RISC-V IPI Mechanism
+   #### Normal to Secure world signaling
+   #### Secure to Normal world signaling
+
+ ## TEE API
+  ### Global Platform API
+   #### Introduction to Global Platform API
+   - *introduction from OP-TEE Global Platfrom API spec*
+  ### TEE Client API
+   #### TEE Contexts
+   - *contexts chapter*
+   #### TEE Sessions
+   - *sessions chapter*
+   #### TEE Shared Memory
+   - *shared memory chapter*
+  ### TEE API Specification
+   #### TEEC_UUID
+   #### TEEC_Result
+   #### TEEC_Context;
+   #### TEEC_Session;
+   #### TEEC_Value;
+   #### TEEC_RegisteredMemoryReference;
+   #### TEEC_Parameter;
+   #### TEEC_Operation;
+   #### TEEC_SharedMemory;
+   #### TEEC_InitializeContext
+   #### TEEC_FinalizeContext
+   #### TEEC_OpenSession
+   #### TEEC_CloseSession
+   #### TEEC_InvokeCommand
+   #### TEEC_AllocateSharedMemory
+   #### TEEC_ReleaseSharedMemory
 
  ## Linux Driver Implementation
+  ### Shared Queues From Linux Side
+   #### Requests queue
+   #### Responses queue
+  ### Linux Communication Interface
+   #### Communication Initialization
+   #### Queue Initialization
+   #### Commnication polling kthread
+   #### Message Sending
+   #### Getting Result
+   #### Communication Finalization
 
  ## Secure Kernel Design
+  ### Kernel Objects and Handles
+   #### Tasks (Processes)
+   #### Threads
+   #### Pipes
+   #### Virtual Memory Objects
+   #### Synchronization Primitives
+  ### Task Management
+   #### Process Model
+   #### IPC Service
+   #### Root Task
+  ### Scheduling
+   #### Scheduling Service
+   #### Scheduling Policies
+  ### Memory Management Subsystem
+   #### Secure Memory Allocator
+   #### Memory Isolation
 
  ## Capability-Based Security Model
+  ### Handles as Encapsulated Capabilities
+   #### Objects
+   #### Object Handles
+   #### Factory Objects
+   #### Object Methods
+  ### Capabily-Based Access Control
+   #### Permissions
+   #### Task Manifests
+   #### Root Task
+   #### Method Invocation
 
  ## Secure Syscalls
-
- ## Secure Userspace for Trusted Applications
+  ### Secure Entry Points
+   #### validation of TA requests
+   #### ...
+  ### Syscall Specification
+   #### invoke syscall
+   #### log syscall
 
  ## Trusted Application Framework
+  ### Standard Library for Trusted Applications
+   #### Standard Library Overview
+  ### I/O Standard Library Specification
+   #### printf
+   #### sprintf
+   #### vprintf
+  ### Strings Standard Library Specification
+   #### string functions
+  ### Math Standard Library Specification
+   #### algebraic functions
+   #### thrigonometry functions
+   #### complex math functions
+  ### Crypto Standard Library Specification
+   #### crypto functions
+   #### hashes
+  ### Communication Standard Library Specification
+   #### shared memory
+   #### pipes
+  ### Concurrency Standard Library Specification
+   #### mutexes
+   #### spinlocks
 
  ## Implementation Challenges and Optimizations
+  ### Performance vs. Security Trade-Offs
+  ### Memory Footprint optimizations
+  ### Debugging Considerations
+  ### Build System and Packaging for TAs
 
  ## Summary of Implementation
+  ### ...
 
 ---
 
 # Chapter 4: Evaluation and Security Analysis
 
  ## Software Stack Setup
+  ### Emulations Enviroment
+   #### QEMU with WorldGuard Support
+   #### QEMU modifications
+   #### QEMU Configuration
+  ### Linux
+   #### Linux with WorldGuard Support
+   #### Linux modifications
+   #### Linux Configuration
+   #### Linux Image
+  ### Build System
+   #### Cmake configuration
+   #### Cmake build system design
+  ### CI Integration
+   #### ...
 
  ## Demonstration of Secure OS Functionality
+  ### Building Porcess
+   #### Clone repos
+   #### building toolchain
+   #### building QEMU
+   #### building OpenSBI
+   #### building Linux
+   #### building Secure OS
+  ### Example of Simple Trusted Application service
+   #### creating simple application
+   #### building TA
+  ### Demostration of TA Execution
+   #### booting the system
+   #### starting linux driver and opening session
+   #### Invoking Sample TA
 
  ## Security Analysis
+  ### Review of Threat Model and Security Goals
+   #### Potential Attack Vectors and Mitigations
+   #### Compiance wth the Threat Model
 
- ## Attempted Attacks and Results
+  ### Resilience against Normal World Attacks
+   #### Unauthorized Access to Secure Memory
+   - (Prevented by World Guard/PMP)
+   #### Unauthorized Access to Secure OS/TA Code
+   - (Prevented by World Guard/PMP)
+   #### Attempts to Corrupt Shared Memory Queues
+   - (Validation, Secure OS checks)
+   #### Exploiting CWC Protocol
+   - (Input validation, state management)
+  ### Resilience against buggy TAs
+   #### Inter-TA Isolation
+   - Memory
+   #### Capabilities
+  ### Potential Vulnerabilities and Limitations
+   #### Side-Channel Attacks
+   - (Brief discussion, future work)
+   #### Physical Attacks
+   - (Out of scope for software TEEs generally)
+   #### Complexity of TCB (Trusted Computing Base)
+   #### Attacks on Root of Trust
 
  ## Performance Evaluation
+  ### Latency of operations
+   #### Latency for open
+   #### Latency for invoke
+   #### Latency for close
+  ### Communication Performance
+   #### Throughtput of CWC channel
+   #### TA Context switch overhead
+   #### Memory footprint
 
  ## Conclusions
 
  ## Future Work
+  ### Advanced TA Features
+   #### Secure Storage
+   #### Attestation
+   #### Root of Trust
+   #### Cryptographic Services
+  ### Trusted User Interface Implementation
+  ### Multicore Support for Secure World
+  ### Formal Verification of Secure Components
+  ### Dynamic TA Loading
+  ### Porting to Real RISC-V Hardware with WorldGuard
+  ### Hardenings against Attacks
+
+# References
+
+# Appendices
+## Sample TA Code
+## TA Manifests
+## Secure OS Code
