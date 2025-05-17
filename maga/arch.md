@@ -1,4 +1,6 @@
-# Chapter 1: Introduction
+# Introduction
+
+# Chapter 1: ??
  ## Background and Motivation
   ### Background on Trusted Execution Environments
    #### Introduction to Trusted Execution Environments
@@ -15,6 +17,20 @@
    - modern TEEs support a wide range of complex applications beyond simple cryptographic tasks, including secure UI, attestation, and trusted computing on the cloud and edge
    - but regardless such popularity, there is still demand for transparent, open-source TEEs to overcome vendor lock-in and improve security audits
    - Growing needs to support more heterogeneous and multi-core environments
+  ### Current State of TEEs on Proprietary Architectures
+   #### Limitations of existing TEEs on Proprietary Architectures
+   - Vendor Lock-in and Dependency
+   - Closed and Proprietary Ecosystems
+   #### Technical and Operational Challenges
+   - Hardware Complexity and Rigidity
+   - Fixed ISA with no scope for tailoring or extension
+   #### Licensing in Proprietary Architectures
+   - Economic Impact of Proprietary Licensing
+   - Licensing fees increase development and production costs
+   - Licensing terms can limit usage scenarios or product variants
+   - Uncertainty and Risks Due to Licensing Models
+   - License terms or availability may change over time
+   - Potential legal and compliance risk for long-term projects dependent on vendor licenses
   ### The RISC-V Opportunity: Openness and Extensibility
    #### Open-Source Hardware and RISC-V’s Emergence
    - the majority of architectures are closed and has proprietary ISAs and implications
@@ -32,27 +48,14 @@
    - Facilitates experimentation with custom security extensions
 
  ## Problem Statement
-  ### Current State of TEEs on Proprietary Architectures
-   #### Limitations of existing TEEs on Proprietary Architectures
-   - Vendor Lock-in and Dependency
-   - Closed and Proprietary Ecosystems
-   #### Technical and Operational Challenges
-   - Hardware Complexity and Rigidity
-   - Fixed ISA with no scope for tailoring or extension
-   #### Licensing in Proprietary Architectures
-   - Economic Impact of Proprietary Licensing
-   - Licensing fees increase development and production costs
-   - Licensing terms can limit usage scenarios or product variants
-   - Uncertainty and Risks Due to Licensing Models
-   - License terms or availability may change over time
-   - Potential legal and compliance risk for long-term projects dependent on vendor licenses
-  ### The Emerging Need for Open and Flexible Solutions
+  ### Current State of TEEs on RISC-V Architecture
    #### Current Status of RISC-V’s Security Ecosystem
    - Immaturity of RISC-V Security Extensions
    - Security extensions like World Guard are recent and still evolving
    - Fragmented and Limited Software Support
    - Lack of mature, standardized Secure OS implementations and TEE management tools
    - Early-stage experimental projects with limited stability and adoption
+  ### The Emerging Need for Open and Flexible Solutions
    #### Deficiency of Open TEE Standards and Interfaces for RISC-V
    - Unlike ARM which benefits from GlobalPlatform TEE APIs, RISC-V ecosystem lacks widely accepted open standard interfaces for secure OS and TA communication.
    - Current TEEs lack public source code or are tightly coupled to vendor hardware or platforms.
