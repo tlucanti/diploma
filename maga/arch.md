@@ -1,6 +1,46 @@
-# Introduction
+# Abstract
 
-# Chapter 1: ??
+# Table of contents
+
+# Введение
+ ## Актуальность
+  - sensual user data
+  - emergence of TEEs
+  - emergence of OS to server Trusted Execution Environment
+ ## Цель исследования
+  - create Secure OS to server TEE
+ ## Задачи исследования
+  - analysis of exising TEEs and Secure Operating Systems
+  - Designing an capability based security model
+  - Designing an Secure OS
+  - Implementing an Secure OS with capability based security model
+ ## Объект исследования
+  - Trusted Execution Enviroments on CPUs with RISC-V architecture
+ ## Предмет исследования
+  - Secure Operating Systems on CPUs with RISC-V architecture
+ ## Методы исследования
+  - Take Halip's methods
+ ## Научная новизна
+  - Creation of Secure OS for CPUs with RISC-V Architecture
+ ## Практическая значимость работы
+  - Serving a Trusted Execution Environment for WorldGuard Extension
+ ## Достоверность полученных результатов и выводов
+  - Reliability is based on Experemental results
+ ## Положения выносимые на защиту
+  ### Secure OS
+ ## Публикации автора по теме
+  ### bruh
+ ## Структура работы
+  ### chapter 1:
+   ####
+  ### chapter 2:
+   ####
+  ### chapter 3:
+   ####
+  ### chapter 4:
+   ####
+
+# Chapter 1: Foundations and Motivation for an Open Secure OS on RISC-V
  ## Background and Motivation
   ### Background on Trusted Execution Environments
    #### Introduction to Trusted Execution Environments
@@ -196,33 +236,9 @@
    #### TEE Interface and OpenSBI Extensions
    - Existing works on modifying trusted firmware (like OpenSBI) to support new RISC-V security extensions (including WorldGuard)
 
- ## Organization of the Paper
-   ### Chapter 1: Introduction
-   - background
-   - brief introduction to TEE
-   - problem statement
-   - relevance of the work
-   - possible applications of TEE
-   - comparison with other architectures
-   ### Chapter 2: Trusted Execution Enviroment
-   - TEE in general
-   - threat model
-   - isolation mechanisms
-   - World Guard extension
-   - Trusted User Interface
-   ### Chapter 3: Implementation Dedails
-   - Project architecutre
-   - Secure userspace
-   - Secure kernel
-   - Capability based approach
-   ### Chapter 4: Demonstration
-   - Showing communication
-   - Security analysis
-   - future work
-
 ---
 
-# Chapter 2. Trusted Execution Environment Foundations
+# Chapter 2. Core Principles of Trusted Execution Environment and Threat Model
  ## TEE Overview
   ### Definition and Core Principles
    #### Trusted Execution Environment
