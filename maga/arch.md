@@ -569,8 +569,22 @@
    #### validation of TA requests
    #### ...
   ### Syscall Specification
-   #### invoke syscall
-   #### log syscall
+   #### SYS_LOG
+   #### SYS_VM_ALLOCATE
+   #### SYS_VMO_CREATE
+   #### SYS_CHANNEL_CREATE
+   #### SYS_CHANNEL_READ
+   #### SYS_TASK_CREATE
+   #### SYS_TASK_GET_SPACE
+   #### SYS_VM_MAP_VMO
+   #### SYS_VM_FREE
+   #### SYS_TASK_SPAWN
+   #### SYS_CHANNEL_WRITE
+   #### SYS_OBJECT_CLOSE
+   #### SYS_OBJECT_WAIT_MANY
+   #### SYS_PHYSMAPPER_MAP
+   #### SYS_TASK_SHARE_HANDLE
+   #### SYS_OBJECT_COPY
 
  ## Trusted Application Framework
   ### Standard Library for Trusted Applications
@@ -697,3 +711,4 @@
 ## Sample TA Code
 ## TA Manifests
 ## Secure OS Code
+## Secure Standard Library Code
