@@ -90,22 +90,22 @@
  ## Problem Statement
   ### Current State of TEEs on RISC-V Architecture
    #### Current Status of RISC-V’s Security Ecosystem
-   - Immaturity of RISC-V Security Extensions
-   - Security extensions like World Guard are recent and still evolving
+   - Immaturity of RISC-V Security Ecosystem
    - Fragmented and Limited Software Support
    - Lack of mature, standardized Secure OS implementations and TEE management tools
    - Early-stage experimental projects with limited stability and adoption
+   #### WorldGuard State
+   - World Guard are recent and still evolving
+   - depite not having ratified specification, WG has complete set of features that support secure enclaves
+   - but there is no software support of TEE over WG enclaves like Secure OS
   ### The Emerging Need for Open and Flexible Solutions
    #### Deficiency of Open TEE Standards and Interfaces for RISC-V
-   - Unlike ARM which benefits from GlobalPlatform TEE APIs, RISC-V ecosystem lacks widely accepted open standard interfaces for secure OS and TA communication.
    - Current TEEs lack public source code or are tightly coupled to vendor hardware or platforms.
    - Difficult for external developers to adopt, audit, or extend.
-   #### Motivation for an Open-Source Comprehensive Stack
-   - Open Secure OS for RISC-V
+   #### Motivation for an Open-Source Trusted Operation System
+   - need of Open Secure OS for RISC-V
    - To provide a minimal trusted computing base, flexible scheduling, and lifecycle management of trusted applications
-   - Open Communication Drivers (Linux Integration)
    - Facilitates seamless and secure communication channels between normal and secure worlds
-   - Open TEE Interface Specifications
    - Establish transparent, extensible, and standard communication protocols that can evolve with hardware capabilities
    #### Ecosystem Benefits
    - Democratizes secure computing capabilities on RISC-V platforms
