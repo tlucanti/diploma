@@ -405,16 +405,62 @@
    - *2.0 from TEE-Client-Api.md*
    #### Experemental of Research Prototypes
    - *3.0 from TEE-Client-Api.md*
+   #### Rationale for Adopting a Global Platform-based API Subset
+   - Presents the justification for selecting a carefully chosen subset of the Global Platform TEE Client API.
 
  ## System Architecture Overview
-  ### High Level Component Diagram
-   #### ...
-  ### Interaction Model between components
-   #### ...
+  - section provides a high-level perspective on how the Secure OS is structured and how it interacts with the Normal World and hardware.
+  ### High-Level Architecture
+   #### 3.2.1.1 Architectural Layers
+   - Introduces the layered nature of the system, from hardware/firmware (OpenSBI) to the Secure OS, and then to the Normal World OS (Linux).
+   - Emphasizes the isolation between the Secure World and the Normal World.
+   #### Secure vs. Normal World Overview
+   - Explains how the Secure OS permanently occupies the first CPU core while Linux runs on the remaining cores.
+   - Highlights the roles and responsibilities of each world, along with the boundary-enforcement mechanisms.
+  ### Core System Components
+   #### Kernel, Resource Managers, and TEE Services
+   - Details the internal architecture of the Secure OS, covering the Secure Kernel, resource managers (for tasks, memory, and IPC), and TEE service layers.
+   - Describes how these components collectively provide security, resource allocation, and runtime services to Trusted Applications.
+   #### Shared Memory and IPI-Based Communication
+   - Introduces the fundamental inter-world communication channels, such as shared rings/buffers used for request and response queues.
+   - Describes how RISC-V inter-processor interrupts (IPIs) are employed for signaling events and synchronizing data transfer between Normal and Secure Worlds.
+  ### Memory Layout and Addressing
+   #### Physical and Virtual Addressing
+   - Provides a high-level overview of how the Secure OS configures its page tables and manages physical/virtual addresses.
+   - Explains how memory mappings differ between the Secure World and the Normal World.
+   #### Isolation Mechanisms
+   - Details how World Guard extension enforces secure boundaries at the hardware level.
+   - Shows how the Secure and Normal Worlds remain isolated, preventing unauthorized access to protected pages.
+   #### Shared Memory Queues
+   - Explains the reserved memory regions that serve as shared buffers for secure–normal communication.
+   - Highlights concurrency concerns and locking strategies for ring-buffer manipulation.
+  ### Secure OS Execution Flow
+   #### Boot Process Overview
+   - Summarizes the critical steps in transitioning from OpenSBI to the Secure OS, and eventually handing over the remaining cores to Linux.
+   - Points to more detailed discussion in the “Secure Boot Process and Initialization” section.
+   #### Inter-World Transitions
+   - Outlines the mechanism by which execution moves between Secure and Normal Worlds (e.g., SMC calls, interrupts).
+   - Covers validation checks before granting world transitions and how the OS ensures secure state persistence.
+   #### Scheduling in Secure OS
+   - Highlights how the Secure OS manages tasks and threads in a uniprocessor environment (the first core).
+   - Discusses scheduling policies, context switching logic, and how TEE tasks do not interfere with Linux scheduling.
+  ### Security and Policy Enforcement
+   #### Capability-Based Security Model
+   - Introduces the core concepts behind object handles, secure syscalls, and fine-grained access control.
+   - Explains how capabilities are validated and enforced at runtime to prevent privilege escalation.
+   #### World Guard Integration
+   - Consolidates the hardware-based checks provided by the World Guard extension with the Secure OS’s software policy.
+   - Provides an overview of failure handling when unauthorized accesses or invalid world transitions occur.
   ### TA Lifecycle
    #### Creation
+   - Describes how Trusted Applications (TAs) are registered or loaded by the Secure OS.
+   - Explores memory allocation, initial code setup, and the procedure for spawning a TA process or thread.
    #### Compute
+   - Outlines how a TA executes in the Secure OS, including interaction with system calls, access to resources, and concurrency.
+   - Discusses how TAs can communicate with other tasks or the Normal World during their operational phases.
    #### Teardown
+   - Explains the orderly shutdown of a TA, covering handle cleanup, memory deallocation, and final status reporting.
+   - Ensures that no sensitive data remains accessible and that the system reclaims all resources.
 
  ## World Guard Integration
   ### WorldGuard Configuration
