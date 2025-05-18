@@ -32,13 +32,13 @@
   ### bruh
  ## Структура работы
   ### chapter 1:
-   ####
+   #### ...
   ### chapter 2:
-   ####
+   #### ...
   ### chapter 3:
-   ####
+   #### ...
   ### chapter 4:
-   ####
+   #### ...
 
 # Chapter 1: Foundations and Motivation for an Open Secure OS on RISC-V
  ## Background and Motivation
@@ -263,7 +263,7 @@
 
   ### Security Requirements and Design Goals
    #### Core Components
-   -
+   - ...
    #### Isolated Execution Unit
    - dedicated CPU core
    - or isolated CPU state
@@ -411,7 +411,7 @@
  ## System Architecture Overview
   - section provides a high-level perspective on how the Secure OS is structured and how it interacts with the Normal World and hardware.
   ### High-Level Architecture
-   #### 3.2.1.1 Architectural Layers
+   #### Architectural Layers
    - Introduces the layered nature of the system, from hardware/firmware (OpenSBI) to the Secure OS, and then to the Normal World OS (Linux).
    - Emphasizes the isolation between the Secure World and the Normal World.
    #### Secure vs. Normal World Overview
@@ -478,7 +478,7 @@
      - Handling multiple enclaves (if applicable) within the Secure World.
      - Policy for controlling access across enclaves or from Normal World.
    - Integration of memory attributes (e.g., read/write/exec permissions) with WorldGuard checks.
-  ### Integration in the Secure OS
+  ### Integration with the Secure OS
    #### Error Reporting
    - Mechanisms to detect and report WorldGuard-related violations (e.g., unauthorized access attempts).
    - Logging and reporting structure within the Secure OS for debugging and auditing.
@@ -680,21 +680,37 @@
    - *shared memory chapter*
   ### TEE API Specification
    #### TEEC_UUID
+   - describe ...
    #### TEEC_Result
+   - describe ...
    #### TEEC_Context;
+   - describe ...
    #### TEEC_Session;
+   - describe ...
    #### TEEC_Value;
+   - describe ...
    #### TEEC_RegisteredMemoryReference;
+   - describe ...
    #### TEEC_Parameter;
+   - describe ...
    #### TEEC_Operation;
+   - describe ...
    #### TEEC_SharedMemory;
+   - describe ...
    #### TEEC_InitializeContext
+   - describe ...
    #### TEEC_FinalizeContext
+   - describe ...
    #### TEEC_OpenSession
+   - describe ...
    #### TEEC_CloseSession
+   - describe ...
    #### TEEC_InvokeCommand
+   - describe ...
    #### TEEC_AllocateSharedMemory
+   - describe ...
    #### TEEC_ReleaseSharedMemory
+   - describe ...
 
  ## Linux Driver Implementation
   ### Shared Queues From Linux Side
