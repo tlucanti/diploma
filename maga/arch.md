@@ -398,41 +398,13 @@
 # Chapter 3: Design and Implementation of the Secure Operating System**
 
  ## Interface Considerations**
- - This section outlines the critical interface design choices for the Secure OS, encompassing communication with the Normal World, interaction with Trusted Applications (TAs), and the underlying system call mechanisms.
- - These choices significantly impact the system's usability, security, and portability.
- - We evaluated several approaches for each interface, aiming for a balance between established standards, security principles, and the specific requirements of our monolith architecture.
   ### TEE Client API: Inter-World Communication Interface
-  - This subsection discusses the API exposed by the Secure OS to the Normal World (Linux) for requesting TEE services.
-  - The choice of this API is crucial for compatibility and ease of integration for Normal World applications seeking to utilize secure functionalities.
-   ####  Analysis of Global Platform TEE Client API**
-   - The Global Platform (GP) TEE Client API is an industry-standard specification for communication between a client application in the Rich OS (Normal World) and a Trusted Application in the Secure OS.
-   - We analyze its comprehensive nature, ubiquity, and how its well-defined semantics for session management, shared memory, and command invocation could benefit our system.
-   - We considered its suitability for our OS, potentially implementing a well-defined subset.
-   #### Comparison with Existing TEE Implementations (e.g., OP-TEE)
-   - We reviewed existing TEE solutions, such as OP-TEE, which largely implements the Global Platform API.
-   - This comparison helped understand common practices, potential implementation challenges, and the de-facto expectations for a TEE client interface.
-   - The resulting API was influenced by OP-TEE API, because it's simplicity, but sufficient functionality
-   #### Exploration of Custom or Lightweight API Alternatives
-   - The option of designing a bespoke, experimental, or minimalist API tailored specifically for our OS and the World Guard extension was considered.
-   - This could offer simplicity and a smaller attack surface but would sacrifice standardization and portability, requiring custom client libraries and tooling.
-   #### Rationale for Adopting a Global Platform-based API Subset
-   - Following the evaluation, we concluded that adopting a subset of the Global Platform TEE Client API provides the best balance
-   - It offers standardization and familiarity for developers, leveraging existing concepts, while allowing us to tailor the implementation to out OS resource constraints and security model.
-   - This decision facilitates future interoperability and adoption.
-  ### Trusted Application Interface Considerations
-  - This subsection details the considerations for the interface provided to Trusted Applications running within the Secure OS.
-  - This includes how TAs request services from the Secure Kernel and access any provided libraries.
-   #### TA Development Model: Libraries vs. Direct Syscalls
-   - We considered whether TAs should primarily interact with the Secure OS kernel via direct system calls or through a higher-level abstraction, such as a standard C library (libc) tailored for the secure environment
-   - A library approach enhances portability and ease of development for TA authors, while direct syscalls offer finer control at the cost of complexity.
-   #### Defining the Scope of a TA Standard Library
-   - The design of a standard library for TAs requires careful consideration of essential functionalities (e.g., basic I/O for debugging, string manipulation, memory management, cryptographic operations)
-   - The interface to this library forms a key part of the TA development experience.
-   #### Secure OS Kernel Syscall Interface Considerations
-   - This subsection addresses the design of the low-level system call interface, which is the fundamental boundary between Trusted Applications and the Secure OS kernel. This interface must be minimal, robust, and enforce the system's security policies rigorously.
-   #### Principles for Syscall Design in a Secure OS
-   - For a Secure OS, the syscall interface should be minimal, well-defined, and primarily focus on inter-process communication (IPC), capability management, and basic resource control.
-   - We evaluated how these principles apply to secure system calls, ensuring each entry point is essential and strictly validated.
+   #### OP-TEE on RISC-V
+   - *1.0 from TEE-Client-Api.md*
+   #### Develop own minimal GlobalPlatform TEE interface
+   - *2.0 from TEE-Client-Api.md*
+   #### Experemental of Research Prototypes
+   - *3.0 from TEE-Client-Api.md*
 
  ## System Architecture Overview
   ### High Level Component Diagram
