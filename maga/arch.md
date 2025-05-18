@@ -562,74 +562,110 @@
   ### ...
 
  ## Cross-World Communication
+ - This chapter describes the mechanisms enabling data exchange and signaling between the Secure OS running on the primary CPU core(s) and the Normal World (e.g., Linux). It focuses on the shared memory queues, the message structure used for TEE commands, and the IPI mechanism for sending interrupts across RISC-V cores.
   ### Shared Memory Queues
-   #### LockFree Queue Algorithmt
-   - describe lockfree queue algorighm
-   - usage of Bounded MPMC queue
+   - One of the fundamental mechanisms for communication between the Secure World (SWd) and Normal World (NWd) is through shared memory queues. This approach allows concurrent message passing without requiring complex locking operations.
+   #### Lock-Free Queue Algorithm
+   - *https://pskrgag.github.io/post/mpmc_vuykov/*
    #### Shared Memory Ring Buffers
-   - describe how queue placed in shared page, which accessible from both worlds
+   - Overview of how the queues are physically placed in shared memory pages accessible to both SWd and NWd.
+   - Ring buffer layout: circular array of message slots, head/tail pointers, and optional “sequence” fields for synchronization.
+   - Memory alignment considerations for preventing false sharing or alignment-related issues.
    #### Requests Queue
+   - A dedicated ring buffer where the Normal World places requests that the Secure World must handle.
+   - Steps for enqueuing:
+     1. Normal World driver writes the message into the ring slot.
+     2. Driver updates the queue head pointer using an atomic operation.
+     3. IPI sent (or polling mechanism invoked) to notify Secure World.
    #### Responses Queue
-   #### Canary around Shared pages
+   - A separate ring buffer for the Secure World to provide responses or event notifications back to the Normal World.
+   - The Secure World writes its response into the ring slot, increments the tail pointer, and relies on NWd polling.
+   #### Canary Around Shared Pages
+   - Canary pages are placed around Shared pages with no access bits, so any access by overflowing will trap
   ### Shared Memory Regions
-  ### Message structure
+  - Aside from the primary queues, certain larger buffers or data structures may be shared.
+   #### Memory Region Allocation
+   - allocation is done by calling secure operation TEE_CMD_ID_MAP_SHARED_MEM
+   - allocation is done in Secure World, it will allocate pages and set access to Secure world and normal world
+   - then Secure OS will map pages to Secure Kernel address space to be able to access them
+   - them Linux should map these pages to Linux Kernel address space
+   #### Memory Region Deallocation
+   - deallocation is done by calling secure operation TEE_CMD_ID_UNMAP_SHARED_MEM
+   - Secure World will deallocate pages, and remove access from both Secure world and Normal world
+   - them Secure os will unmap pages from Secure Kernel address space
+   - then Linux should unmap pages from Linux Kernel address space
+   #### Data transfer
+   - since memory is mapped to Linux Kernel and Secure OS, Operating Systems can transfer data just by regular memory reads and writes
+  ### Message Structure
+  - All commands passed through the request/response queues typically adhere to a consistent message format. This section details the wg_tee_cmd structure, which encapsulates TEE operation parameters and results.
    #### struct wg_tee_cmd
-   - desctibe that struct used in communication to hold parameters and meta information
+   This structure holds command identifiers, session tracking, error codes, and additional parameters.
    #### field id
    - uint32_t id
-   - field id is identificator of operation
-   - can be one of:
-   - TEE_CMD_ID_OPEN_SESSION
-   - TEE_CMD_ID_CLOSE_SESSION
-   - TEE_CMD_ID_INVOKE_CMD
-   - TEE_CMD_ID_MAP_SHARED_MEM
-   - TEE_CMD_ID_UNMAP_SHARED_MEM
+   - Identifies the type of TEE operation.
+   - Possible values include:
+     - TEE_CMD_ID_OPEN_SESSION
+     - TEE_CMD_ID_CLOSE_SESSION
+     - TEE_CMD_ID_INVOKE_CMD
+     - TEE_CMD_ID_MAP_SHARED_MEM
+     - TEE_CMD_ID_UNMAP_SHARED_MEM
    #### field seq
    - uint32_t seq
-   - filed seq is a unique identifier of command, it's value is generated just by atomically incremented sequence counter
+   - filed seq is a unique identifier of command
+   - it's value is generated just by atomically incremented sequence counter
    #### field session_id
    - uint32_t session_id
-   - field session_id identifies a session of Trusted Application (because each Trusted Application can hold muliple oppened sessions at the same time)
-   #### field func_id
+   - Identifies which session within a TA this command belongs to.
+   - Allows a single TA to manage multiple open sessions simultaneously.
+   #### field func_i
    - uint32_t func_id
-   - each Trusted Application implements it's own functionality, and TA can do multiple actions, so field func_id describes what action to do inside TA
+   - each Trusted Application implements it's own functionality, and TA can do multiple actions
+   - field func_id describes what action to do inside TA
    #### field err
    - uint32_t err
-   - field err is used to return error codes from TA
+   - Used by the Secure World to return error codes or status results.
+   - possible results include indicating success, permission failures, or other errors.
    #### field uuid
    - uint8_t uuid[16]
-   - field uuid is an unique identificator of Trusted Application
-   #### uint64_t paddr
+   - A unique identifier for the Trusted Application.
+   - Used during TEE_CMD_ID_OPEN_SESSION to select the correct TA.
+   #### field paddr
    - uint64_t paddr
-   - field paddr is used when operation id is TEE_CMD_ID_MAP_SHARED_MEM and it holds address of first page to map as shared page between worlds
-   #### uint32_t num_pages
+   - A physical address relevant to TEE_CMD_ID_MAP_SHARED_MEM; indicates the start page to map as shared.
+   - field remain unused for other command IDs.
+   #### field num_pages
    - uint32_t num_pages
-   - field paddr is used when operation id is TEE_CMD_ID_MAP_SHARED_MEM and it holds number of pages to map, starting with page with address in field paddr
-   #### uint32_t shmem_id
+   - The number of contiguous pages to map starting at paddr, for TEE_CMD_ID_MAP_SHARED_MEM.
+   - field remain unused for other command IDs.
+   #### field shmem_id
    - uint32_t shmem_id
-   - field shmem_id is used as return of operation TEE_CMD_ID_MAP_SHARED_MEM and it is a handle to mapped memory
-   #### struct wg_param params;
-   - struct wg_param params holds parameters for TA call
-   - struct consists of 4 arguments:
-   - each argument has size of 25 bytes
-   - if argument is a simple type - it's value just placed as it is
-   - if argument is a memory reference - it's position described as three 64bit values:
-    - size
-    - offse
-    - world_id
+   - A handle returned by the Secure OS to reference a mapped shared memory region.
+   - Allows subsequent TEE_CMD_ID_UNMAP_SHARED_MEM to unmap region
+   #### struct wg_param params
+   - Holds 4 arguments (each is 24 bytes).
+   - Simple arguments are stored directly
+   - memory references are stored as three 64-bit values (size, offset, world_id).
    #### padding
-   - field padding has size of 96 bytes and used to align struct wg_tee_arg to 256 bytes
+   - field padding has size of 96 bytes
+   - Reserved space to align the structure to 256 bytes overall.
+   - Prevents unwanted compiler padding from interfering with the queue alignment.
   ### IPI Based Signaling
+  - While the shared queues provide a data structure for messages, an Inter-Processor Interrupt (IPI) mechanism triggers real-time notifications.
    #### RISC-V IPI Mechanism
-   - describe in detail how RISC-V IPI works
-   #### Normal to Secure world signaling
-   - describe process of signaling Secure World about new request from Normal World
-   - first step is filling the argument struct
-   - second is sending IPI to secure CPU using OpenSBI
-   - and then waiting for result
-   #### Secure to Normal world signaling
-   - sending signal back is more complex, because we can not get into context where message was send
-   - so we do it simple way: just place result in Result Queue, Linux driver periodically checks result queue and if it not empty - gets result and then gives it to requested thread
+   - High-level overview of the RISC-V interrupt controller and how software sets an IPI to a target hart.
+   - Explanation of relevant CSRs, memory-mapped interrupt lines, or OpenSBI calls for sending IPIs.
+   - Typical flows: setting a bit in the IPI register or invoking sbi_send_ipi with a hart mask.
+   #### Normal to Secure World Signaling
+   - Procedure in which the Linux driver or NWd service:
+     1. Fills out wg_tee_cmd struct
+     2. push struct in the request queue.
+     3. Triggers an IPI to the secure hart via an OpenSBI call.
+     4. Waits for response by polling the response queue
+   #### Secure to Normal World Signaling
+   - Due to the RISC-V architecture constraints, the simplest approach is for the Secure OS to place responses in the response queue without any other signaling of Normal World
+   - An IPI back is restricted because of limitations of RISC-V ISA - we can not distinguish Secure OS notification IPI from other types of IPI, so Linux will not be able to handle IPI correctly
+   - so the NWd driver periodically checks the response queue
+   - The requesting thread is then woken, a result is available.
 
  ## TEE API
   ### Global Platform API
