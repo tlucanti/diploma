@@ -563,14 +563,73 @@
 
  ## Cross-World Communication
   ### Shared Memory Queues
-   #### LockFree Queue Algorithm
+   #### LockFree Queue Algorithmt
+   - describe lockfree queue algorighm
+   - usage of Bounded MPMC queue
    #### Shared Memory Ring Buffers
+   - describe how queue placed in shared page, which accessible from both worlds
    #### Requests Queue
    #### Responses Queue
+   #### Canary around Shared pages
+  ### Shared Memory Regions
+  ### Message structure
+   #### struct wg_tee_cmd
+   - desctibe that struct used in communication to hold parameters and meta information
+   #### field id
+   - uint32_t id
+   - field id is identificator of operation
+   - can be one of:
+   - TEE_CMD_ID_OPEN_SESSION
+   - TEE_CMD_ID_CLOSE_SESSION
+   - TEE_CMD_ID_INVOKE_CMD
+   - TEE_CMD_ID_MAP_SHARED_MEM
+   - TEE_CMD_ID_UNMAP_SHARED_MEM
+   #### field seq
+   - uint32_t seq
+   - filed seq is a unique identifier of command, it's value is generated just by atomically incremented sequence counter
+   #### field session_id
+   - uint32_t session_id
+   - field session_id identifies a session of Trusted Application (because each Trusted Application can hold muliple oppened sessions at the same time)
+   #### field func_id
+   - uint32_t func_id
+   - each Trusted Application implements it's own functionality, and TA can do multiple actions, so field func_id describes what action to do inside TA
+   #### field err
+   - uint32_t err
+   - field err is used to return error codes from TA
+   #### field uuid
+   - uint8_t uuid[16]
+   - field uuid is an unique identificator of Trusted Application
+   #### uint64_t paddr
+   - uint64_t paddr
+   - field paddr is used when operation id is TEE_CMD_ID_MAP_SHARED_MEM and it holds address of first page to map as shared page between worlds
+   #### uint32_t num_pages
+   - uint32_t num_pages
+   - field paddr is used when operation id is TEE_CMD_ID_MAP_SHARED_MEM and it holds number of pages to map, starting with page with address in field paddr
+   #### uint32_t shmem_id
+   - uint32_t shmem_id
+   - field shmem_id is used as return of operation TEE_CMD_ID_MAP_SHARED_MEM and it is a handle to mapped memory
+   #### struct wg_param params;
+   - struct wg_param params holds parameters for TA call
+   - struct consists of 4 arguments:
+   - each argument has size of 25 bytes
+   - if argument is a simple type - it's value just placed as it is
+   - if argument is a memory reference - it's position described as three 64bit values:
+    - size
+    - offse
+    - world_id
+   #### padding
+   - field padding has size of 96 bytes and used to align struct wg_tee_arg to 256 bytes
   ### IPI Based Signaling
    #### RISC-V IPI Mechanism
+   - describe in detail how RISC-V IPI works
    #### Normal to Secure world signaling
+   - describe process of signaling Secure World about new request from Normal World
+   - first step is filling the argument struct
+   - second is sending IPI to secure CPU using OpenSBI
+   - and then waiting for result
    #### Secure to Normal world signaling
+   - sending signal back is more complex, because we can not get into context where message was send
+   - so we do it simple way: just place result in Result Queue, Linux driver periodically checks result queue and if it not empty - gets result and then gives it to requested thread
 
  ## TEE API
   ### Global Platform API
