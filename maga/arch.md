@@ -462,19 +462,36 @@
    - Explains the orderly shutdown of a TA, covering handle cleanup, memory deallocation, and final status reporting.
    - Ensures that no sensitive data remains accessible and that the system reclaims all resources.
 
- ## World Guard Integration
+ ## WorldGuard Integration
   ### WorldGuard Configuration
-   #### World Configuration
-   - Two-World Design
+   #### World Configuration (Two-World Model)
+   - Overview of how the system hardware and memory are split between Secure World and Normal World.
+   - Explanation of the two-world design rationale, focusing on isolation guarantees.
+   - Definition of the roles of each world (e.g., Secure OS vs. Linux).
+   - Description of how World IDs (or similar identifiers) are assigned and managed.
    #### WorldGuard Checker Configuration for Secure Isolation
-   - Secure RAM Slots configuration
-   - enclave partitioning
+   - Overview of the hardware/software checker mechanism for enforcing world-based isolation.
+   - Configuration of Secure RAM slots and memory regions:
+     - Secure memory partitioning approach.
+     - Locking down memory regions to the Secure World
+   - Setting up enclave/partition boundaries:
+     - Handling multiple enclaves (if applicable) within the Secure World.
+     - Policy for controlling access across enclaves or from Normal World.
+   - Integration of memory attributes (e.g., read/write/exec permissions) with WorldGuard checks.
   ### Integration in the Secure OS
-   #### Error reporting
+   #### Error Reporting
+   - Mechanisms to detect and report WorldGuard-related violations (e.g., unauthorized access attempts).
+   - Logging and reporting structure within the Secure OS for debugging and auditing.
+   - strategies for halting offending tasks in case of critical errors.
    #### Managing World Transitions
-   - Entry/Exit to Secure World)
-   #### Communication Mechanism
-   - Shared Memory Pages with permissions for both worlds
+   - Description of the control flow when switching between Normal World and Secure World.
+   - Handling interrupt-driven transitions across worlds.
+   - Use of specific CPU instructions or registers to invoke transitions (if applicable).
+   - Ensuring minimal overhead while maintaining security guarantees.
+   #### Communication Pages
+   - Shared memory pages allocated with permissions for both worlds:
+     - Shared memory region layout and alignment considerations.
+     - Ensuring read/write restrictions are enforced by WorldGuard.
 
  ## Secure Boot Process and Initialization
   ### Secure OS Early Initialization
