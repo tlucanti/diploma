@@ -494,25 +494,69 @@
      - Ensuring read/write restrictions are enforced by WorldGuard.
 
  ## Secure Boot Process and Initialization
+ - This section describes how the Secure OS is bootstrapped, transitioning from platform firmware (OpenSBI) to a fully initialized secure environment.
+ - It covers early assembly-level initialization, kernel relocation, MMU enablement, and higher-level subsystem initialization, ultimately concluding with the handover to any “rich OS” components.
   ### Secure OS Early Initialization
    #### OpenSBI Handover
-   #### Kernel Mapping
-   #### Firsr Kernel Relocation
-   #### Enable MMU
+   - Explanation of the OpenSBI boot protocol, which provides the Secure OS with the initial register context (e.g., a0, a1 containing specific parameters).
+   - SBI boots FW_PAYLOAD_PATH (TEEOS futher) on boot core, making this core secure
+   - High-level overview of how the Secure OS entry point (_start) is invoked by OpenSBI.
+   - Handling or storing system parameters (such as the device tree pointer) for further use.
+   #### Setting Up the Stack and Basic Memory Layout
+   - Allocating a stack in physical memory for secure execution.
+   - How the assembly code (head.S) calculates the stack location (via PAGE_SIZE * 6).
+   - Ensuring stack alignment for correct RISC-V operation.
+   #### First Kernel Relocation
+   - performing a “relocation” step due to pie (position-independent executable) nuances.
+   - Creating an identity mapping (physical == virtual) at the kernel load address while also mapping the kernel at its designated virtual base (KERNEL_VIRTUAL_BASE).
+   - Use of large page mappings (e.g., 2MB or 1GB mappings) for simplicity during early boot.
+   #### Enabling the MMU
+   - Explanation of how the SATP register is configured
+   - Ensuring the kernel text, data, and bss segments are accessible at both the physical region and the kernel virtual address.
   ### Secure OS Initialization
+  - Once the minimal MMU and basic mapping are established, the Secure OS transitions to its primary C environment for final setup.
    #### Register Console
+   - Initializing and registering the console driver (e.g., SBI console) as the primary I/O channel.
+   - Setting up early debug/log printing to assist with error reporting.
    #### Initialize Page Tables
-   #### Second Kernel Relocation
+   - Creation and configuration of more granular page tables beyond the initial large block mappings.
+   - Structures for dynamic region registration and page-level protections.
+   #### Second Kernel Relocation (If Needed)
+   - Further re-mapping kernel virtual addresses after early-boot.
+   - Cleanup of temporary mappings used during the first relocation phase.
    #### Initialize Trap Handler
+   - Setting up the vector table or exception table to handle synchronous exceptions and interrupts.
+   - Registering fault handlers, system call handlers, and other critical exception vectors.
    #### Initialize Timers
+   - Configuring RISC-V timer CSRs or platform-specific timer hardware.
+   - Setting up the early tick or scheduling timers.
    #### Initialize Page Allocator
+   - Creation of a physical page allocator (pmm_init()) to manage secure RAM.
+   - Data structures (e.g., contiguous free-lists, bitmaps) for tracking page usage.
    #### Initialize Slab Allocator
-   #### Initiazlie Scheduler
+   - A higher-level memory allocator (kmalloc or slab-based).
+   - Allocation of kernel objects (e.g., tasks, threads, pipes) efficiently.
+   #### Initialize Scheduler
+   - Setup of the scheduler data structures to manage secure OS threads or tasks.
+   - Timer-driven scheduler hooks using the timer subsystem.
    #### Initialize Root Task
+   - Creation of the root task (or initial user-mode process in the Secure World).
+   - Loading or spawning any essential system services.
    #### Initialize Normal World Communication Channel
-   #### Initialize Trasted Applications
-  ### Rich OS Initialization
-   #### Initialization by OpenSBI
+   - Setting up shared memory regions or queues for Normal World <-> Secure World communication.
+   - Configuring interrupt mechanisms or other signaling channels (e.g., IPI).
+   #### Initialize Trusted Applications
+   - Loading and initializing built-in or pre-installed Trusted Applications (TAs).
+   - Setting up an environment for TAs, including memory isolation, scheduling, and system call interfaces.
+ ### Rich OS Initialization
+  #### Initialization by OpenSBI
+   - Handing control back to OpenSBI to continue its normal boot flow for a Linux or other rich OS.
+   - TEEOS setups itself and does special ecall that indicates that it has finished
+   - SBI boots NWD_FW_PAYLOAD_PATH (REEOS futher) on other cpus
+  #### Core Startup
+   - after returing to sbi on secure core - sbi will start second non secure core
+   - second core will start Linux Kernel, and Linux will hotplug other cores by itself
+   - Linux will not try to run on first secure core, because it was marked "secure" at the begining of OpenSBI startup
 
  ## OpenSBI modifications
   ### ...
