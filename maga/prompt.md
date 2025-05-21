@@ -3,14 +3,12 @@ I am doing a project with 3 parts:
  2. Linux driver for communication with Secure OS.
  3. OpenSBI modification to support World Guard extension.
 
-Secure OS is a monolith OS with capability based model.
+Secure OS is a monolith OS with capability based model, so the idea is that everething is a handle, all handles (that are listed at predefined Manifest) are given by root task to Trusted Application when it spawned. Creation of objects are done with fabric object handle. Every action to handle is checked with capability model and granted or denied.
 Secure OS always works on first cpu core, other cores are left for Linux. Communication between Linux and Secure OS is provided using two shared pages. One page for requests (to secure OS) queue, second page for responses queue. It uses subset of Global Platform API as interface for communications.
 
-I need to write paper abort part with Secure OS.
+I need to write Master's thesis abort part with Secure OS.
 It should have 4 chapters:
-# Abstract
-# Table of contents
-# Introduction
+
 # Chapter 1: Foundations and Motivation for an Open Secure OS on RISC-V
  ## Background and Motivation
  ## Problem Statement
@@ -25,7 +23,7 @@ It should have 4 chapters:
 # Chapter 3: Design and Implementation of the Secure Operating System
  ## Interface Considerations
  ## System Architecture Overview
- ## World Guard Integration
+ ## WorldGuard Integration
  ## Secure Boot Process and Initialization
  ## OpenSBI modifications
  ## Cross-World Communication
@@ -51,6 +49,7 @@ It should have 4 chapters:
 ## Secure OS Code
 ## Secure Standard Library Code
 
+
 So, 3nd chapter is about Design and Implementation of the Secure Operating System
 I have a draft of chapter 3:
 
@@ -62,46 +61,86 @@ I have a draft of chapter 3:
    #### Experemental of Research Prototypes
    #### Rationale for Adopting a Global Platform-based API Subset
  ## System Architecture Overview
- ## World Guard Integration
+  ### High-Level Architecture
+   #### Architectural Layers
+   #### Secure vs. Normal World Overview
+  ### Core System Components
+   #### Kernel, Resource Managers, and TEE Services
+   #### Shared Memory and IPI-Based Communication
+  ### Memory Layout and Addressing
+   #### Physical and Virtual Addressing
+   #### Isolation Mechanisms
+   #### Shared Memory Queues
+  ### Secure OS Execution Flow
+   #### Boot Process Overview
+   #### Inter-World Transitions
+   #### Scheduling in Secure OS
+  ### Security and Policy Enforcement
+   #### Capability-Based Security Model
+   #### World Guard Integration
+  ### TA Lifecycle
+   #### Creation
+   #### Compute
+   #### Teardown
+ ## WorldGuard Integration
   ### WorldGuard Configuration
-   #### World Configuration
+   #### World Configuration (Two-World Model)
    #### WorldGuard Checker Configuration for Secure Isolation
-  ### Integration in the Secure OS
-   #### Error reporting
+  ### Integration with the Secure OS
+   #### Error Reporting
    #### Managing World Transitions
-   #### Communication Mechanism
+   #### Communication Pages
  ## Secure Boot Process and Initialization
   ### Secure OS Early Initialization
    #### OpenSBI Handover
-   #### Kernel Mapping
-   #### Firsr Kernel Relocation
-   #### Enable MMU
+   #### Setting Up the Stack and Basic Memory Layout
+   #### First Kernel Relocation
+   #### Enabling the MMU
   ### Secure OS Initialization
    #### Register Console
    #### Initialize Page Tables
-   #### Second Kernel Relocation
+   #### Second Kernel Relocation (If Needed)
    #### Initialize Trap Handler
    #### Initialize Timers
    #### Initialize Page Allocator
    #### Initialize Slab Allocator
-   #### Initiazlie Scheduler
+   #### Initialize Scheduler
    #### Initialize Root Task
    #### Initialize Normal World Communication Channel
-   #### Initialize Trasted Applications
-  ### Rich OS Initialization
-   #### Initialization by OpenSBI
+   #### Initialize Trusted Applications
+ ### Rich OS Initialization
+  #### Initialization by OpenSBI
+  #### Core Startup
  ## OpenSBI modifications
   ### ...
  ## Cross-World Communication
   ### Shared Memory Queues
-   #### LockFree Queue Algorithm
+   #### Lock-Free Queue Algorithm
    #### Shared Memory Ring Buffers
    #### Requests Queue
    #### Responses Queue
+   #### Canary Around Shared Pages
+  ### Shared Memory Regions
+   #### Memory Region Allocation
+   #### Memory Region Deallocation
+   #### Data transfer
+  ### Message Structure
+   #### struct wg_tee_cmd
+   #### field id
+   #### field seq
+   #### field session_id
+   #### field func_i
+   #### field err
+   #### field uuid
+   #### field paddr
+   #### field num_pages
+   #### field shmem_id
+   #### struct wg_param params
+   #### padding
   ### IPI Based Signaling
    #### RISC-V IPI Mechanism
-   #### Normal to Secure world signaling
-   #### Secure to Normal world signaling
+   #### Normal to Secure World Signaling
+   #### Secure to Normal World Signaling
  ## TEE API
   ### Global Platform API
    #### Introduction to Global Platform API
@@ -190,24 +229,11 @@ I have a draft of chapter 3:
   ### Standard Library for Trusted Applications
    #### Standard Library Overview
   ### I/O Standard Library Specification
-   #### printf
-   #### sprintf
-   #### vprintf
   ### Strings Standard Library Specification
-   #### string functions
   ### Math Standard Library Specification
-   #### algebraic functions
-   #### thrigonometry functions
-   #### complex math functions
   ### Crypto Standard Library Specification
-   #### crypto functions
-   #### hashes
   ### Communication Standard Library Specification
-   #### shared memory
-   #### pipes
   ### Concurrency Standard Library Specification
-   #### mutexes
-   #### spinlocks
  ## Implementation Challenges and Optimizations
   ### Performance vs. Security Trade-Offs
   ### Memory Footprint optimizations
@@ -216,5 +242,20 @@ I have a draft of chapter 3:
  ## Summary of Implementation
   ### ...
 
-Starting with 3.2 System Architecture Overview: write an structure of this subchapter
-Write brief description for each subchapter of 3.2.
+Starting with 3.10 Capability-Based Security Model:
+I have a draft of structure:
+ ## Capability-Based Security Model
+  ### Handles as Encapsulated Capabilities
+   #### Objects
+   #### Object Handles
+   #### Factory Objects
+   #### Object Methods
+  ### Capabily-Based Access Control
+   #### Permissions
+   #### Task Manifests
+   #### Root Task
+   #### Method Invocation
+
+Chapter is about how capability-based model is used in system design:
+If needed - rename some sub chapters if there is more suitable naming, or maybe add some sub chapters or points if there is anything else to say to enhance the structure.
+print answer in raw markdown format
