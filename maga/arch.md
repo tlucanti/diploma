@@ -983,27 +983,130 @@
   - Duplicates a handle within the same task, assigning the requested capability mask. Used to derive restricted-view handles (e.g. remove `TRANSFER`).
 
  ## Trusted Application Framework
+ - The Trusted Application (TA) Framework provides a lightweight, secure runtime environment and development interface for writing user-mode Trusted Applications atop the Secure OS.
+ - It defines a standard C runtime environment enriched with system capabilities accessible via a handle-based capability model.
+ - Its primary role is to facilitate secure software development, ensuring alignment with both TEE security policies and performance constraints in constrained environments.
   ### Standard Library for Trusted Applications
    #### Standard Library Overview
+   - The standard library is a minimal libc equivalent tailored to the Secure OS TEE context. It provides essential functionality typically found in a standard C runtime, excluding non-secure system calls. Implemented entirely in secure world userspace, the library avoids dynamic linking or unnecessary runtime overhead. It includes:
+    - Memory functions (e.g., memcpy, memset)
+    - Formatting and I/O (e.g., printf)
+    - Math functions (including support for hardware-accelerated routines if available)
+    - Cryptographic primitives
+    - Concurrent synchronization mechanisms
+    - Container utilities (e.g., lists, maps)
+    - Typed object and handle access abstraction
+  ### Handle Operations Specification
+   #### Channel Functions
+   - `channel_read` - Read data from a secure communication channel.
+   - `channel_write` - Send data over a secure communication channel.
+   - `channel_from_handle` - Cast a generic handle into a channel type.
+   #### Factory Functions (Fabric Object Handle Interface)
+   - `factory_init` - Prepare a factory object for spawning or object creation.
+   - `factory_create_vmo` - Create a Virtual Memory Object (VMO).
+   - `factory_channel_create` - Create a new communication channel.
+   - `factory_task_create` - Create and launch a new Trusted Application task.
+   - `factory_get_handle` - Retrieve system/manually assigned handles.
+   #### Object Functions
+   - `object_copy` - Duplicate a handle reference.
+   - `object_close` - Close and discard a handle.
+   #### Task Functions
+   - `task_spawn` - Spawn a new task using a manifest.
+   - `task_share_handle` - Share handle(s) with another task securely.
+   #### Memory Management Functions
+   - `vm_init` - Initialize virtual memory structures.
+   - `vm_map_vmp` - Map memory pages into a task's virtual space.
+   - `vm_free` - Free allocated virtual memory regions.
   ### I/O Standard Library Specification
-   #### printf
-   #### sprintf
-   #### vprintf
+   #### Printf-Compatible Functions
+   - `printf` - Wrapper using `tee_log` syscall.
+   - `sprintf` - Internal memory-safe string writing variant.
+   - `vprintf` - Variadic-style printf handler.
+   #### Logging Function
+   - `tee_log` - Internal secure log syscall (invokes `SYS_LOG`, tagged output).
   ### Strings Standard Library Specification
-   #### string functions
+   #### String Utility Functions
+   - `memset`
+   - `memcmp`
+   - `memcpy`
+   - `memmove`
+   - `memchr`
+   - `strlen`
+   - `strchr`
+   - `strcmp`
+   - `strtol`
+   - These are implemented using size-optimized and alignment-aware techniques for low-overhead TA memory environments.
   ### Math Standard Library Specification
-   #### algebraic functions
-   #### thrigonometry functions
-   #### complex math functions
+   #### Algebraic Functions
+   - `sqrt`, `pow`, `log`, `exp`, `abs`, `floor`, `ceil`
+   #### Trigonometric Functions
+   - `sin`, `cos`, `tan`, `asin`, `acos`, `atan`
+   #### Mathematical Constants
+   - `pi`, `e`, `inf`, `nan`
+   #### Complex Math Functions
+   - Complex number support is syntactically mirrored from real-number APIs.
   ### Crypto Standard Library Specification
-   #### crypto functions
-   #### hashes
-  ### Communication Standard Library Specification
-   #### shared memory
-   #### pipes
+   #### Hashing Functions
+   - `sha256(data, len)`
+   - `sha512(data, len)`
+   - `md5(data, len)`
+   #### Encryption/Decryption Functions
+   - in future work support for functionality like:
+   - `aes_encrypt`, `aes_decrypt` - Support for AES-GCM/CTR if hardware-accelerated
+   - `chacha20_encrypt`, `chacha20_decrypt`
+   #### Key Management and Derivation
+   - in future work support for functionality like:
+   - `hkdf` implementation
+   - Insecure vs. hardware-sealed key storage distinction
+   #### Random Number Generation
+   - in future work support for functionality like:
+   - `crypto_rng` - Hardware-backed RNG where available
+   - `crypto_rng_init_seed` - Optional API for seed injection
+  ### Container Standard Library Specification
+   - Note: Trees are all reentrant and zero-alloc in TA context
+   #### List Functions
+   - Singly Linked List: Init, Push, Pop, Find, Remove
+   - Doubly Linked List: Bidirectional traversal APIs with embedded nodes
+   #### Radix Tree Functions
+   - Insertion, deletion, lookup optimized for dense ID spaces
+   #### WAVL Tree Functions
+   - Self-balancing tree, relaxed AVL variant, with logarithmic insert/remove
+   #### Red-Black Tree Functions
+   - Balanced binary tree implemented using node-color rules
   ### Concurrency Standard Library Specification
-   #### mutexes
-   #### spinlocks
+   #### Atomic Operations
+   - `atomic_add_fetch`
+   - `atomic_sub_fetch`
+   - `atomic_or_fetch`, `atomic_and_fetch`
+   - `atomic_read`, `atomic_write`
+   - Memory barrier primitives: `smp_rb()` (read barrier), `smp_wb()` (write barrier)
+   #### Mutex API
+   - `mutex_init()`, `mutex_lock()`, `mutex_unlock()`, `mutex_destroy()`
+   #### Spinlock API
+   - `spinlock_init()`, `spin_lock()`, `spin_unlock()`, `spin_trylock()`
+   #### Semaphore API
+   - `sem_init()`, `sem_wait()`, `sem_post()`, `sem_destroy()`
+   #### Conditional Variables
+   - `cond_init()`, `cond_wait()`, `cond_signal()`, `cond_broadcast()`
+  ### Misc Library Functions Specification
+   #### Align Macros
+   - `align_up(x, a)`
+   - `align_up_ptr(p, a)`
+   - `align_down(x, a)`
+   - `align_down_ptr(p, a)`
+   - `is_aligned(x, a)`
+   - `is_aligned_ptr(p, a)`
+   #### Bit Manipulation
+   - `bit32(n)`, `bit64(n)`
+   - `is_power_of_two(x)`
+   - `clz32(x)` - Count Leading Zeros (32-bit)
+   - `clz64(x)` - Count Leading Zeros (64-bit)
+   - `log2(x)`
+   #### Compiler and Intrinsic Macros
+   - `barrier()` - Compiler-level memory fence
+   - `container_of(ptr, type, member)` - Offset-based typed accessor
+   - Standardized `__attribute__` usage for alignment/enforced inlining.
+   - `same_type()` - Static type matching check (debug-mode only)
 
  ## Implementation Challenges and Optimizations
   ### Performance vs. Security Trade-Offs
