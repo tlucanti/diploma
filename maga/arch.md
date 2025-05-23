@@ -867,55 +867,55 @@
   #### linear RAM fs
   #### elf files
 
-## Capability-Based Security Model
-- This chapter focuses on the design and implementation of the capability-based security model within the Secure OS.
-- It explains how the system uses handles to encapsulate capabilities, how these handles are created and managed, and how capability-based access control is enforced through task manifests and the root task.
- ### Handles as Encapsulated Capabilities
- - Handles in the Secure OS function as references to system resources (objects). Each handle has associated permissions and metadata defining how it may be accessed or manipulated. Internally, handles map to kernel-managed descriptors that maintain the state, permission bits, and relevant object pointers.
-  #### Design Rationale
-  - **Least Privilege Principle**: Capabilities ensure that tasks and trusted applications only have the minimum set of privileges needed.
-  - **Fine-Grained Access Control**: Provides precise control over which resources can be accessed and how they are used.
-  - **Composability**: The handle-based model allows different system components (tasks, services, etc.) to dynamically create and share capabilities in a structured manner.
-  #### Objects
-  - **Definition**: Objects represent protected resources (e.g., memory regions, tasks, communication channels).
-  - **Creation**: created by a specialized factory object or created initally by kernel
-  - **Management**: The kernel and corresponding resource managers maintain object lifecycles (allocation, reference counting, destruction).
-  #### Object Handles
-  - **Semantics**: An object handle is an token referencing an underlying object.
-  - **Handle Table**: Each task or trusted application maintains a handle table
-  - **Security Properties**: Handles cannot be duplicated or guessed; only the kernel can create valid handles.
-  #### Factory Objects
-  - **Factory Concept**: There is a singleton act as “factory” capable of creating other objects (e.g., tasks, pipes, or memory objects).
-  - **Controlled Creation**: A Manifest ensures that only permitted tasks can spawn or instantiate new objects.
-  - **Lifecycle**: Factoty themselve is created by the kernel.
-  #### Object Methods
-  - **Method Calls**: Operations on objects (e.g., read, write, map) are exposed as system calls.
-  - **Capability Checks**: Before performing any operation, the kernel verifies that the caller’s handle has sufficient permissions.
-  - **Extensibility**: New object types can not define custom methods, which stricts permission volations
- ### Capability-Based Access Control
- - The system enforces a strict capability-based security policy, ensuring only authorized handles may invoke methods on objects.
-  #### Permissions
-  - since syscalls act as object methods - there is a fixed number of methods that can be executed on object
-  - each handle has its own permission bits for each syscall
-  - **Permission Propagation**: When a handle is shared between tasks, permissions can only be stricted, to increased.
-  - **Revocation**: The kernel can invalidate or downgrade a handle’s permissions at runtime if security conditions change.
-  #### Task Manifests
-  - **Manifest Format**: Each task has a manifest specifying its initial handles and allowed permissions on those handles.
-  - **Initialization**: On task creation, the kernel reads the manifest to populate the task’s handle table.
-  - **Dynamic Policy**: The root task or a privileged controller can update or revoke handles from TA
-  #### Root Task
-  - **Privilege Level**: The root task is endowed with the highest level of privilege, including the ability to create new tasks and objects
-  - **Handle Distribution**: Upon launching a new trusted application, the root task provides the necessary initial handles listed in the manifest.
-  - **Security Enforcement**: The root task can audit or modify the capabilities of any other task if required.
-  #### Method Invocation
-  - **Invocation Flow**:
-    1. Trusted application issues a syscall to invoke a method on a handle.
-    2. Kernel checks handle validity and permission bits.
-    3. Kernel executes the method if authorized; otherwise returns an error.
-  - **Parameter Passing**: Depending on the object type, additional data (e.g., memory buffer addresses or message payload) must be specified.
-  - **Audit Logging**: A log of handle usage may be maintained for debugging, accountability, and forensics.
-  #### Performance Implications
-  - **Lookup Overheads**: A balanced design attempts to keep handle operations lightweight to avoid excessive overhead.
+ ## Capability-Based Security Model
+ - This chapter focuses on the design and implementation of the capability-based security model within the Secure OS.
+ - It explains how the system uses handles to encapsulate capabilities, how these handles are created and managed, and how capability-based access control is enforced through task manifests and the root task.
+  ### Handles as Encapsulated Capabilities
+  - Handles in the Secure OS function as references to system resources (objects). Each handle has associated permissions and metadata defining how it may be accessed or manipulated. Internally, handles map to kernel-managed descriptors that maintain the state, permission bits, and relevant object pointers.
+   #### Design Rationale
+   - **Least Privilege Principle**: Capabilities ensure that tasks and trusted applications only have the minimum set of privileges needed.
+   - **Fine-Grained Access Control**: Provides precise control over which resources can be accessed and how they are used.
+   - **Composability**: The handle-based model allows different system components (tasks, services, etc.) to dynamically create and share capabilities in a structured manner.
+   #### Objects
+   - **Definition**: Objects represent protected resources (e.g., memory regions, tasks, communication channels).
+   - **Creation**: created by a specialized factory object or created initally by kernel
+   - **Management**: The kernel and corresponding resource managers maintain object lifecycles (allocation, reference counting, destruction).
+   #### Object Handles
+   - **Semantics**: An object handle is an token referencing an underlying object.
+   - **Handle Table**: Each task or trusted application maintains a handle table
+   - **Security Properties**: Handles cannot be duplicated or guessed; only the kernel can create valid handles.
+   #### Factory Objects
+   - **Factory Concept**: There is a singleton act as “factory” capable of creating other objects (e.g., tasks, pipes, or memory objects).
+   - **Controlled Creation**: A Manifest ensures that only permitted tasks can spawn or instantiate new objects.
+   - **Lifecycle**: Factoty themselve is created by the kernel.
+   #### Object Methods
+   - **Method Calls**: Operations on objects (e.g., read, write, map) are exposed as system calls.
+   - **Capability Checks**: Before performing any operation, the kernel verifies that the caller’s handle has sufficient permissions.
+   - **Extensibility**: New object types can not define custom methods, which stricts permission volations
+  ### Capability-Based Access Control
+  - The system enforces a strict capability-based security policy, ensuring only authorized handles may invoke methods on objects.
+   #### Permissions
+   - since syscalls act as object methods - there is a fixed number of methods that can be executed on object
+   - each handle has its own permission bits for each syscall
+   - **Permission Propagation**: When a handle is shared between tasks, permissions can only be stricted, to increased.
+   - **Revocation**: The kernel can invalidate or downgrade a handle’s permissions at runtime if security conditions change.
+   #### Task Manifests
+   - **Manifest Format**: Each task has a manifest specifying its initial handles and allowed permissions on those handles.
+   - **Initialization**: On task creation, the kernel reads the manifest to populate the task’s handle table.
+   - **Dynamic Policy**: The root task or a privileged controller can update or revoke handles from TA
+   #### Root Task
+   - **Privilege Level**: The root task is endowed with the highest level of privilege, including the ability to create new tasks and objects
+   - **Handle Distribution**: Upon launching a new trusted application, the root task provides the necessary initial handles listed in the manifest.
+   - **Security Enforcement**: The root task can audit or modify the capabilities of any other task if required.
+   #### Method Invocation
+   - **Invocation Flow**:
+     1. Trusted application issues a syscall to invoke a method on a handle.
+     2. Kernel checks handle validity and permission bits.
+     3. Kernel executes the method if authorized; otherwise returns an error.
+   - **Parameter Passing**: Depending on the object type, additional data (e.g., memory buffer addresses or message payload) must be specified.
+   - **Audit Logging**: A log of handle usage may be maintained for debugging, accountability, and forensics.
+   #### Performance Implications
+   - **Lookup Overheads**: A balanced design attempts to keep handle operations lightweight to avoid excessive overhead.
 
  ## Secure Syscalls
  - The Secure Operating System exposes a set of privileged system calls (“secure syscalls”) available only to code running in the Trusted Execution Environment (TEE). These syscalls form the backbone of the secure OS abstraction layer and are fundamental to the capability-based model which enforces strict access and isolation. In this section, we describe the secure syscall mechanism, their capability enforcement, and the secure object operations made available to Trusted Applications (TAs).
