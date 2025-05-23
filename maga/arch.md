@@ -863,9 +863,9 @@
   2. Управления таблицами страниц (mmu_switch_space), что позволяет ядру переключаться между контекстами задач и гарантировать, что одна задача не может получить доступ к памяти другой.
   3. Контроля прав доступа к памяти при вызове vm_protect. Данная функция устанавливает соответствующие флаги (VMA_READ, VMA_WRITE) и обеспечивает недоступность памяти для неавторизованных задач.
   - В коде виден пример, когда при запуске задачи (task_run) вызывается vm_protect для установки в памяти read-only доступа к странице дескрипторов (handle page). Таким образом, даже сама задача ограничена в манипуляции с полями, ответственными за управление дескрипторами, если это не предусмотрено соглашениями по доступу.
-  ### File System
-   #### linear RAM fs
-   #### elf files
+ ### File System
+  #### linear RAM fs
+  #### elf files
 
 ## Capability-Based Security Model
 - This chapter focuses on the design and implementation of the capability-based security model within the Secure OS.
@@ -918,27 +918,69 @@
   - **Lookup Overheads**: A balanced design attempts to keep handle operations lightweight to avoid excessive overhead.
 
  ## Secure Syscalls
+ - The Secure Operating System exposes a set of privileged system calls (“secure syscalls”) available only to code running in the Trusted Execution Environment (TEE). These syscalls form the backbone of the secure OS abstraction layer and are fundamental to the capability-based model which enforces strict access and isolation. In this section, we describe the secure syscall mechanism, their capability enforcement, and the secure object operations made available to Trusted Applications (TAs).
   ### Secure Entry Points
-   #### Backgorund on OS System Calls
+  - The secure syscall interface is the only gateway through which TAs and system objects interact. These system calls are verified and dispatched via central syscall routing infrastructure based on a syscall table indexed by syscall number.
+   #### Background on OS System Calls
+   - A system call facilitates user mode code (in this case, Trusted Applications) to invoke kernel functionality in a controlled and verified manner. Syscalls operate strictly on handles referencing kernel-managed secure objects. The handle list is process-local and authorized through task manifests at TA launch time.
+   #### Secure Syscall Lifecycle
+   - Each secure syscall follows the canonical secure OS object lifecycle:
+   1. User passes handle(s) and optional state.
+   2. Kernel resolves the handle reference and asserts access rights using capability tags.
+   3. Operation is executed atomically.
+   4. Ownership of resulting objects or memory copies is well defined (copy vs. move semantics).
+   5. Errors from any stage are returned to the user-space Trusted Application.
+   Syscalls involving inter-task communication (e.g., SYS_CHANNEL_WRITE or SYS_TASK_SHARE_HANDLE) often cooperate with internal kernel structures like queues or per-process handle pages. These components are designed to be strictly partitioned and race-free.
    #### Argument Passing Format
-   #### validation of handle permissions
+   - Syscall arguments are passed following the calling convention of the Secure OS, and include the handle identifiers, pointers to user data, data lengths, and capability-specific flags. Data is validated before being dereferenced or mutation occurs. Shared memory is always accessed via secure copies using kernel-managed copy_from_user and copy_to_user primitives.
+   #### Validation of Handle Permissions
+   - Each syscall entry validates whether the calling task has the needed capabilities for the given object type. Handles are looked up in the invoking task’s object table, and if the lookup fails or lacks the proper capability flags (TRANSFER, WAIT, SEND, RECV, etc.), the syscall returns an error. This fine-grained check ensures robust per-object and per-action filtering in line with the capability-based security model.
+   - Syscalls rely entirely on the underlying capability-based object model:
+   - Handles are opaque 32-bit values resolved into kernel pointers via per-task object tables.
+   - Each handle links to an internal object and permission mask.
+   - All syscall-side object accesses invoke a type+capability check.
+   For example, in the `channel_write` syscall, the following enforcement occurs:
+   1. Validate caller owns the provided handle with `CHANNEL_CAP_SEND`.
+   2. Validate all message-passed handles include the `TRANSFER` capability.
+   3. Receiver will only receive transferred handles if it has adequate handle table space.
+   This guarantees that:
+   - Object accesses are never implicit — they must be manifested in the task manifest.
+   - No object leaks across Trusted Application boundaries.
+   - Origin and access pathway of each resource is traceable through the handle fabric.
   ### Syscall Specification
+  - Each system call operates on one or more kernel object handles. Object types include tasks, threads, virtual memory objects (VMOs), factory objects, and channels. Below is an overview of the currently defined syscalls.
    #### SYS_LOG
+   - Logging interface for debugging output from the secure world.
    #### SYS_VM_ALLOCATE
+   - Allocates anonymous virtual memory inside a task’s virtual address space.
    #### SYS_VMO_CREATE
+   - Requests creation of a virtual memory object (VMO) via a factory. The new handle is stored in user-writable memory. Capability `FACTORY_CREATE_VMO_CAP` must be present.
    #### SYS_CHANNEL_CREATE
+   - Asks the factory to produce bidirectional channel endpoints. Returns two handle values referencing peer-connected `channel_endpoint` objects. Requires `FACTORY_CREATE_CHANNEL_CAP`.
    #### SYS_CHANNEL_READ
-   #### SYS_TASK_CREATE
-   #### SYS_TASK_GET_SPACE
-   #### SYS_VM_MAP_VMO
-   #### SYS_VM_FREE
-   #### SYS_TASK_SPAWN
+   - Attempts to retrieve a pending message from the associated channel endpoint. Caller must possess `CHANNEL_CAP_RECV`. The syscall verifies receiver-side buffer, optional handle array, and copies message from kernel space.
    #### SYS_CHANNEL_WRITE
+   - Enqueues a message to be sent over a channel endpoint. Requires capability `CHANNEL_CAP_SEND`. Handles being transferred are verified for `OBJECT_CAP_TRANSFER`.
+   #### SYS_TASK_CREATE
+   - Asks a factory to create an empty task object (stub process). Returns a handle with `TASK_GET_SPACE_CAP` and `TRANSFER`. Initial state is `TASK_CREATED`.
+   #### SYS_TASK_GET_SPACE
+   - Grants the caller access to another task’s virtual memory address space (typically for explicit handle passing or object serialization). Requires handle with `TASK_GET_SPACE_CAP`.
+   #### SYS_VM_MAP_VMO
+   - Maps an existing VMO into a task address space with specified offset and permissions.
+   #### SYS_VM_FREE
+   - Unmaps a virtual address range from a VM space.
+   #### SYS_TASK_SPAWN
+   - Spawns a previously created task. Initializes the main thread with a provided entry point. Transitions the task’s state from `CREATED` to `SPAWNED`.
    #### SYS_OBJECT_CLOSE
+   - Releases the given handle in the caller’s object table.
    #### SYS_OBJECT_WAIT_MANY
+   - Waits on multiple kernel objects, useful for synchronization/IPC.
    #### SYS_PHYSMAPPER_MAP
+   - Maps physical memory ranges for I/O accesses, used by device drivers or MMIO facilities (access controlled based on TA manifest and task capabilities).
    #### SYS_TASK_SHARE_HANDLE
+   - Allows handle transfer from one task to another. The handle is written along with an identifier string into a memory area expected by the recipient. Available only when receiver is in `CREATED` state. Enforced via handle-page layout in receiver’s address context.
    #### SYS_OBJECT_COPY
+  - Duplicates a handle within the same task, assigning the requested capability mask. Used to derive restricted-view handles (e.g. remove `TRANSFER`).
 
  ## Trusted Application Framework
   ### Standard Library for Trusted Applications
