@@ -49,12 +49,11 @@ It should have 4 chapters:
 ## Secure OS Code
 ## Secure Standard Library Code
 
-
 So, 3nd chapter is about Design and Implementation of the Secure Operating System
 I have a draft of chapter 3:
 
-# Chapter 3: Design and Implementation of the Secure Operating System**
- ## Interface Considerations**
+# Chapter 3: Design and Implementation of the Secure Operating System
+ ## Interface Considerations
   ### TEE Client API: Inter-World Communication Interface
    #### OP-TEE on RISC-V
    #### Develop own minimal GlobalPlatform TEE interface
@@ -125,18 +124,6 @@ I have a draft of chapter 3:
    #### Memory Region Deallocation
    #### Data transfer
   ### Message Structure
-   #### struct wg_tee_cmd
-   #### field id
-   #### field seq
-   #### field session_id
-   #### field func_i
-   #### field err
-   #### field uuid
-   #### field paddr
-   #### field num_pages
-   #### field shmem_id
-   #### struct wg_param params
-   #### padding
   ### IPI Based Signaling
    #### RISC-V IPI Mechanism
    #### Normal to Secure World Signaling
@@ -149,38 +136,25 @@ I have a draft of chapter 3:
    #### TEE Sessions
    #### TEE Shared Memory
   ### TEE API Specification
-   #### TEEC_UUID
-   #### TEEC_Result
-   #### TEEC_Context;
-   #### TEEC_Session;
-   #### TEEC_Value;
-   #### TEEC_RegisteredMemoryReference;
-   #### TEEC_Parameter;
-   #### TEEC_Operation;
-   #### TEEC_SharedMemory;
-   #### TEEC_InitializeContext
-   #### TEEC_FinalizeContext
-   #### TEEC_OpenSession
-   #### TEEC_CloseSession
-   #### TEEC_InvokeCommand
-   #### TEEC_AllocateSharedMemory
-   #### TEEC_ReleaseSharedMemory
  ## Linux Driver Implementation
-  ### Shared Queues From Linux Side
-   #### Requests queue
-   #### Responses queue
-  ### Linux Communication Interface
+  ### Driver Overview and Registration
+   #### Linux Driver Initialization
+   #### Linux Driver Interface
+  ### Shared Queues from the Linux Side
+   #### Requests Queue
+   #### Responses Queue
+   ### Linux Communication Interface
    #### Communication Initialization
    #### Queue Initialization
-   #### Commnication polling kthread
+   #### Communication Polling kthread
    #### Message Sending
-   #### Getting Result
+   #### Getting the Result
    #### Communication Finalization
- ## Secure Kernel Design
+ ## Дизайн и реализация ядра Secure OS
   ### Kernel Objects and Handles
    #### Tasks (Processes)
    #### Threads
-   #### Pipes
+   #### Pipes (или Channels)
    #### Virtual Memory Objects
    #### Synchronization Primitives
   ### Task Management
@@ -193,48 +167,68 @@ I have a draft of chapter 3:
   ### Memory Management Subsystem
    #### Secure Memory Allocator
    #### Memory Isolation
+  ### File System
+   #### linear RAM fs
+   #### elf files
  ## Capability-Based Security Model
   ### Handles as Encapsulated Capabilities
+   #### Design Rationale
    #### Objects
    #### Object Handles
    #### Factory Objects
    #### Object Methods
-  ### Capabily-Based Access Control
+  ### Capability-Based Access Control
    #### Permissions
    #### Task Manifests
    #### Root Task
    #### Method Invocation
+   #### Performance Implications
  ## Secure Syscalls
   ### Secure Entry Points
-   #### validation of TA requests
-   #### ...
+   #### Background on OS System Calls
+   #### Secure Syscall Lifecycle
+   #### Argument Passing Format
+   #### Validation of Handle Permissions
   ### Syscall Specification
-   #### SYS_LOG
-   #### SYS_VM_ALLOCATE
-   #### SYS_VMO_CREATE
-   #### SYS_CHANNEL_CREATE
-   #### SYS_CHANNEL_READ
-   #### SYS_TASK_CREATE
-   #### SYS_TASK_GET_SPACE
-   #### SYS_VM_MAP_VMO
-   #### SYS_VM_FREE
-   #### SYS_TASK_SPAWN
-   #### SYS_CHANNEL_WRITE
-   #### SYS_OBJECT_CLOSE
-   #### SYS_OBJECT_WAIT_MANY
-   #### SYS_PHYSMAPPER_MAP
-   #### SYS_TASK_SHARE_HANDLE
-   #### SYS_OBJECT_COPY
  ## Trusted Application Framework
   ### Standard Library for Trusted Applications
    #### Standard Library Overview
+  ### Handle Operations Specification
+   #### channel functions
+   #### factory functions
+   #### object functions
+   #### task functions
+   #### memory management functions
   ### I/O Standard Library Specification
+   #### printf functions
+   #### log function
   ### Strings Standard Library Specification
+   #### string functions
   ### Math Standard Library Specification
+   #### algebraic functions
+   #### thrigonometry functions
+   #### math constants
+   #### complex math functions
   ### Crypto Standard Library Specification
-  ### Communication Standard Library Specification
+   #### Hashing Functions
+   #### Encryption/Decryption Functions
+   #### Key Management and Derivation
+   #### Random Number Generation
+  ### Container Standard Library Specification
+   #### list container functions
+   #### radix tree functions
+   #### wavl tree functions
+   #### red-black tree functions
   ### Concurrency Standard Library Specification
- ## Implementation Challenges and Optimizations
+   #### atomic operations
+   #### mutex functions
+   #### spinlock functions
+   #### semaphore functions
+   #### conditional variables
+  ### Misc Library Functions Specification
+   #### align macros
+   #### bit manipulation
+   #### compiler macros ## Implementation Challenges and Optimizations
   ### Performance vs. Security Trade-Offs
   ### Memory Footprint optimizations
   ### Debugging Considerations
@@ -242,20 +236,130 @@ I have a draft of chapter 3:
  ## Summary of Implementation
   ### ...
 
-Starting with 3.10 Capability-Based Security Model:
+Starting with 3.12 Trusted Application Framework:
 I have a draft of structure:
- ## Capability-Based Security Model
-  ### Handles as Encapsulated Capabilities
-   #### Objects
-   #### Object Handles
-   #### Factory Objects
-   #### Object Methods
-  ### Capabily-Based Access Control
-   #### Permissions
-   #### Task Manifests
-   #### Root Task
-   #### Method Invocation
+ ## Trusted Application Framework
+  ### Standard Library for Trusted Applications
+   #### Standard Library Overview
+  ### Handle Operations Specification
+   #### channel functions
+   - channel_read
+   - channel_write
+   - channel_from_handle
+   #### factory functions
+   - factory_init
+   - factory_create_vmo
+   - factory_channel_create
+   - factory_task_create
+   - factory_get_handle
+   #### object functions
+   - object_copy
+   - object_close
+   #### task functions
+   - task_spawn
+   - task_share_handle
+   #### memory management functions
+   - vm_init
+   - vm_map_vmp
+   - vm_free
+  ### I/O Standard Library Specification
+   #### printf functions
+   - printf (calls tee_log)
+   - sprintf
+   - vprintf
+   #### log function
+   - tee_log (calls SYS_LOG)
+  ### Strings Standard Library Specification
+   #### string functions
+   - memset
+   - memcmp
+   - memcpy
+   - memmove
+   - memchr
+   - strlen
+   - strchr
+   - strcmp
+   - strtol
+  ### Math Standard Library Specification
+   #### algebraic functions
+   - sqrt
+   - pow
+   - log
+   - exp
+   - abs
+   - floor
+   - ceil
+   #### thrigonometry functions
+   - sin
+   - cos
+   - tan
+   - asin
+   - acos
+   - atan
+   #### math constants
+   - pi
+   - e
+   - inf
+   - nan
+   #### complex math functions
+   - same as for real numbers
+  ### Crypto Standard Library Specification
+   #### Hashing Functions
+   - sha256
+   - sha512
+   - md5
+   #### Encryption/Decryption Functions
+   #### Key Management and Derivation
+   #### Random Number Generation
+  ### Container Standard Library Specification
+   #### list container functions
+   - functions for single linked list
+   - functions for double linked list
+   #### radix tree functions
+   - functions for radix tree
+   #### wavl tree functions
+   - functions for wavl tree
+   #### red-black tree functions
+   - functions for red-black tree
+  ### Concurrency Standard Library Specification
+   #### atomic operations
+   - atomic_add_fetch
+   - atomic_sub_fetch
+   - atomic_or_fetch
+   - atomic_and_fetch
+   - atomic_read
+   - atomic_write
+   - smp_rb
+   - smp_wb
+   #### mutex functions
+   - standard api
+   #### spinlock functions
+   - standard api
+   #### semaphore functions
+   - standard api
+   #### conditional variables
+   - standard api
+  ### Misc Library Functions Specification
+   #### align macros
+   - align_up
+   - align_up_ptr
+   - align_down
+   - align_down_ptr
+   - is_aligned
+   - is_aligned_ptr
+   #### bit manipulation
+   - bit32 (value with 1 << shift)
+   - bit64 (value with 1 << shift)
+   - is_power_of_two
+   - clz32
+   - clz64
+   - log2
+   #### compiler macros
+   - barrier (compiler barrier)
+   - container_of
+   - various __attribute__ macros
+   - same_type
 
-Chapter is about how capability-based model is used in system design:
+Chapter is about secure userspace C library for Trusted Applications:
 If needed - rename some sub chapters if there is more suitable naming, or maybe add some sub chapters or points if there is anything else to say to enhance the structure.
 print answer in raw markdown format
