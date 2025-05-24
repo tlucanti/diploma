@@ -1379,20 +1379,50 @@
    - System behavior under memory pressure
    - Fragmentation and memory management limitations
 
- ## Conclusions
-
  ## Future Work
+ - This chapter outlines promising directions for extending and improving the Secure OS platform for the RISC-V WorldGuard architecture. It includes technical enhancements, additional security features, hardware support expansions, and rigorous verification procedures.
   ### Advanced TA Features
+  - This section discusses enhancements to the Trusted Application (TA) framework that would allow TAs to offer more sophisticated services while still retaining minimal TCB and robust isolation.
    #### Secure Storage
+   - Introduce support for tamper-resistant persistent storage to enable confidential data access, including sealed key-value storage SDK for TAs.
    #### Attestation
+   - Add support for both local and remote attestation with cryptographic proof of measurement and TA identity, potentially backed by a platform Root-of-Trust chain.
    #### Root of Trust
+   - Define or integrate a hardware/software Root of Trust, including secure provisioning mechanisms and interaction with system boot.
    #### Cryptographic Services
-  ### Trusted User Interface Implementation
-  ### Multicore Support for Secure World
-  ### Formal Verification of Secure Components
-  ### Dynamic TA Loading
-  ### Porting to Real RISC-V Hardware with WorldGuard
-  ### Hardenings against Attacks
+   - Provide Trusted Applications with a standardized, hardware-accelerated crypto runtime offering: symmetric encryption/decryption, asymmetric crypto, hashing, digital signatures, and secure RNG.
+   #### Porting to Real RISC-V Hardware with WorldGuard
+   - Move from QEMU-based evaluation to physical RISC-V hardware that implements the WorldGuard extension for real-world performance measurements and evaluation under physically observable systems.
+   - Identify WorldGuard-compatible silicon platforms
+   - Implement board-specific OpenSBI and bootloader adaptations
+   - Hardware debugging framework integration
+  ### Performance and memory
+   #### Multicore Support for Secure World
+   - Extend the Secure OS runtime to allow execution on multiple cores, introducing challenges around synchronization, inter-core TA instance affinity, and capability tracking in a multithreaded environment.
+   - Secure world scheduling policy for multiple harts
+   - Shared state consistency between cores
+   - Scalability tuning and bottleneck analysis
+   #### Dynamic TA Loading
+   - Introduce support for on-demand loading and unloading of TAs to reduce secure world memory usage and enable more complex applications.
+   - TA cryptographic signature verification before loading
+   - TA manifest validation and integration with runtime capability system
+   - Secure memory isolation upon load/unload
+  ### Security enhancments
+   #### Formal Verification of Secure Components
+   - Augment Secure OS with formal verification techniques for core components, especially the kernel, capability system, and secure IPC primitives, in order to reduce the Trusted Computing Base risk and improve assurance.
+   - Kernel API model verification
+   - Memory safety guarantees via static analysis
+   - Proofs for capability propagation correctness
+   #### Enhanced Hardening Against Attacks
+   - Additional work on increasing robustness of the Secure OS and its communication mechanisms against advanced offensive threats.
+   - Side-channel mitigation techniques (cache partitioning, temporal fuzzing, constant-time algorithms)
+   - Memory fault injection resilience
+   - Kernel fuzzing and semi-automated stress testing
+   - System defenses against speculative execution and timing inference
+
+ ## Выводы
+
+# Заключение
 
 # References
 
