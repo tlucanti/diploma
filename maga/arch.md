@@ -1109,13 +1109,86 @@
    - `same_type()` - Static type matching check (debug-mode only)
 
  ## Implementation Challenges and Optimizations
+ - This section discusses the practical challenges encountered during the development of the Secure OS and outlines optimizations applied to ensure a balanced trade-off between performance, security, and maintainability.
+ - It also examines developer tooling, build considerations, and key lessons learned from implementation.
+ - The intent is to provide transparency about the engineering process and to offer insights to future developers working in similar environments.
   ### Performance vs. Security Trade-Offs
-  ### Memory Footprint optimizations
+   #### Balancing Isolation with Speed
+   - Design decisions around compartmentalization, memory isolation, and privilege levels.
+   - Trade-offs in choosing monolithic kernel vs microkernel OS
+   - Trade-offs in choosing user/kernel boundaries for TAs vs. monolithic kernel TAs.
+   - Security isolation for TAs vs. higher communication overhead through system call boundaries.
+   #### Inter-World Communication Overhead
+   - Overhead from shared region polling, memory copy costs, and IPI-based signaling.
+   - Use of lock-free ring queues to reduce latency.
+   - Minimizing trap/return paths for better inter-world round-trip latency.
+   #### Scalability Limits on a Single-Core Secure OS
+   - Implications of limiting Secure OS execution to a single core (core 0).
+   - Managing multiple active TAs and long-running calls to maintain responsiveness.
+   - Use of concurrent threads within Secure OS vs. thread serialization.
+  ### Memory Footprint Optimizations
+   #### Static Allocation vs. Dynamic Allocation
+   - When and why static memory regions were used (boot sequence, early kernel sections).
+   - Justification for dynamic allocation fallback features (slab and page pool management).
+   - Minimal boot allocator and on-demand zeroing mechanisms.
+   #### Slab Allocator and Page Pool Efficiency
+   - Custom lightweight slab allocator optimized for isolated heaps.
+   - Fit-to-size classes to reduce fragmentation.
+   #### Minimal Kernel Subsystem Design
+   - Avoiding traditional bloated kernel designs (e.g., no sysfs, vfs).
+   - Core components only: task/thread scheduling, IPC, memory isolation, syscalls.
+   - Benefits of small Trusted Computing Base (TCB) in verification and auditability.
   ### Debugging Considerations
+   #### Logging from Secure OS
+   - Secure and minimalistic logging channel
+   - Multiple logging levels (panic, error, info, debug).
+   #### Debugging TAs in Isolation
+   - tracing
+   - remote debugger hooks (gdb)
+   #### Instrumentation Techniques
+   - Internal counters for scheduling decisions, memory allocations, syscall hit counts.
+   - Tracing memory allocator usage (per-task page count or slab lifetime tracking).
+   #### Fault Isolation and Crash Analysis
+   - Handling invalid syscalls in Secure OS and malformed commands from untrusted Linux driver.
+   - Watchdog for runaway tasks and per-task isolation to reduce blast radius.
   ### Build System and Packaging for TAs
-
- ## Summary of Implementation
-  ### ...
+   #### Trusted Application Build Flow
+   - TA toolchain constraints (compiler hardening in libtacore).
+   - Source tree layout that enforces separation of kernel, libraries, and apps.
+   - Manifests for capabilities, memory regions, and initial handles.
+   - Options for static TA linking into kernel image vs. runtime TA loading.
+   - Binary format (e.g., ELF) parsing from kernel for runtime spawning.
+   #### Kernel Build System
+   - CMake based build system for Secure OS
+   #### Development Tooling Support
+   - QEMU and hardware launch wrappers (scripts for OpenSBI + Secure OS + Linux images).
+   - Secure OS runtime shell commands for debugging tasks and memory maps.
+   - Developer stubs and host-side tools for image generation, symbol resolution.
+  ### Testing and Validation
+   #### Unit Testing Secure OS Components
+   - Internal test cases for linked list manipulation, allocator correctness, timer behavior.
+   - Framework for checking invariants (vmspace protections, handle tables).
+   - Building unit tests into kernel image and controlled via boot parameters.
+   #### Integration Testing with Linux
+   - End-to-end TEE client interface validation: context creation, open session, invoke command.
+   #### Security-Oriented Tests
+   - Handle table fuzzing framework (e.g., reusing/releasing invalid handles).
+   - Fault injection infrastructure via Linux-side IPI storms, memory overwrites, syscall replay.
+  ### Summary of Implementation
+   #### Overview
+   - Summary of major challenges solved during implementation
+   - Design principles that proved effective (e.g., capability model, static memory layout).
+   #### Codebase Structure Summary
+   - Secure OS code structuring: split into
+    - ta (contains trusted applications)
+    - kernel (contains arch, lib, mem, sched, sync, tasks, tests)
+    - libtee (contains user space library)
+    - scripts (contains build scripts, codegeneration scripts, backtrace, etc)
+   - Tools and CMake-based build system granularity.
+   #### Opportunities for Improvement
+   - Feature hardening: memory encryption, exploit mitigations like stack canaries.
+   - Potential for multicore support within Secure OS given future WorldGuard changes.
+   - Technical debt around early bootloader glue code and MMU bring-up code.
 
 ---
 
