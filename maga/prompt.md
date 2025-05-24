@@ -19,14 +19,15 @@ I have a draft of chapter 4:
 
 # Chapter 4: Evaluation and Security Analysis
  ## Software Stack Setup
-  ### Emulations Enviroment
+  ### Toolchains
+  ### Emulation Environment
   ### Linux
   ### Build System
   ### CI Integration
  ## Demonstration of Secure OS Functionality
-  ### Building Porcess
-  ### Example of Simple Trusted Application service
-  ### Demostration of TA Execution
+  ### Building the Software Stack
+  ### Example Trusted Application: Simple Arithmetic TA
+  ### Demonstration and Execution
  ## Security Analysis
   ### Review of Threat Model and Security Goals
   ### Resilience against Normal World Attacks
@@ -45,24 +46,24 @@ I have a draft of chapter 4:
   ### Porting to Real RISC-V Hardware with WorldGuard
   ### Hardenings against Attacks
 
-Starting with 4.1 Software Stack Setup:
+Starting with 4.3 Security Analysis:
 I have a draft of structure:
 
- ## Software Stack Setup
-  ### Emulations Enviroment
-   #### QEMU with WorldGuard Support
-   #### QEMU modifications
-   #### QEMU Configuration
-  ### Linux
-   #### Linux with WorldGuard Support
-   #### Linux modifications
-   #### Linux Configuration
-   #### Linux Image
-  ### Build System
-   #### Cmake configuration
-   #### Cmake build system design
-  ### CI Integration
-   #### ...
+ ## Security Analysis
+  ### Resilience against Normal World Attacks
+   #### Unauthorized Access to Secure Memory
+   #### Unauthorized Access to Secure OS/TA Code
+   #### Attempts to Corrupt Shared Memory Queues
+   #### Exploiting CWC Protocol
+  ### Resilience against buggy TAs
+   #### Inter-TA Isolation
+   #### Capabilities
+  ### Potential Vulnerabilities and Limitations
+   #### Side-Channel Attacks
+   #### Physical Attacks
+   #### Complexity of TCB (Trusted Computing Base)
+
+This section is about attempts to attack Secure OS, describes setups for attacks (how attack was performed) and real reaction of system to these attacks.
 
 Create a plan of sub chapters with brief description
 If needed - rename some sub chapters if there is more suitable naming, or maybe add some sub chapters or points if there is anything else to say to enhance the structure.
