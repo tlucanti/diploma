@@ -1193,22 +1193,42 @@
 ---
 
 # Chapter 4: Evaluation and Security Analysis
-
  ## Software Stack Setup
-  ### Emulations Enviroment
+ - This section provides a detailed description of the full software environment used to support and validate the Secure OS, focusing on emulation, build infrastructure, and integration with toolchains.
+ - This chapter is essential to reproduce the development setup and benchmark context.
+  ### Toolchains
+  - Description of RISC-V GCC or LLVM toolchain versions, secure OS and TA compilation flags, linker scripts used, and build script wrappers.
+   #### Development Environment
+   - Recommended dev environment setup: OS dependencies, Make/CMake/gcc versions, scripting helpers, debugging support (e.g., GDB hooks to Secure OS), and virtual machine setup, if applicable.
+  ### Emulation Environment
+  - A robust emulation setup using QEMU provides a virtual platform to simulate the RISC-V World Guard hardware and enables rapid development and testing.
    #### QEMU with WorldGuard Support
-   #### QEMU modifications
+   - Explanation of QEMU version used and modifications or forks maintained to support the World Guard extension.
    #### QEMU Configuration
+   - QEMU settings used during emulation: memory map, number of harts, device tree blob (DTB) settings, and boot arguments necessary to launch both Secure OS and Linux.
+   - Also covers usage of debugging options and UART output customization.
   ### Linux
+  - A Secure World-aware Linux kernel build is a key part of the integration testing, providing the userland-controlled "Normal World" for Secure OS interaction.
    #### Linux with WorldGuard Support
-   #### Linux modifications
+   - Brief explanation of the version/fork of the Linux kernel used, including any upstream or out-of-tree patches to support Secure OS interaction and WorldGuard.
    #### Linux Configuration
+   - Kernel config menu options (e.g., minimal init system, character device support, TEE driver integration) and explanation of chosen configurations.
    #### Linux Image
+   - Process of creating the kernel image and initial RAM filesystem (initramfs); integration into QEMU boot flow and linkage with rootfs/init and Secure OS debug output collection.
   ### Build System
-   #### Cmake configuration
-   #### Cmake build system design
+  - The build system is centralized and modular to build various components including the kernel, trusted applications, OpenSBI, and Linux.
+   #### CMake Configuration
+   - How the overall build system is managed using CMake files: compiler toolchains, cross-compilation targets, component path registration, and reusability across Secure OS kernel and TA build systems.
+   #### CMake Build System Design
+   - Code organization and dependency separation. Build phases: TA compilation, kernel linking, staging and image generation. Covers options or build presets (e.g., debug vs release), and the way it cooperates with toolchains and QEMU images.
+   #### Trusted Application (TA) Build Flow
+   - Explains how a TA is built, manifests are generated, linking to standard libraries, and embedding into final system images.
   ### CI Integration
-   #### ...
+  - Automated testing ensures regression-free development and reliable build stability.
+   #### Continuous Integration Setup
+   - Framework used for testing (e.g., GitHub Actions, GitLab CI, Jenkins), pipeline stages—such as QEMU boot test, TA invocation test—and artifacts generation.
+   #### Automated Testing Scripts
+   - Details on scripts and system outputs validated within CI. Boot success, basic syscall availability and secure/normal world boundary integrity.
 
  ## Demonstration of Secure OS Functionality
   ### Building Porcess
