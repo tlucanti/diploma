@@ -1288,30 +1288,48 @@
    - Logging from TAs printed using standard I/O libraries.
 
  ## Security Analysis
-  ### Review of Threat Model and Security Goals
-   #### Potential Attack Vectors and Mitigations
-   #### Compiance wth the Threat Model
-
+ - In this section, we evaluate the security posture of the Secure OS by analyzing the resilience of its architecture to a variety of threats according to the threat model defined in Chapter 2.
+ - For each scenario, we describe the setup, the simulated or real attack, and the system's actual response.
+ - The analysis is grounded in practical testing on an emulation environment backed by software instrumentation and tracing.
   ### Resilience against Normal World Attacks
+  - This subsection evaluates the Secure OS against a potentially hostile rich OS (Linux) running in the Normal World.
    #### Unauthorized Access to Secure Memory
-   - (Prevented by World Guard/PMP)
+   - Attack Setup: Linux kernel driver attempts to read/write physical page mappings belonging to Secure OS.
+   - Observation: Memory protection enforced with World Guard prevents access; bus errors raised correctly.
    #### Unauthorized Access to Secure OS/TA Code
-   - (Prevented by World Guard/PMP)
+   - Attack Setup: Linux attempts to scan Trusted Application code or Secure OS binary via /dev/mem or similar - - methods.
+   Observation: Memory remains inaccessible due to hardware separation and lack of mapping in the normal world.
    #### Attempts to Corrupt Shared Memory Queues
-   - (Validation, Secure OS checks)
-   #### Exploiting CWC Protocol
-   - (Input validation, state management)
-  ### Resilience against buggy TAs
+   - Attack Setup: Malformed or oversized requests injected into shared communication pages.
+   - Observation: Secure OS validates request format; invalid requests rejected and logged, avoiding buffer overflows.
+   #### Exploiting CWC Protocol (Cross World Communication)
+   - Attack Setup: Linux attempts to race against a Secure OS processing request by overwriting in-flight messages.
+   - Observation: Lock-free queue only uses relative indexes in accesses, so it prevents reads and writes from unexpected pointers. So if index is corrupted (out of bounds) - it will be ignored
+  ### Resilience against Buggy Trusted Applications
+  - Important to ensure Secure OS protects itself even in case of flawed Trusted Applications.
    #### Inter-TA Isolation
-   - Memory
-   #### Capabilities
-  ### Potential Vulnerabilities and Limitations
+   Attack Setup: One TA attempts to access memory or channel of another TA.
+   Observation: Physical and logical isolation enforced; failed access due to missing capabilities; Secure OS rejects request.
+   #### Capability Enforcement Engine
+   Attack Setup: Malformed syscall using an invalid or forged handle; fuzzing against the Secure OS syscall interface.
+   Observation: Consistent rejection due to absence of capability introspection in root task's manifest.
+   #### TA Resource Misuse Protection
+   Attack Setup: Malicious or buggy TA requests excess memory, opens too many handles.
+   Observation: Secure OS enforces per-task quotas; resource exhaustion attempts fail gracefully.
    #### Side-Channel Attacks
-   - (Brief discussion, future work)
+   Scenario: Timing variation attacks on Secure OS execution; cache access pattern leakage.
+   Observation: Not possible separation due to architecture-level isolation (e.g., cores/cache).
+  ### Additional Attack Scenarios and Limitations
+  - This section groups attacks that are currently outside the full mitigation scope or require future hardening efforts.
    #### Physical Attacks
-   - (Out of scope for software TEEs generally)
-   #### Complexity of TCB (Trusted Computing Base)
-   #### Attacks on Root of Trust
+   Scenario: Direct DRAM probing, bus sniffer or glitching attacks on OTP or memory controller.
+   Observation: Physical attack resistance not yet applied; relies on external platform features.
+   #### Complexity of Trusted Computing Base (TCB)
+   Exploration: How large and auditable is the TCB?
+   Observation: Secure OS kernel remains minimal and auditable, but Trusted Applications contribute to overall TCB and must be vetted.
+   #### Chain of Trust Attacks
+   Scenario: Malicious OpenSBI image or Secure OS loader.
+   Observation: Evaluation based on boot integrity; Secure Boot implementation assumed but not fully integrated in prototype.
 
  ## Performance Evaluation
   ### Latency of operations
