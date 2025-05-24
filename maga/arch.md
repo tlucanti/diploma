@@ -1231,20 +1231,61 @@
    - Details on scripts and system outputs validated within CI. Boot success, basic syscall availability and secure/normal world boundary integrity.
 
  ## Demonstration of Secure OS Functionality
-  ### Building Porcess
-   #### Clone repos
-   #### building toolchain
-   #### building QEMU
-   #### building OpenSBI
-   #### building Linux
-   #### building Secure OS
-  ### Example of Simple Trusted Application service
-   #### creating simple application
-   #### building TA
-  ### Demostration of TA Execution
-   #### booting the system
-   #### starting linux driver and opening session
-   #### Invoking Sample TA
+ - In this section, we showcase the practical use and integration of the Secure OS, including building the software stack, developing a minimal Trusted Application (TA), and demonstrating its execution using the Linux-side communication driver.
+  ### Building the Software Stack
+   - This subsection outlines detailed steps to build all required components for running the full software stack in a QEMU-based RISC-V emulated environment.
+   #### Cloning Project Repositories
+   - Steps to clone Secure OS, OpenSBI, Linux kernel, QEMU, and any required dependency sources.
+   #### Building the Cross Toolchain
+   - Building or fetching a RISC-V cross-compilation toolchain.
+   - Required versions and environment setup.
+   #### Building the WorldGuard-Enabled QEMU
+   - Building QEMU with required patches for WorldGuard support.
+   - Notes on configuration flags and validation of WorldGuard support.
+   #### Building the Patched OpenSBI
+   - Compilation of an OpenSBI fork with additional code to support WorldGuard boot flow.
+   - Integration of Secure OS handoff from M-mode.
+   #### Building a WorldGuard-Aware Linux Image
+   - Configuration options for enabling WorldGuard awareness in Linux.
+   - Applying required patches, configuring the kernel, and generating an image.
+   #### Building Secure OS
+   - Step-by-step instructions on configuring and compiling the Secure OS kernel.
+   - Overview of CMake-based build, memory layout specification, and output binaries.
+   - Preparing and including predefined TA manifests.
+   #### Assembling Bootable Image
+   - Integrating OpenSBI, Linux, and Secure OS into a QEMU-bootable image.
+   - Image layout overview and loading addresses.
+  ### Example Trusted Application: Simple Arithmetic TA
+  - Presents the practical development of a basic trusted application that offers simple arithmetic operations, to serve as a demonstrative example.
+   #### Writing a Simple Trusted Application
+   - Creating a minimal TA: hello world service (or similar).
+   #### Defining TA Manifest for Capability Model
+   - Creating a manifest describing required permissions and object handles.
+   - Integrating the TA in root task’s manifest for launch.
+   #### Building the Trusted Application
+   - Using build system to compile and link the TA.
+   - Output format (ELF) and file placement for boot.
+  ### Demonstration and Execution
+  - This subsection illustrates booting full system with communication between Linux and Secure OS via the sample TA.
+   #### Booting the System
+   - Launching QEMU with appropriate flags and verifying CPU/world isolation.
+   - Boot logs highlighting OpenSBI handoff and Secure OS initialization.
+   #### Initializing the Linux Driver for Secure OS Communication
+   - Loading the Linux kernel module for Secure OS communication.
+   - Debug output validating setup of shared communication queues.
+   #### Opening a Session to Trusted Application
+   - Using the TEE Client API to initialize a session to the sample TA.
+   - Debug logs showing session creation and rendezvous with Secure OS.
+   #### Invoking the TA Function and Receiving Response
+   - Sending invoke command (e.g., multiplication request) from Linux-side.
+   - Observing execution through debug output from Secure OS and TA.
+   - Logging TA's output and Linux-side response resolution.
+   #### Visualizing Capability Enforcement (Optional)
+   - Showing an attempt to call unauthorized method or access restricted handle.
+   - Logging access denial via kernel enforcement logic.
+   #### Debugging and Logging Support
+   - Tail of secure log buffer dumped through secure syscall.
+   - Logging from TAs printed using standard I/O libraries.
 
  ## Security Analysis
   ### Review of Threat Model and Security Goals
