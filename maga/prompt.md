@@ -29,10 +29,9 @@ I have a draft of chapter 4:
   ### Example Trusted Application: Simple Arithmetic TA
   ### Demonstration and Execution
  ## Security Analysis
-  ### Review of Threat Model and Security Goals
   ### Resilience against Normal World Attacks
-  ### Resilience against buggy TAs
-  ### Potential Vulnerabilities and Limitations
+  ### Resilience against Buggy Trusted Applications
+  ### Additional Attack Scenarios and Limitations
  ## Performance Evaluation
   ### Latency of operations
   ### Communication Performance
@@ -46,24 +45,18 @@ I have a draft of chapter 4:
   ### Porting to Real RISC-V Hardware with WorldGuard
   ### Hardenings against Attacks
 
-Starting with 4.3 Security Analysis:
+Starting with 4.4 Performance Evaluation:
 I have a draft of structure:
 
- ## Security Analysis
-  ### Resilience against Normal World Attacks
-   #### Unauthorized Access to Secure Memory
-   #### Unauthorized Access to Secure OS/TA Code
-   #### Attempts to Corrupt Shared Memory Queues
-   #### Exploiting CWC Protocol
-  ### Resilience against buggy TAs
-   #### Inter-TA Isolation
-   #### Capabilities
-  ### Potential Vulnerabilities and Limitations
-   #### Side-Channel Attacks
-   #### Physical Attacks
-   #### Complexity of TCB (Trusted Computing Base)
-
-This section is about attempts to attack Secure OS, describes setups for attacks (how attack was performed) and real reaction of system to these attacks.
+ ## Performance Evaluation
+  ### Latency of operations
+   #### Latency for open
+   #### Latency for invoke
+   #### Latency for close
+  ### Communication Performance
+   #### Throughtput of CWC channel
+   #### TA Context switch overhead
+   #### Memory footprint
 
 Create a plan of sub chapters with brief description
 If needed - rename some sub chapters if there is more suitable naming, or maybe add some sub chapters or points if there is anything else to say to enhance the structure.
