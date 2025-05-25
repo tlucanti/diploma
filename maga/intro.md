@@ -1,18 +1,39 @@
 
-<p style="text-align: center;">МИНОБРНАУКИ РОССИИ</p>
-<p style="text-align: center;">Федеральное государственное автономное образовательное учреждение высшего образования</p>
-<p style="text-align: center;">«Национальный исследовательский университет</p>
-<p style="text-align: center;">«Московский институт электронной техники»</p>
+<p style="text-align: center;">
+  МИНОБРНАУКИ РОССИИ
+</p>
+<p style="text-align: center;">
+  Федеральное государственное автономное образовательное учреждение
+  высшего образования
+</p>
+<p style="text-align: center;">
+  «Национальный исследовательский университет
+</p>
+<p style="text-align: center;">
+  «Московский институт электронной техники»
+</p>
 <br></br>
-<p style="text-align: center;">Институт микроприборов и систем управления</p>
+<p style="text-align: center;">
+  Институт микроприборов и систем управления
+</p>
 <br></br>
 <br></br>
-<p style="text-align: center;">Семичастнов Константин Владиславович</p>
+<p style="text-align: center;">
+  Семичастнов Константин Владиславович
+</p>
 <br></br>
-<p style="text-align: center;">Магистерская работа</p>
-<p style="text-align: center;">по направлению 09.04.01 «Информатика и вычислительная техника»</p>
+<p style="text-align: center;">
+  Магистерская работа
+</p>
+<p style="text-align: center;">
+  по направлению 09.04.01 «Информатика и вычислительная техника»
+</p>
 <br></br>
-<p style="text-align: center;">Разработка SecureOS для платформы RISC-V с расширением WorldGuard</p>
+<p style="text-align: center;">
+  <b>
+   Разработка SecurityOS для платформы RISC-V с расширением WorldGuard
+  </b>
+</p>
 <br></br>
 <br></br>
 <br></br>
@@ -24,8 +45,9 @@
 Руководитель, к.т.н.         ______________     Лупин С. А.
 </pre>
 <br></br>
-<p style="text-align: center;">Москва 2025</p>
-
+<p style="text-align: center;">
+  Москва 2025
+</p>
 <div style="page-break-after: always;"></div>
 
 # Аннотация
