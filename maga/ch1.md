@@ -3,15 +3,20 @@
  ## Background and Motivation
   ### Background on Trusted Execution Environments
    #### Introduction to Trusted Execution Environments
-   - Modern device execution paradigms: Today’s devices — from smartphones to IoT and servers — often run more than one operating system concurrently on the same processor.
-   - Parallel operating environments: Typically, there is a Normal Execution Environment where the main OS and applications run, and a separate Secure Execution Environment designed to protect sensitive code and data.
-   - Purpose of this separation: Provides hardware-enforced isolation that allows sensitive computations (e.g., cryptography, DRM, payment processing) to occur securely without interference from normal system components or potential attackers.
-   - the normal OS manages everyday tasks, but sensitive operations happen inside a protected environment.
+   Modern computing devices, ranging from smartphones and IoT devices to servers, often run multiple operating systems concurrently on the same processor. This parallel execution environment typically consists of a Normal Execution Environment, where the main operating system and applications run, and a separate Secure Execution Environment designed to protect sensitive code and data. The primary purpose of this separation is to provide hardware-enforced isolation, allowing sensitive computations such as cryptography, digital rights management (DRM), and payment processing to occur securely without interference from the normal system components or potential attackers.
+
+   In this dual-environment setup, the normal operating system manages everyday tasks, while sensitive operations are executed within a protected environment. This separation is crucial for ensuring the security and integrity of sensitive data and operations. The normal world, where the main OS runs, is typically considered untrusted or less trusted compared to the secure world, which is designed to be secure and isolated.
+
+   The concept of Trusted Execution Environments (TEEs) has emerged as a critical component in modern security architectures. TEEs provide a secure environment for executing sensitive code and handling sensitive data, isolated from the normal execution environment. This isolation is enforced by hardware mechanisms, ensuring that even if the normal world operating system or applications are compromised, the security of the sensitive operations in the secure world remains intact.
+
+   The role of TEEs in modern security architectures is multifaceted. They not only protect sensitive information and operations but also provide a foundation for various security services, including secure storage, cryptographic operations, and secure boot mechanisms. As the need for secure processing continues to grow, driven by the increasing complexity of modern devices and the expanding range of sensitive applications, the importance of TEEs in ensuring the security and trustworthiness of computing environments becomes ever more pronounced.
+
+   In summary, Trusted Execution Environments are a fundamental component of contemporary security architectures, providing the necessary isolation and protection for sensitive operations and data. Their hardware-enforced separation from the normal execution environment ensures the integrity and confidentiality of critical computations, making them indispensable in today's computing landscape.
    #### Evolution of Trusted Execution Environments
    - Brief history of TEEs in modern computing
    - dedicated secure coprocessors or special hardware modules (e.g., SmartCards, TPMs).
    - Comparison of different TEE implementations: typical architecture, communication methods, ecosystem maturity
-   #### The Role of TEEs in Modern Security Archoitectures
+   #### The Role of TEEs in Modern Security Architectures
    - Modern TEEs like ARM TrustZone and Intel SGX provide tightly integrated, hardware-enforced isolation within the main CPU, able to run complex trusted applications alongside a rich OS environment
    - modern TEEs support a wide range of complex applications beyond simple cryptographic tasks, including secure UI, attestation, and trusted computing on the cloud and edge
    - but regardless such popularity, there is still demand for transparent, open-source TEEs to overcome vendor lock-in and improve security audits

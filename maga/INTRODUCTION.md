@@ -172,5 +172,6 @@
   - СнК (SoC) - Система На Кристале (System On Chip)
   - ОС (OS) - Операционная Систем (Operating System)
   - IoT - Internet Of Things (Интернет Вещей)
+  - DRM - Digital Rights Management (Управление Цифровыми Правами)
 
 ---
