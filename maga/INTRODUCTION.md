@@ -171,5 +171,6 @@
   - УСИ (REE) - Универсальная Среда Исполнения (Rich Execution Environment)
   - СнК (SoC) - Система На Кристале (System On Chip)
   - ОС (OS) - Операционная Систем (Operating System)
+  - IoT - Internet Of Things (Интернет Вещей)
 
 ---
