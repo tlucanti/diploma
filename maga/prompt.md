@@ -10,55 +10,84 @@ I need to write Master's thesis abort part with Secure OS.
 It should have 4 chapters:
 
 # Chapter 1: Foundations and Motivation for an Open Secure OS on RISC-V
-# Chapter 2. Core Principles of Trusted Execution Environment and Threat Model
+# Chapter 2: Core Principles of Trusted Execution Environment and Threat Model
 # Chapter 3: Design and Implementation of the Secure Operating System
 # Chapter 4: Evaluation and Security Analysis
 
-So, 4th chapter is about Evaluation and Security Analysis
-I have a draft of chapter 4:
+So, 1th chapter is about Foundations and Motivation for an Open Secure OS on RISC-V
+I have a draft of chapter 1:
 
-# Chapter 4: Evaluation and Security Analysis
- ## Software Stack Setup
-  ### Toolchains
-  ### Emulation Environment
-  ### Linux
-  ### Build System
-  ### CI Integration
- ## Demonstration of Secure OS Functionality
-  ### Building the Software Stack
-  ### Example Trusted Application: Simple Arithmetic TA
-  ### Demonstration and Execution
- ## Security Analysis
-  ### Resilience against Normal World Attacks
-  ### Resilience against Buggy Trusted Applications
-  ### Additional Attack Scenarios and Limitations
- ## Performance Evaluation
-  ### Latency of operations
-  ### Communication Performance
- ## Conclusions
- ## Future Work
-  ### Advanced TA Features
-  ### Trusted User Interface Implementation
-  ### Multicore Support for Secure World
-  ### Formal Verification of Secure Components
-  ### Dynamic TA Loading
-  ### Porting to Real RISC-V Hardware with WorldGuard
-  ### Hardenings against Attacks
+# Chapter 1: Foundations and Motivation for an Open Secure OS on RISC-V
+ ## Background and Motivation
+  ### Background on Trusted Execution Environments
+   #### Introduction to Trusted Execution Environments
+   #### Evolution of Trusted Execution Environments
+   #### The Role of TEEs in Modern Security Archoitectures
+  ### Current State of TEEs on Proprietary Architectures
+   #### Limitations of existing TEEs on Proprietary Architectures
+   #### Technical and Operational Challenges
+   #### Licensing in Proprietary Architectures
+  ### The RISC-V Opportunity: Openness and Extensibility
+   #### Open-Source Hardware and RISC-V’s Emergence
+   #### The RISC-V Instruction Set Architecture (ISA)
+   #### Advantages of an Open Architecture for Security
+ ## Problem Statement
+  ### Current State of TEEs on RISC-V Architecture
+   #### Current Status of RISC-V’s Security Ecosystem
+   #### WorldGuard State
+  ### The Emerging Need for Open and Flexible Solutions
+   #### Deficiency of Open TEE Standards and Interfaces for RISC-V
+   #### Motivation for an Open-Source Trusted Operation System
+   #### Ecosystem Benefits
+ ## Relevance and Applications
+  ### Rapid Growth of RISC-V in Commercial and Industrial Domains
+   #### Wide Deployment Across Diverse Product Areas
+   #### Absence of Security-Integrated Products to Date
+   #### Motivation to Develop Secure RISC-V Solutions
+  ### Expanding Security Requirements in Modern Computing
+   #### Essential Security Functions in Contemporary Products
+  #### RISC-V’s Untapped Potential for Secure Applications
+ ## Comparison with Existing Architectures
+  ### ARM TrustZone: Centralized Secure World Model
+   #### Overview
+   #### Advantages
+   #### Disadvantages
+  ### Intel Software Guard Extensions (SGX): Enclave-Based Isolation
+   #### Overview
+   #### Advantages
+   #### Disadvantages
+  ### AMD Secure Encrypted Virtualization (SEV)
+   #### Overview
+   #### Advantages
+   #### Disadvantages
+  ### RISC-V’s World Guard Extension: Decentralized Isolation
+   #### Overview
+   #### Advantages
+   #### Disadvantages
+  ### Summary and Comparative Analysis
+ ## Related Work
+  ### Academic Research on RISC-V TEEs
+   #### Survey of recent research on trusted execution for RISC-V
+   #### Gaps identified in academia researches
+  ### Proprietary vs- Opsn-Source TEE Solutions
+   #### Alibaba Cloud Link
+   #### Apple Secure Enclave
+   #### Huawei iTrustee
+   #### Google Trusty
+   #### Samsung TEEgris
+   #### SiFive's private Secure OS for WorldGuard
+  ### Complementary Papers
+   #### Linux Integration for Secure OS Communication
+   #### TEE Interface and OpenSBI Extensions
 
-Starting with 4.4 Performance Evaluation:
-I have a draft of structure:
+Starting with 1.1.1 Introduction to Trusted Execution Environments:
+I have a draft of this section:
 
- ## Performance Evaluation
-  ### Latency of operations
-   #### Latency for open
-   #### Latency for invoke
-   #### Latency for close
-  ### Communication Performance
-   #### Throughtput of CWC channel
-   #### TA Context switch overhead
-   #### Memory footprint
+- Modern device execution paradigms: Today’s devices — from smartphones to IoT and servers — often run more than one operating system concurrently on the same processor.
+- Parallel operating environments: Typically, there is a Normal Execution Environment where the main OS and applications run, and a separate Secure Execution Environment designed to protect sensitive code and data.
+- Purpose of this separation: Provides hardware-enforced isolation that allows sensitive computations (e.g., cryptography, DRM, payment processing) to occur securely without interference from normal system components or potential attackers.
+- the normal OS manages everyday tasks, but sensitive operations happen inside a protected environment.
 
-Create a plan of sub chapters with brief description
-If needed - rename some sub chapters if there is more suitable naming, or maybe add some sub chapters or points if there is anything else to say to enhance the structure.
-full draft of whole paper is in attached file
-print answer in raw markdown format
+write contents of section based on draft.
+If needed - maybe add some points if there is anything else to say by topic.
+full structure of whole paper is in the attached file
