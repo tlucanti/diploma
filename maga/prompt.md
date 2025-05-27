@@ -80,14 +80,13 @@ I have a draft of chapter 1:
    #### Linux Integration for Secure OS Communication
    #### TEE Interface and OpenSBI Extensions
 
-Starting with 1.1.1 Introduction to Trusted Execution Environments:
+Starting with 1.1.1.2 Evolution of Trusted Execution Environments:
 I have a draft of this section:
 
-- Modern device execution paradigms: Today’s devices — from smartphones to IoT and servers — often run more than one operating system concurrently on the same processor.
-- Parallel operating environments: Typically, there is a Normal Execution Environment where the main OS and applications run, and a separate Secure Execution Environment designed to protect sensitive code and data.
-- Purpose of this separation: Provides hardware-enforced isolation that allows sensitive computations (e.g., cryptography, DRM, payment processing) to occur securely without interference from normal system components or potential attackers.
-- the normal OS manages everyday tasks, but sensitive operations happen inside a protected environment.
+   - Brief history of TEEs in modern computing
+   - dedicated secure coprocessors or special hardware modules (e.g., SmartCards, TPMs).
+   - Comparison of different TEE implementations: typical architecture, communication methods, ecosystem maturity
 
 write contents of section based on draft.
-If needed - maybe add some points if there is anything else to say by topic.
+If needed - maybe add some points if there is anything else to say by topic, but not repeat yourself.
 full structure of whole paper is in the attached file
