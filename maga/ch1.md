@@ -35,25 +35,28 @@
 
   ### Current State of TEEs on Proprietary Architectures
    #### Limitations of existing TEEs on Proprietary Architectures
-   The current Trusted Execution Environments (TEEs) on proprietary architectures suffer from several limitations that hinder their widespread adoption and effectiveness in modern computing ecosystems.
+   Despite their widespread deployment, traditional Trusted Execution Environments (TEEs) on proprietary architectures—such as ARM, Intel, and AMD platforms—impose several fundamental limitations. These constraints impact both the flexibility of security solutions and the broader technology ecosystem. The primary limitations are discussed below:
 
-   One of the primary limitations is the vendor lock-in that comes with proprietary TEEs. These environments are often tightly coupled with specific hardware and software ecosystems, making it challenging for developers to port their applications across different platforms. This lock-in not only restricts the flexibility of developers but also increases the dependency on the vendor for security updates, bug fixes, and feature enhancements. As a result, the cost of development and maintenance escalates, and innovation is stifled due to the constraints imposed by the proprietary nature of these TEEs.
+   **Vendor Lock-in and Dependency**
+   Most proprietary TEEs are intimately tied to the hardware vendor's platform, creating an environment of strong vendor lock-in. Consumers of these technologies, whether systems integrators or application developers, become reliant on the hardware manufacturer for long-term security updates, support, and ecosystem compatibility. This dependency restricts the deployment of custom security features and inhibits rapid innovation, as all enhancements must align with the vendor's roadmap and approval process.
 
-   Proprietary TEEs operate within closed ecosystems that are not openly accessible for scrutiny, modification, or extension by the broader developer community. This lack of transparency and openness can lead to several issues:
+   **Closed and Proprietary Ecosystems**
+   The implementations of proprietary TEEs are typically closed-source, with crucial architectural details kept undisclosed. This lack of transparency means users and researchers cannot fully audit, modify, or verify the correctness and security of TEE implementations. Furthermore, trusted application development is subject to tightly controlled vendor toolchains, restrictive SDKs, and proprietary APIs, which hinder portability, independent validation, and third-party ecosystem growth.
 
-   1. **Security through Obscurity**: The security of these systems relies heavily on the secrecy of their implementation details. However, this approach is fundamentally flawed as it is often the case that "secrets" are eventually uncovered, and without public scrutiny, vulnerabilities may remain unpatched for extended periods.
+   **Hardware Complexity and Rigidity**
+   Proprietary architectures often implement TEEs as fixed-function hardware modules (such as Arm TrustZone or Intel SGX enclaves) with rigid boundaries and strictly defined isolation mechanisms. This rigid design limits the ability to adapt the TEE to novel use cases or to tune the level of isolation and performance characteristics for specific workloads. For example, the secure world and normal world division on ARM TrustZone is architecturally constrained, which can impede fine-grained security policies or optimized resource sharing. Additionally, these fixed designs may prove insufficient for emerging workloads, such as edge computing or rapidly evolving IoT environments.
 
-   2. **Limited Customizability**: The inability to modify or customize these TEEs according to specific needs or to adapt to emerging threats and requirements means that users and developers are constrained by the vendor's vision and roadmap.
+   **Fixed ISA with No Scope for Tailoring or Extension**
+   Traditional proprietary CPU vendors expose only a fixed instruction set, with little to no possibility for customization or extension by system integrators. As security threats evolve and new defense mechanisms are researched, the lack of ability to extend the instruction set or add novel CPU security features at the hardware level impedes both rapid prototyping and the deployment of advanced security primitives. This lack of ISA flexibility slows response to emerging threats and constrains researchers' ability to explore alternative TEE designs.
 
-   3. **Interoperability Issues**: Closed ecosystems typically suffer from interoperability issues with other systems or TEEs from different vendors. This can significantly limit the potential applications and the overall utility of these TEEs in diverse and heterogeneous computing environments.
+   **Limited Interoperability and Ecosystem Fragmentation**
+   Each proprietary architecture typically provides its own unique TEE implementation, interface specifications, and lifecycle management. As a result, TEEs are generally not interoperable between vendors or even across different product lines from the same vendor. This siloed approach causes fragmentation, complicates cross-platform secure application development, and reduces opportunities for broader standardization and industry-wide adoption of best security practices.
 
-   4. **Compliance and Certification**: The proprietary nature of these TEEs can complicate compliance with open standards and certification processes, potentially leading to additional costs and barriers to market entry.
+   **Barriers to Academic Research and Independent Innovation**
+   Due to NDA requirements, licensing agreements, and lack of documentation, proprietary TEE platforms pose high barriers to academic researchers and third-party developers. This restricts exploration of alternative TEE security models, formal verification of TEE code, and collaborative security research, thereby slowing overall progress in the field.
 
-   In summary, the limitations of existing TEEs on proprietary architectures, including vendor lock-in and closed ecosystems, significantly impede their flexibility, security, and overall effectiveness. These challenges underscore the need for open and flexible TEE solutions that can be adapted, scrutinized, and improved upon by a wider community of developers and researchers.
+   In summary, the proprietary and inflexible nature of traditional TEEs limits security innovation, adaptability, and transparency. These deficiencies highlight the need for open and extensible secure execution environments, paving the way for open architectures—such as RISC-V—to address these shortcomings and foster a more flexible, auditable, and collaborative approach to trusted computing.
 
-   #### Technical and Operational Challenges
-   - Hardware Complexity and Rigidity
-   - Fixed ISA with no scope for tailoring or extension
    #### Licensing in Proprietary Architectures
    - Economic Impact of Proprietary Licensing
    - Licensing fees increase development and production costs

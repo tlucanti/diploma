@@ -85,6 +85,8 @@ I have a draft of this section:
 
 - Vendor Lock-in and Dependency
 - Closed and Proprietary Ecosystems
+- Hardware Complexity and Rigidity
+- Fixed ISA with no scope for tailoring or extension
 
 write contents of section based on draft.
 If needed - maybe add some points if there is anything else to say by topic, but not repeat yourself.
