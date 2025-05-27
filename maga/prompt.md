@@ -80,12 +80,13 @@ I have a draft of chapter 1:
    #### Linux Integration for Secure OS Communication
    #### TEE Interface and OpenSBI Extensions
 
-Starting with 1.1.1.2 Evolution of Trusted Execution Environments:
+Starting with 1.1.1.3 The Role of TEEs in Modern Security Architectures:
 I have a draft of this section:
 
-   - Brief history of TEEs in modern computing
-   - dedicated secure coprocessors or special hardware modules (e.g., SmartCards, TPMs).
-   - Comparison of different TEE implementations: typical architecture, communication methods, ecosystem maturity
+- Modern TEEs like ARM TrustZone and Intel SGX provide tightly integrated, hardware-enforced isolation within the main CPU, able to run complex trusted applications alongside a rich OS environment
+- modern TEEs support a wide range of complex applications beyond simple cryptographic tasks, including secure UI, attestation, and trusted computing on the cloud and edge
+- but regardless such popularity, there is still demand for transparent, open-source TEEs to overcome vendor lock-in and improve security audits
+- Growing needs to support more heterogeneous and multi-core environments
 
 write contents of section based on draft.
 If needed - maybe add some points if there is anything else to say by topic, but not repeat yourself.

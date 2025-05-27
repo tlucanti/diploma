@@ -23,10 +23,16 @@
    The evolution of TEEs has provided valuable lessons and insights into the design and implementation of secure execution environments. Future TEE developments are expected to focus on addressing emerging threats and challenges, such as side-channel attacks and quantum computer attacks. Additionally, TEEs are likely to become even more integrated with mainstream computing systems, enabling more efficient and secure execution of sensitive code and data.
 
    #### The Role of TEEs in Modern Security Architectures
-   - Modern TEEs like ARM TrustZone and Intel SGX provide tightly integrated, hardware-enforced isolation within the main CPU, able to run complex trusted applications alongside a rich OS environment
-   - modern TEEs support a wide range of complex applications beyond simple cryptographic tasks, including secure UI, attestation, and trusted computing on the cloud and edge
-   - but regardless such popularity, there is still demand for transparent, open-source TEEs to overcome vendor lock-in and improve security audits
-   - Growing needs to support more heterogeneous and multi-core environments
+   Trusted Execution Environments (TEEs) play a crucial role in modern security architectures by providing a secure environment for executing sensitive code and handling confidential data. Modern TEEs, such as ARM TrustZone and Intel SGX, offer tightly integrated, hardware-enforced isolation within the main CPU. This isolation enables the execution of complex trusted applications alongside a rich OS environment, ensuring the confidentiality and integrity of sensitive operations.
+
+   The capabilities of modern TEEs extend beyond simple cryptographic tasks. They support a wide range of complex applications, including secure UI, attestation, and trusted computing on the cloud and edge. For instance, TEEs can be used to create secure environments for authentication processes, protecting user credentials from compromise. They also facilitate the execution of trusted applications that require secure storage and processing of sensitive data.
+
+   Despite their popularity and the significant benefits they offer, there remains a demand for transparent, open-source TEEs. The primary motivations behind this demand are to overcome vendor lock-in and to improve security through rigorous audits. Open-source TEEs can be scrutinized by a broader community, potentially leading to more secure implementations as vulnerabilities can be identified and addressed more effectively.
+
+   Furthermore, as computing environments become increasingly heterogeneous and multi-core, there is a growing need for TEEs that can efficiently support these architectures. The ability to manage and secure diverse computing resources is becoming essential for maintaining the overall security posture of modern systems.
+
+   In summary, TEEs are foundational to modern security architectures, providing the necessary isolation and security features for sensitive operations. The evolution towards more open and flexible TEE solutions is driven by the need for greater transparency, security, and adaptability in an increasingly complex computing landscape.
+### 1.1.1.3 The Role of TEEs in Modern Security Architectures
   ### Current State of TEEs on Proprietary Architectures
    #### Limitations of existing TEEs on Proprietary Architectures
    - Vendor Lock-in and Dependency
