@@ -32,11 +32,25 @@
    Furthermore, as computing environments become increasingly heterogeneous and multi-core, there is a growing need for TEEs that can efficiently support these architectures. The ability to manage and secure diverse computing resources is becoming essential for maintaining the overall security posture of modern systems.
 
    In summary, TEEs are foundational to modern security architectures, providing the necessary isolation and security features for sensitive operations. The evolution towards more open and flexible TEE solutions is driven by the need for greater transparency, security, and adaptability in an increasingly complex computing landscape.
-### 1.1.1.3 The Role of TEEs in Modern Security Architectures
+
   ### Current State of TEEs on Proprietary Architectures
    #### Limitations of existing TEEs on Proprietary Architectures
-   - Vendor Lock-in and Dependency
-   - Closed and Proprietary Ecosystems
+   The current Trusted Execution Environments (TEEs) on proprietary architectures suffer from several limitations that hinder their widespread adoption and effectiveness in modern computing ecosystems.
+
+   One of the primary limitations is the vendor lock-in that comes with proprietary TEEs. These environments are often tightly coupled with specific hardware and software ecosystems, making it challenging for developers to port their applications across different platforms. This lock-in not only restricts the flexibility of developers but also increases the dependency on the vendor for security updates, bug fixes, and feature enhancements. As a result, the cost of development and maintenance escalates, and innovation is stifled due to the constraints imposed by the proprietary nature of these TEEs.
+
+   Proprietary TEEs operate within closed ecosystems that are not openly accessible for scrutiny, modification, or extension by the broader developer community. This lack of transparency and openness can lead to several issues:
+
+   1. **Security through Obscurity**: The security of these systems relies heavily on the secrecy of their implementation details. However, this approach is fundamentally flawed as it is often the case that "secrets" are eventually uncovered, and without public scrutiny, vulnerabilities may remain unpatched for extended periods.
+
+   2. **Limited Customizability**: The inability to modify or customize these TEEs according to specific needs or to adapt to emerging threats and requirements means that users and developers are constrained by the vendor's vision and roadmap.
+
+   3. **Interoperability Issues**: Closed ecosystems typically suffer from interoperability issues with other systems or TEEs from different vendors. This can significantly limit the potential applications and the overall utility of these TEEs in diverse and heterogeneous computing environments.
+
+   4. **Compliance and Certification**: The proprietary nature of these TEEs can complicate compliance with open standards and certification processes, potentially leading to additional costs and barriers to market entry.
+
+   In summary, the limitations of existing TEEs on proprietary architectures, including vendor lock-in and closed ecosystems, significantly impede their flexibility, security, and overall effectiveness. These challenges underscore the need for open and flexible TEE solutions that can be adapted, scrutinized, and improved upon by a wider community of developers and researchers.
+
    #### Technical and Operational Challenges
    - Hardware Complexity and Rigidity
    - Fixed ISA with no scope for tailoring or extension
