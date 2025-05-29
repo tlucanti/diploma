@@ -178,5 +178,6 @@
   - RTL - Register Transfer Level (Уровень Регистровых Передач)
   - RISC - Reduced Instruction Set Computer (Вычислитель с Сокращённым Набором Команд)
   - TCB - Trusted Computing Base (Доверенная Вычислительная База)
+  - PMP - Physical Memory Protection (Защита Физической Памяти)
 
 ---

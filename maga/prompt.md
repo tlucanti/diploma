@@ -80,14 +80,13 @@ I have a draft of chapter 1:
    #### Linux Integration for Secure OS Communication
    #### TEE Interface and OpenSBI Extensions
 
-Starting with 1.1.2.2 The RISC-V Instruction Set Architecture (ISA):
+Starting with 1.2.1.1 Current Status of RISC-V Security Ecosystem:
 I have a draft of this section:
 
-- Modular and extensible ISA design
-- scalable
-- free
-- RISC
-- opensource
+- Immaturity of RISC-V Security Ecosystem
+- Fragmented and Limited Software Support
+- Lack of mature, standardized Secure OS implementations and TEE management tools
+- Early-stage experimental projects with limited stability and adoption
 
 write contents of section based on draft.
 If needed - maybe add some points if there is anything else to say by topic, but not repeat yourself.

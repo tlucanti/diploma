@@ -101,18 +101,40 @@
 
     In summary, the RISC-V ISA provides a flexible, transparent, and economically accessible foundation. Its RISC principles, modularity, scalability, and particularly its free and open approach, create a fertile ground for innovation in secure computing, enabling the development of specialized hardware extensions like WorldGuard and fostering an ecosystem where open, auditable secure operating systems can thrive. These attributes directly support the goals of this thesis in building an open Secure OS for the RISC-V WorldGuard extension.
 
-   #### Advantages of an Open Architecture for Security
-   - Reduced risk of hidden backdoors or proprietary vulnerabilities
-   - Community-driven security audits and improvements
-   - Facilitates experimentation with custom security extensions
-
  ## Problem Statement
   ### Current State of TEEs on RISC-V Architecture
    #### Current Status of RISC-V’s Security Ecosystem
-   - Immaturity of RISC-V Security Ecosystem
-   - Fragmented and Limited Software Support
-   - Lack of mature, standardized Secure OS implementations and TEE management tools
-   - Early-stage experimental projects with limited stability and adoption
+    The RISC-V architecture, with its open and extensible nature, presents a promising foundation for building secure computing systems. However, the security ecosystem surrounding RISC-V is, at present, in a nascent stage, particularly when compared to the mature security frameworks available for proprietary architectures like ARM or x86. This immaturity manifests in several key areas that create both challenges and opportunities for the development of robust Trusted Execution Environments (TEEs).
+
+    While RISC-V International has active groups working on security specifications (such as cryptography extensions, trusted execution, and memory protection), the overall security landscape is still evolving. The rapid innovation in core designs and custom extensions means that security features, and the software to support them, often lag behind general processing capabilities. This creates a dynamic but also somewhat unsettled environment for security development.
+
+*   **Fragmented and Limited Software Support:**
+    A significant characteristic of the current RISC-V security ecosystem is the fragmentation of software efforts. Unlike the well-established TEE solutions like ARM TrustZone or Intel SGX, which have a relatively cohesive software stack (albeit often proprietary), the RISC-V space features a diverse array of independent projects. This fragmentation means that software support for security features, including TEEs, is often specific to certain hardware implementations or research initiatives. Consequently, there is limited availability of broadly compatible, off-the-shelf software components crucial for building comprehensive security solutions. This includes a scarcity of readily available secure monitors, trusted bootloaders specifically hardened for diverse RISC-V platforms, and standardized libraries for secure application development.
+
+*   **Lack of Mature, Standardized Secure OS Implementations and TEE Management Tools:**
+    Directly stemming from the software fragmentation is the absence of mature and widely adopted, standardized Secure Operating System (SecOS) implementations for RISC-V. While several academic and vendor-specific SecOS projects exist, they often lack the maturity, comprehensive feature sets (e.g., full GlobalPlatform API compliance), rigorous testing, and broad community support seen in established TEE ecosystems. Similarly, TEE management tools – essential for provisioning, deploying, updating, and attesting Trusted Applications (TAs) – are not yet standardized or widely available for RISC-V platforms. This forces developers to either build these components from scratch or rely on vendor-specific, potentially non-interoperable solutions.
+
+*   **Prevalence of Early-Stage Experimental Projects:**
+    Much of the current work on RISC-V TEEs and SecOSs consists of early-stage experimental projects. These are often born out of academic research or as proofs-of-concept by silicon vendors to demonstrate the capabilities of their hardware security extensions (like early work with WorldGuard). While these projects are invaluable for exploring new security paradigms and pushing the boundaries of what's possible on RISC-V, they typically exhibit limitations in terms of stability, feature completeness, documentation, and long-term maintenance. Their adoption in production environments is therefore constrained, highlighting a gap between research potential and deployable solutions.
+
+*   **Hardware Security Feature Variability and Standardization Efforts:**
+    While RISC-V defines a base ISA, security-critical hardware extensions (like Physical Memory Protection - PMP, and emerging TEE-specific extensions such as WorldGuard or the proposed "Keystone" or "PUMP" mechanisms) are still in various stages of standardization, adoption, and implementation across different RISC-V cores. This variability means that a SecOS designed for one RISC-V platform with a specific set of security features might not be directly portable to another, further contributing to software fragmentation and delaying the emergence of a unified security software ecosystem.
+
+*   **Nascent Tooling and Debugging Support for Secure Development:**
+    Developing and debugging secure software, especially components that operate in isolated execution environments, is inherently complex. The RISC-V ecosystem currently lacks mature and specialized toolchains, debuggers (aware of different privilege modes and world states), and formal verification tools tailored for TEE development. This increases the development effort and the risk of introducing vulnerabilities.
+
+In summary, while the RISC-V ISA offers fundamental building blocks for security, its security ecosystem is characterized by ongoing development, software fragmentation, a shortage of mature and standardized TEE solutions and management tools, and a reliance on early-stage projects. This collective state underscores the significant opportunity and pressing need for the development of open, robust, and standardized Secure OS implementations, such as the one proposed in this thesis, to foster a more secure and cohesive RISC-V ecosystem.
+
+---
+
+This text attempts to:
+1.  Incorporate all your draft points.
+2.  Elaborate slightly on each point to provide context and justification.
+3.  Introduce related aspects like hardware variability and tooling to paint a fuller picture.
+4.  Maintain an academic tone.
+5.  Conclude by linking the state of the ecosystem back to the motivation for your project.
+
+Let me know if you'd like any part of this expanded or refined further!
    #### WorldGuard State
    - World Guard are recent and still evolving
    - depite not having ratified specification, WG has complete set of features that support secure enclaves
