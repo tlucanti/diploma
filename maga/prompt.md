@@ -80,15 +80,11 @@ I have a draft of chapter 1:
    #### Linux Integration for Secure OS Communication
    #### TEE Interface and OpenSBI Extensions
 
-Starting with 1.1.2.2 Licensing in Proprietary Architectures:
-I have a draft of this section:
+Starting with 1.1.3.1: Open-Source Hardware and RISC-V’s Emergence
 
-- Economic Impact of Proprietary Licensing
-- Licensing fees increase development and production costs
-- Licensing terms can limit usage scenarios or product variants
-- Uncertainty and Risks Due to Licensing Models
-- License terms or availability may change over time
-- Potential legal and compliance risk for long-term projects dependent on vendor licenses
+- the majority of architectures are closed and has proprietary ISAs and implications
+- How openness promotes collaborative development, transparency, and trust
+- Growing industry adoption and ecosystem maturity
 
 write contents of section based on draft.
 If needed - maybe add some points if there is anything else to say by topic, but not repeat yourself.

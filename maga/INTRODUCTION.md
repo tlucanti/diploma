@@ -173,5 +173,8 @@
   - ОС (OS) - Операционная Систем (Operating System)
   - IoT - Internet Of Things (Интернет Вещей)
   - DRM - Digital Rights Management (Управление Цифровыми Правами)
+  - OSHW - Open Source Hardware (Аппаратное Обеспечение с Открытым Исходным Кодом)
+  - ISA - Instruction Set Architecture (Архитектура Набора Команд)
+  - RTL - Register Transfer Level (Уровень Регистровых Передач)
 
 ---
