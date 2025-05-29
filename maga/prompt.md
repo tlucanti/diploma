@@ -80,11 +80,14 @@ I have a draft of chapter 1:
    #### Linux Integration for Secure OS Communication
    #### TEE Interface and OpenSBI Extensions
 
-Starting with 1.1.3.1: Open-Source Hardware and RISC-V’s Emergence
+Starting with 1.1.2.2 The RISC-V Instruction Set Architecture (ISA):
+I have a draft of this section:
 
-- the majority of architectures are closed and has proprietary ISAs and implications
-- How openness promotes collaborative development, transparency, and trust
-- Growing industry adoption and ecosystem maturity
+- Modular and extensible ISA design
+- scalable
+- free
+- RISC
+- opensource
 
 write contents of section based on draft.
 If needed - maybe add some points if there is anything else to say by topic, but not repeat yourself.

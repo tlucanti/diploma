@@ -176,5 +176,7 @@
   - OSHW - Open Source Hardware (Аппаратное Обеспечение с Открытым Исходным Кодом)
   - ISA - Instruction Set Architecture (Архитектура Набора Команд)
   - RTL - Register Transfer Level (Уровень Регистровых Передач)
+  - RISC - Reduced Instruction Set Computer (Вычислитель с Сокращённым Набором Команд)
+  - TCB - Trusted Computing Base (Доверенная Вычислительная База)
 
 ---
