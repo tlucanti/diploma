@@ -37,33 +37,45 @@
    #### Limitations of existing TEEs on Proprietary Architectures
    Despite their widespread deployment, traditional Trusted Execution Environments (TEEs) on proprietary architectures—such as ARM, Intel, and AMD platforms—impose several fundamental limitations. These constraints impact both the flexibility of security solutions and the broader technology ecosystem. The primary limitations are discussed below:
 
-   **Vendor Lock-in and Dependency**
+   Vendor Lock-in and Dependency
    Most proprietary TEEs are intimately tied to the hardware vendor's platform, creating an environment of strong vendor lock-in. Consumers of these technologies, whether systems integrators or application developers, become reliant on the hardware manufacturer for long-term security updates, support, and ecosystem compatibility. This dependency restricts the deployment of custom security features and inhibits rapid innovation, as all enhancements must align with the vendor's roadmap and approval process.
 
-   **Closed and Proprietary Ecosystems**
+   Сlosed and Proprietary Ecosystems
    The implementations of proprietary TEEs are typically closed-source, with crucial architectural details kept undisclosed. This lack of transparency means users and researchers cannot fully audit, modify, or verify the correctness and security of TEE implementations. Furthermore, trusted application development is subject to tightly controlled vendor toolchains, restrictive SDKs, and proprietary APIs, which hinder portability, independent validation, and third-party ecosystem growth.
 
-   **Hardware Complexity and Rigidity**
+   Hardware Complexity and Rigidity
    Proprietary architectures often implement TEEs as fixed-function hardware modules (such as Arm TrustZone or Intel SGX enclaves) with rigid boundaries and strictly defined isolation mechanisms. This rigid design limits the ability to adapt the TEE to novel use cases or to tune the level of isolation and performance characteristics for specific workloads. For example, the secure world and normal world division on ARM TrustZone is architecturally constrained, which can impede fine-grained security policies or optimized resource sharing. Additionally, these fixed designs may prove insufficient for emerging workloads, such as edge computing or rapidly evolving IoT environments.
 
-   **Fixed ISA with No Scope for Tailoring or Extension**
+   Fixed ISA with No Scope for Tailoring or Extension
    Traditional proprietary CPU vendors expose only a fixed instruction set, with little to no possibility for customization or extension by system integrators. As security threats evolve and new defense mechanisms are researched, the lack of ability to extend the instruction set or add novel CPU security features at the hardware level impedes both rapid prototyping and the deployment of advanced security primitives. This lack of ISA flexibility slows response to emerging threats and constrains researchers' ability to explore alternative TEE designs.
 
-   **Limited Interoperability and Ecosystem Fragmentation**
+   Limited Interoperability and Ecosystem Fragmentation
    Each proprietary architecture typically provides its own unique TEE implementation, interface specifications, and lifecycle management. As a result, TEEs are generally not interoperable between vendors or even across different product lines from the same vendor. This siloed approach causes fragmentation, complicates cross-platform secure application development, and reduces opportunities for broader standardization and industry-wide adoption of best security practices.
 
-   **Barriers to Academic Research and Independent Innovation**
+   Barriers to Academic Research and Independent Innovation
    Due to NDA requirements, licensing agreements, and lack of documentation, proprietary TEE platforms pose high barriers to academic researchers and third-party developers. This restricts exploration of alternative TEE security models, formal verification of TEE code, and collaborative security research, thereby slowing overall progress in the field.
 
    In summary, the proprietary and inflexible nature of traditional TEEs limits security innovation, adaptability, and transparency. These deficiencies highlight the need for open and extensible secure execution environments, paving the way for open architectures—such as RISC-V—to address these shortcomings and foster a more flexible, auditable, and collaborative approach to trusted computing.
 
    #### Licensing in Proprietary Architectures
-   - Economic Impact of Proprietary Licensing
-   - Licensing fees increase development and production costs
-   - Licensing terms can limit usage scenarios or product variants
-   - Uncertainty and Risks Due to Licensing Models
-   - License terms or availability may change over time
-   - Potential legal and compliance risk for long-term projects dependent on vendor licenses
+   The licensing requirements associated with proprietary architectures—such as ARM TrustZone and Intel SGX—play a significant role in shaping the landscape of trusted execution environments (TEEs). These licenses carry important economic, legal, and technical implications that influence every stage of secure operating system development and deployment.
+
+   One of the foremost consequences of proprietary licensing is its direct influence on the economics of device and systems development. Access to proprietary security extensions or TEEs commonly entails substantial licensing fees, which must be paid either upfront as development costs or continuously through royalties tied to production volumes. For emerging companies and innovative projects working with constrained resources, these costs can present significant barriers to entry. Even for well-established vendors, these fees increase the total cost of ownership, reducing profit margins and potentially translating into higher costs for end-users.
+
+   Furthermore, the presence of licensing boundaries may restrict scalability. For instance, experimenting with new use-cases, developing custom hardware extensions, or deploying product variants to address niche or regional markets can become prohibitively expensive if each variation requires renegotiation or additional licensing outlays.
+
+   Beyond financial costs, licensing agreements explicitly define and often constrain the permissible use-cases, usage scenarios, and device profiles for licensed security technologies. These restrictions may outline hardware configurations, specific software stacks, or deployment geographies. They can also impede technical innovation, as any desired deviation from the vendor's reference platforms or software requirements likely demands renewed legal vetting and new licensing negotiations.
+
+   Operational flexibility is therefore limited. This is especially problematic in research environments, rapid prototyping contexts, and bespoke industrial applications, where experimentation and fast iteration are essential. The presence of closed-source reference designs and proprietary firmware further limits the ability of users to inspect or customize low-level security mechanisms, inhibiting transparency and independent validation.
+
+   Perhaps most concerning for many long-term projects is the uncertainty inherent in reliance on third-party licensing. Vendors may unilaterally change licensing conditions—introducing new restrictions, increasing costs, or even withdrawing rights altogether. Such unpredictability is especially acute for products intended for long life cycles (e.g., industrial controllers, automotive ECUs, healthcare devices), where secure operation and maintenance may be required for a decade or more. Over-reliance on external licensing presents potential threats to project sustainability, maintainability, and even regulatory compliance.
+
+   Additionally, the legal complexity of proprietary licenses introduces compliance challenges. Ambiguities or unforeseen clauses within licensing agreements can become legal liabilities, with the potential for significant penalties or forced redesigns if violations occur. For open-source projects, integrating proprietary components may introduce conflicting license obligations, hampering community collaboration or driving projects toward technical lock-in.
+
+   These constraints collectively create silos around proprietary TEEs, impeding interoperability and independent ecosystem growth. Collaborations between independent vendors, research institutions, and the open-source community are restricted by legal uncertainties and a lack of access to underlying technology. As a result, the overall pace of innovation in secure computing is slowed; the technical community is inhibited from collectively responding to new threats or developing and fielding novel security features.
+
+   In summary, proprietary licensing regimes for TEEs and secure architectural extensions impose not only direct economic costs, but also operational constraints, legal uncertainties, and long-term risks. These factors collectively impede the free exploration, adoption, and maturation of secure execution technology. This reality points to a clear and urgent motivation for open architectures and open-source secure OS solutions—particularly on platforms such as RISC-V, where openness and extensibility underpin ecosystem growth and collective innovation.
+
   ### The RISC-V Opportunity: Openness and Extensibility
    #### Open-Source Hardware and RISC-V’s Emergence
    - the majority of architectures are closed and has proprietary ISAs and implications

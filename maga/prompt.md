@@ -80,13 +80,15 @@ I have a draft of chapter 1:
    #### Linux Integration for Secure OS Communication
    #### TEE Interface and OpenSBI Extensions
 
-Starting with 1.1.2.1 Limitations of existing TEEs on Proprietary Architectures:
+Starting with 1.1.2.2 Licensing in Proprietary Architectures:
 I have a draft of this section:
 
-- Vendor Lock-in and Dependency
-- Closed and Proprietary Ecosystems
-- Hardware Complexity and Rigidity
-- Fixed ISA with no scope for tailoring or extension
+- Economic Impact of Proprietary Licensing
+- Licensing fees increase development and production costs
+- Licensing terms can limit usage scenarios or product variants
+- Uncertainty and Risks Due to Licensing Models
+- License terms or availability may change over time
+- Potential legal and compliance risk for long-term projects dependent on vendor licenses
 
 write contents of section based on draft.
 If needed - maybe add some points if there is anything else to say by topic, but not repeat yourself.
