@@ -22,15 +22,13 @@ I have a draft of chapter 1:
   ### Background on Trusted Execution Environments
    #### Introduction to Trusted Execution Environments
    #### Evolution of Trusted Execution Environments
-   #### The Role of TEEs in Modern Security Archoitectures
+   #### The Role of TEEs in Modern Security Architectures
   ### Current State of TEEs on Proprietary Architectures
    #### Limitations of existing TEEs on Proprietary Architectures
-   #### Technical and Operational Challenges
    #### Licensing in Proprietary Architectures
   ### The RISC-V Opportunity: Openness and Extensibility
    #### Open-Source Hardware and RISC-V’s Emergence
    #### The RISC-V Instruction Set Architecture (ISA)
-   #### Advantages of an Open Architecture for Security
  ## Problem Statement
   ### Current State of TEEs on RISC-V Architecture
    #### Current Status of RISC-V’s Security Ecosystem
@@ -80,13 +78,16 @@ I have a draft of chapter 1:
    #### Linux Integration for Secure OS Communication
    #### TEE Interface and OpenSBI Extensions
 
-Starting with 1.2.1.2 WorldGuard State:
+Starting with 1.3.1.1. Wide Deployment Across Diverse Product Areas:
 I have a draft of this section:
 
-- World Guard are recent and still evolving
-- depite not having ratified specification, WG has complete set of features that support secure enclaves
-- but there is no software support of TEE over WG enclaves like Secure OS
+- RISC-V has seen accelerating adoption in real-world commercial products, including
+- Industrial control and factory automation systems
+- On-premise and edge cloud computing platforms
+- Networking equipment and embedded consumer electronics
+- Highlights that RISC-V is no longer just experimental or academic; it’s establishing a growing footprint
 
 write contents of section based on draft.
-If needed - maybe add some points if there is anything else to say by topic.  Do not repeat yourself. Do not write about statements from other chapters.
+If needed - maybe add some points if there is anything else to say by topic.
 full structure of whole paper is in the attached file
+Do not repeat yourself! Keep it concise! Do not write about statements from other chapters! Do not write reasoning, just contents.

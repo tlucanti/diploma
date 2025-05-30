@@ -129,28 +129,20 @@
 
    This absence of a readily available and open Secure OS framework means that developers cannot easily build, deploy, and manage Trusted Applications (TAs) that would utilize WorldGuard's hardware security features in a standardized manner. Consequently, the potential of WorldGuard to facilitate robust and widely adopted TEEs on the RISC-V platform remains largely untapped at the software application level. This situation highlights a critical need and opportunity for the development of an open-source Secure OS specifically tailored for the WorldGuard extension, which would bridge the gap between the hardware capabilities and the software infrastructure required for deploying secure applications within the burgeoning RISC-V ecosystem.
 
-  ### The Emerging Need for Open and Flexible Solutions
-   #### Deficiency of Open TEE Standards and Interfaces for RISC-V
-   - Current TEEs lack public source code or are tightly coupled to vendor hardware or platforms.
-   - Difficult for external developers to adopt, audit, or extend.
-   #### Motivation for an Open-Source Trusted Operation System
-   - need of Open Secure OS for RISC-V
-   - To provide a minimal trusted computing base, flexible scheduling, and lifecycle management of trusted applications
-   - Facilitates seamless and secure communication channels between normal and secure worlds
-   - Establish transparent, extensible, and standard communication protocols that can evolve with hardware capabilities
-   #### Ecosystem Benefits
-   - Democratizes secure computing capabilities on RISC-V platforms
-   - Encourages research, community-driven security audits, and faster innovation cycles
-   - Lowers costs and removes vendor lock-in risks, favoring adoption in academia, startups, and industry alike
+  #### Software support on WorldGuard extension
+   ...
 
  ## Relevance and Applications
   ### Rapid Growth of RISC-V in Commercial and Industrial Domains
    #### Wide Deployment Across Diverse Product Areas
-   - RISC-V has seen accelerating adoption in real-world commercial products, including
-   - Industrial control and factory automation systems
-   - On-premise and edge cloud computing platforms
-   - Networking equipment and embedded consumer electronics
-   - Highlights that RISC-V is no longer just experimental or academic; it’s establishing a growing footprint
+   The RISC-V architecture is witnessing an accelerating adoption curve, transitioning decisively from a subject predominantly of academic and experimental interest into a tangible presence in a diverse array of real-world commercial products. This penetration is evident across several key sectors, demonstrating its versatility and growing industry confidence.
+
+   Industrial control and factory automation systems, for instance, are increasingly leveraging RISC-V for its customization capabilities, which are crucial for specialized tasks and real-time processing requirements. In the rapidly expanding domain of data processing, RISC-V is finding applications in on-premise and edge cloud computing platforms, where its open nature allows for tailored NVM Express (NVMe) solutions and application-specific accelerators, contributing to power-efficient and optimized performance.
+
+   Furthermore, networking equipment, including routers, switches, and network interface cards, is incorporating RISC-V cores for packet processing and control plane management. The architecture's scalability makes it suitable for a range of embedded consumer electronics, from low-power microcontrollers in smart home devices and wearables to more complex System-on-Chips (SoCs) in automotive applications and multimedia devices.
+
+   This broad deployment across varied product categories underscores RISC-V's maturation beyond niche applications. It signifies a clear trend towards establishing a significant and expanding footprint in the commercial hardware landscape, solidifying its position as a viable and competitive architecture for future innovation.
+
    #### Absence of Security-Integrated Products to Date
    - Despite broad usage, existing RISC-V products largely lack integrated security features or trusted execution environments
    - Contrasted with ARM and x86 ecosystems where security technologies (TrustZone, SGX, SEV) are deeply embedded in many products
