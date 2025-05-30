@@ -96,8 +96,8 @@
     The RISC-V ISA is designed to be scalable across a vast spectrum of computing devices. It supports 32-bit (RV32), 64-bit (RV64), and has a reserved encoding for a future 128-bit (RV128) address space variant. This scalability enables RISC-V to power devices ranging from deeply embedded microcontrollers and IoT devices to high-performance servers and supercomputers. For security architectures, this means that principles and mechanisms developed for one class of RISC-V system can often be adapted or directly applied to others, fostering a consistent security model across diverse platforms.
 
     Perhaps the most disruptive aspect of RISC-V is that its specification is free and open-source, managed by RISC-V International, a global non-profit organization.
-    *   **Free:** The "free" aspect refers to its royalty-free licensing model. Unlike many proprietary ISAs, designers can implement RISC-V cores without paying licensing fees for the use of the ISA itself. This significantly lowers the barrier to entry for hardware innovation.
-    *   **Open-Source Specification:** The "open-source" nature of the specification promotes unparalleled transparency and collaboration. The ISA documents are publicly available, allowing anyone to inspect, scrutinize, and contribute to their development. For security, this openness is a considerable advantage. It allows the ISA specification to be audited by a global community of researchers and security experts, facilitating the identification and mitigation of potential vulnerabilities at the architectural level. It also prevents vendor lock-in for core architectural features, including security mechanisms, and encourages the development of open-source hardware implementations (cores) and software toolchains. This contrasts sharply with proprietary ISAs where security features might be opaque, tied to specific vendor implementations, or carry restrictive licensing terms, hindering broad adoption, independent verification, and community-driven security enhancements.
+    Free: The "free" aspect refers to its royalty-free licensing model. Unlike many proprietary ISAs, designers can implement RISC-V cores without paying licensing fees for the use of the ISA itself. This significantly lowers the barrier to entry for hardware innovation.
+    Open-Source Specification: The "open-source" nature of the specification promotes unparalleled transparency and collaboration. The ISA documents are publicly available, allowing anyone to inspect, scrutinize, and contribute to their development. For security, this openness is a considerable advantage. It allows the ISA specification to be audited by a global community of researchers and security experts, facilitating the identification and mitigation of potential vulnerabilities at the architectural level. It also prevents vendor lock-in for core architectural features, including security mechanisms, and encourages the development of open-source hardware implementations (cores) and software toolchains. This contrasts sharply with proprietary ISAs where security features might be opaque, tied to specific vendor implementations, or carry restrictive licensing terms, hindering broad adoption, independent verification, and community-driven security enhancements.
 
     In summary, the RISC-V ISA provides a flexible, transparent, and economically accessible foundation. Its RISC principles, modularity, scalability, and particularly its free and open approach, create a fertile ground for innovation in secure computing, enabling the development of specialized hardware extensions like WorldGuard and fostering an ecosystem where open, auditable secure operating systems can thrive. These attributes directly support the goals of this thesis in building an open Secure OS for the RISC-V WorldGuard extension.
 
@@ -151,12 +151,34 @@
    Consequently, while foundational security mechanisms like Physical Memory Protection (PMP) are often present in RISC-V cores, providing a basic level of memory isolation, these do not equate to the full capabilities and assurances offered by a dedicated TEE. This absence of readily available, TEE-equipped RISC-V products currently limits their deployment in application areas with stringent, pre-existing security requirements, or necessitates custom, non-standardized security solutions.
 
    #### Motivation to Develop Secure RISC-V Solutions
-   - Strong market motivation: given how critical security is in analogous ARM/x86 use cases, similar secure RISC-V products will inevitably emerge
-   - Early engagement is crucial to shape and lead this upcoming market
-   - a very good opportunity to provide open-source secure OS and TEE stack harnessing RISC-V-specific features (e.g., World Guard).
+   The current landscape of RISC-V, characterized by rapid growth (as outlined in 1.3.1) but a notable absence of mature, integrated security products (see 1.3.1.1), provides compelling motivations for the development of dedicated secure solutions. Key drivers include:
+
+   Addressing Inevitable Market Demand: The critical role of security in analogous ARM and x86 application domains indicates a similar, strong market requirement for secure RISC-V products as the architecture matures and expands into these commercial and industrial areas. Proactive development is essential to meet this anticipated demand for trusted computing capabilities.
+
+   Shaping an Emerging Ecosystem: Early engagement in creating secure RISC-V solutions offers a significant opportunity to influence the development of standards, establish best practices, and contribute to foundational technologies. This leadership can help define the future of secure computing on RISC-V and foster a robust security ecosystem.
+
+   Capitalizing on RISC-V’s Openness and Specific Extensions: The open nature of the RISC-V ISA, combined with its evolving security-specific architectural extensions like World Guard, presents a unique occasion. This facilitates the creation of open-source, auditable, and highly optimized secure operating systems and Trusted Execution Environment (TEE) software stacks, designed to fully leverage these advantages for robust security.
+
   ### Expanding Security Requirements in Modern Computing
    #### Essential Security Functions in Contemporary Products
-   - Security features like cryptographic key management, secure boot, and firmware integrity are baseline expectations today in mobile devices, automotive electronics, and cloud servers
+   Contemporary computing products, spanning from mobile devices and automotive systems to cloud infrastructure and Internet of Things (IoT) deployments, now mandate a robust set of security functions as baseline requirements. These functions are critical for protecting sensitive data, ensuring system integrity, and maintaining user trust. Key among these essential security functions are:
+
+   Secure Boot: This process ensures that each software component loaded during the system startup, from the initial bootloader to the operating system kernel, is authentic and unmodified. It establishes a chain of trust, preventing the execution of unauthorized or malicious code at the earliest stages of system operation.
+
+   Firmware and Software Integrity: Beyond secure boot, mechanisms are required to continuously verify the integrity of critical firmware and software components at runtime or before execution. This guards against persistent threats and sophisticated attacks that might modify system components post-boot.
+
+   Cryptographic Key Management: The secure generation, storage, protection, and usage of cryptographic keys are fundamental. These keys underpin most security services, including data encryption, digital signatures, secure communication (TLS/SSL), and device identity. Hardware-backed key stores are often preferred for maximum security.
+
+   Secure Storage: Sensitive data, such as user credentials, personal information, encryption keys, and proprietary application data, must be protected at rest. Secure storage mechanisms ensure confidentiality and integrity even if the non-secure operating system or storage medium is compromised.
+
+   Attestation: This capability allows a device to provide verifiable proof of its identity and the integrity of its software stack (including firmware and TEE components) to a remote party. Attestation is crucial for services like remote device management, content protection (DRM), and secure access to cloud resources.
+
+   Secure Over-the-Air (OTA) Updates: The ability to remotely and securely update firmware and software is vital for patching vulnerabilities, introducing new features, and maintaining long-term device security and functionality. This requires verifying the authenticity and integrity of update packages before installation.
+
+   Trusted Path / Protected I/O: For specific sensitive operations, it's crucial to ensure that user input (e.g., from a secure keypad or biometric sensor) and output (e.g., to a secure display region) are protected from interception or manipulation by the potentially compromised Normal World operating system.
+
+   These functions are no longer niche requirements but are integral to the design and operation of modern computing systems, driven by increasing connectivity, the value of processed data, and the evolving threat landscape.
+
   #### RISC-V’s Untapped Potential for Secure Applications
   - Opportunity for RISC-V to enter markets currently dominated by proprietary ISAs with an open and transparent security story
   - Potential applications demanding trustworthiness:

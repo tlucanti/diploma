@@ -78,12 +78,10 @@ I have a draft of chapter 1:
    #### Linux Integration for Secure OS Communication
    #### TEE Interface and OpenSBI Extensions
 
-Starting with 1.3.1.2. Motivation to Develop Secure RISC-V Solutions:
+Starting with 1.3.2.1. Essential Security Functions in Contemporary Products:
 I have a draft of this section:
 
-- Strong market motivation: given how critical security is in analogous ARM/x86 use cases, similar secure RISC-V products will inevitably emerge
-- Early engagement is crucial to shape and lead this upcoming market
-- a very good opportunity to provide open-source secure OS and TEE stack harnessing RISC-V-specific features (e.g., World Guard).
+- Security features like cryptographic key management, secure boot, and firmware integrity are baseline expectations today in mobile devices, automotive electronics, and cloud servers
 
 write contents of section based on draft.
 If needed - maybe add some points if there is anything else to say by topic.
