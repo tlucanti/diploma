@@ -1,4 +1,4 @@
-# Chapter 1: Introduction**
+# Chapter 1: Introduction
 1.1. Background: The Evolving Landscape of Secure Computing
 1.2. Introduction to Trusted Execution Environments (TEEs)
     1.2.1. Core Principles of TEEs
@@ -32,7 +32,7 @@
 
 ---
 
-# Chapter 2: Foundations of Trusted Execution Environments on RISC-V**
+# Chapter 2: Foundations of Trusted Execution Environments on RISC-V
 2.1. Defining Trusted Execution Environments (TEEs)
     2.1.1. Goals: Confidentiality, Integrity, Attestation
     2.1.2. Components: Secure World, Normal World, Trusted Applications
@@ -71,7 +71,7 @@
 
 ---
 
-# Chapter 3: Design and Implementation of the Secure OS**
+# Chapter 3: Design and Implementation of the Secure OS
 3.1. Overall System Architecture
     3.1.1. High-Level Component Diagram (Secure OS, Linux, OpenSBI, Hardware)
     3.1.2. Interaction Model between Components
@@ -152,7 +152,7 @@
 
 ---
 
-# Chapter 4: Demonstration, Evaluation, and Security Analysis**
+# Chapter 4: Demonstration, Evaluation, and Security Analysis
 4.1. Experimental Setup
     4.1.1. Emulation Environment: QEMU with World Guard Support
         4.1.1.1. QEMU Configuration and Patches (if any)
@@ -204,10 +204,10 @@
 
 ---
 
-**References**
+References
 *(List of all cited works)*
 
-**Appendices (Optional)**
+Appendices (Optional)
 A. CWC Protocol Data Structures
 B. Sample TA Code
 C. Kernel Configuration Snippets
