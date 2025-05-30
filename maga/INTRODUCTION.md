@@ -183,5 +183,7 @@
   - ПО - Программное Обеспечение
   - TA - Trusted Application (Доверенное Приложение)
   - OTA - Over-the-Air (Обновления по сети интернет)
+  - TLS - Transport Layer Security (Безопасность Транспортного Уровня)
+  - SSL - Secure Sockets Layer (Уровень Защищённых Сокетов)
 
 ---
