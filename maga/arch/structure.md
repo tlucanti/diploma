@@ -6,12 +6,10 @@
    #### The Role of TEEs in Modern Security Architectures
   ### Current State of TEEs on Proprietary Architectures
    #### Limitations of existing TEEs on Proprietary Architectures
-   #### Technical and Operational Challenges
    #### Licensing in Proprietary Architectures
   ### The RISC-V Opportunity: Openness and Extensibility
    #### Open-Source Hardware and RISC-V’s Emergence
    #### The RISC-V Instruction Set Architecture (ISA)
-   #### Advantages of an Open Architecture for Security
  ## Problem Statement
   ### Current State of TEEs on RISC-V Architecture
    #### Current Status of RISC-V’s Security Ecosystem
