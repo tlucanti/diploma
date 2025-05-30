@@ -78,16 +78,14 @@ I have a draft of chapter 1:
    #### Linux Integration for Secure OS Communication
    #### TEE Interface and OpenSBI Extensions
 
-Starting with 1.3.1.1. Wide Deployment Across Diverse Product Areas:
+Starting with 1.3.1.2. Motivation to Develop Secure RISC-V Solutions:
 I have a draft of this section:
 
-- RISC-V has seen accelerating adoption in real-world commercial products, including
-- Industrial control and factory automation systems
-- On-premise and edge cloud computing platforms
-- Networking equipment and embedded consumer electronics
-- Highlights that RISC-V is no longer just experimental or academic; it’s establishing a growing footprint
+- Strong market motivation: given how critical security is in analogous ARM/x86 use cases, similar secure RISC-V products will inevitably emerge
+- Early engagement is crucial to shape and lead this upcoming market
+- a very good opportunity to provide open-source secure OS and TEE stack harnessing RISC-V-specific features (e.g., World Guard).
 
 write contents of section based on draft.
 If needed - maybe add some points if there is anything else to say by topic.
 full structure of whole paper is in the attached file
-Do not repeat yourself! Keep it concise! Do not write about statements from other chapters! Do not write reasoning, just contents.
+Do not repeat yourself! Keep it concise! Do not include statements from other chapters! Write only section contents, no summary or reasoning.

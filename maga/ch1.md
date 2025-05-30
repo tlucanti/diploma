@@ -144,9 +144,12 @@
    This broad deployment across varied product categories underscores RISC-V's maturation beyond niche applications. It signifies a clear trend towards establishing a significant and expanding footprint in the commercial hardware landscape, solidifying its position as a viable and competitive architecture for future innovation.
 
    #### Absence of Security-Integrated Products to Date
-   - Despite broad usage, existing RISC-V products largely lack integrated security features or trusted execution environments
-   - Contrasted with ARM and x86 ecosystems where security technologies (TrustZone, SGX, SEV) are deeply embedded in many products
-   - This absence is partly due to RISC-V’s relative architectural youth and evolving security extensions
+   Despite the increasing adoption and versatility of RISC-V across various domains, a notable characteristic of the current market is the general absence of deeply integrated, hardware-backed Trusted Execution Environments (TEEs) in commercially available products. While many System-on-Chips (SoCs) based on RISC-V are being deployed, they predominantly lack the comprehensive security features typically found in mature, proprietary architectures.
+
+   This presents a clear distinction from ecosystems such as ARM, where TrustZone technology is a widespread and fundamental component of numerous processors, or the x86 architecture, which offers robust TEE solutions like Intel Software Guard Extensions (SGX) and AMD Secure Encrypted Virtualization (SEV) extensively embedded in their product lines. The relative architectural youth of RISC-V contributes to this disparity, as its security extensions, including WorldGuard, are still in the process of standardization, maturation, and importantly, widespread commercial implementation.
+
+   Consequently, while foundational security mechanisms like Physical Memory Protection (PMP) are often present in RISC-V cores, providing a basic level of memory isolation, these do not equate to the full capabilities and assurances offered by a dedicated TEE. This absence of readily available, TEE-equipped RISC-V products currently limits their deployment in application areas with stringent, pre-existing security requirements, or necessitates custom, non-standardized security solutions.
+
    #### Motivation to Develop Secure RISC-V Solutions
    - Strong market motivation: given how critical security is in analogous ARM/x86 use cases, similar secure RISC-V products will inevitably emerge
    - Early engagement is crucial to shape and lead this upcoming market
