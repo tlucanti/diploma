@@ -185,5 +185,8 @@
   - OTA - Over-the-Air (Обновления по сети интернет)
   - TLS - Transport Layer Security (Безопасность Транспортного Уровня)
   - SSL - Secure Sockets Layer (Уровень Защищённых Сокетов)
+  - ADAS - Advanced Driver-Assistance Systems (Усовершенствованная Система Помощи Водителю)
+  - V2X - Vehicle-to-everything (Транспортное средство-ко-всему)
+  - CCC - Confidential Cloud Computing (Конфиденциальные Облачные Вычисления)
 
 ---

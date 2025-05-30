@@ -180,13 +180,25 @@
    These functions are no longer niche requirements but are integral to the design and operation of modern computing systems, driven by increasing connectivity, the value of processed data, and the evolving threat landscape.
 
   #### RISC-V’s Untapped Potential for Secure Applications
-  - Opportunity for RISC-V to enter markets currently dominated by proprietary ISAs with an open and transparent security story
-  - Potential applications demanding trustworthiness:
-  - secure personal devices
-  - automotive systems
-  - confidential cloud workloads
-  - IoT ecosystems
-  - Open-source secure components can drastically lower barriers for adoption and innovation
+   The unique combination of RISC-V's open and extensible nature with robust, open-source security solutions presents a significant opportunity to penetrate markets traditionally dominated by proprietary ISAs. This is largely due to the potential for a transparent security narrative, fostering greater trust and verifiability. The untapped potential manifests across numerous applications demanding high levels of trustworthiness:
+
+   Secure Personal Devices: Smartphones, tablets, laptops, and wearables can leverage open TEEs on RISC-V to protect sensitive user data such as biometrics, financial credentials, and private communications, ensuring both confidentiality and device integrity against increasingly sophisticated threats.
+
+   Automotive Systems: Modern vehicles, with their complex network of ECUs controlling everything from Advanced Driver-Assistance Systems (ADAS) to infotainment and Vehicle-to-Everything (V2X) communication, require strong isolation and security to ensure passenger safety, protect against unauthorized access, and secure vehicle data.
+
+   Confidential Cloud Workloads: RISC-V based TEEs can enable secure enclaves for processing sensitive data in multi-tenant cloud environments, offering "data-in-use" protection where even the cloud provider cannot access the unencrypted data or computation.
+
+   Internet of Things (IoT) Ecosystems: The vast and diverse IoT landscape, encompassing smart home devices, industrial control systems, wearable technology, and critical infrastructure monitors, can benefit immensely. RISC-V's scalability, coupled with an open TEE, can provide secure boot, attested firmware updates, secure communication channels, and data protection for resource-constrained devices across this wide spectrum.
+
+   Critical Infrastructure: Sectors such as energy distribution, water management, and public transportation systems can utilize secure RISC-V platforms to protect control systems from cyber-attacks, ensuring operational reliability and public safety.
+
+   Defense and Aerospace: The demand for verifiable security and supply chain integrity makes open hardware and software solutions attractive for mission-critical systems, secure communications, and applications where national sovereignty over technology is paramount.
+
+   Medical Devices: Implantable and wearable medical devices, as well as diagnostic equipment, require robust security to protect patient data privacy (e.g., HIPAA compliance) and ensure the integrity and reliable operation of life-sustaining functions.
+
+   Financial Technology (FinTech): Secure RISC-V TEEs can underpin next-generation FinTech solutions, safeguarding financial transactions, protecting cryptographic keys, and enabling secure authentication mechanisms for mobile banking and payment systems.
+
+   The availability of open-source secure components, including the Secure OS described in this work, is poised to drastically lower barriers to entry for developing and deploying such trusted applications. This fosters innovation, reduces dependency on proprietary vendors, encourages wider community auditing, and allows for tailored security solutions across these diverse domains.
 
  ## Comparison with Existing Architectures
   ### ARM TrustZone: Centralized Secure World Model

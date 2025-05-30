@@ -78,10 +78,16 @@ I have a draft of chapter 1:
    #### Linux Integration for Secure OS Communication
    #### TEE Interface and OpenSBI Extensions
 
-Starting with 1.3.2.1. Essential Security Functions in Contemporary Products:
+Starting with 1.3.2.2. Untapped Potential for Secure Applications (use cases):
 I have a draft of this section:
 
-- Security features like cryptographic key management, secure boot, and firmware integrity are baseline expectations today in mobile devices, automotive electronics, and cloud servers
+  - Opportunity for RISC-V to enter markets currently dominated by proprietary ISAs with an open and transparent security story
+  - Potential applications demanding trustworthiness:
+  - secure personal devices
+  - automotive systems
+  - confidential cloud workloads
+  - IoT ecosystems
+  - Open-source secure components can drastically lower barriers for adoption and innovation
 
 write contents of section based on draft.
 If needed - maybe add some points if there is anything else to say by topic.
