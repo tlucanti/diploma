@@ -80,14 +80,13 @@ I have a draft of chapter 1:
    #### Linux Integration for Secure OS Communication
    #### TEE Interface and OpenSBI Extensions
 
-Starting with 1.2.1.1 Current Status of RISC-V Security Ecosystem:
+Starting with 1.2.1.2 WorldGuard State:
 I have a draft of this section:
 
-- Immaturity of RISC-V Security Ecosystem
-- Fragmented and Limited Software Support
-- Lack of mature, standardized Secure OS implementations and TEE management tools
-- Early-stage experimental projects with limited stability and adoption
+- World Guard are recent and still evolving
+- depite not having ratified specification, WG has complete set of features that support secure enclaves
+- but there is no software support of TEE over WG enclaves like Secure OS
 
 write contents of section based on draft.
-If needed - maybe add some points if there is anything else to say by topic, but not repeat yourself.
+If needed - maybe add some points if there is anything else to say by topic.  Do not repeat yourself. Do not write about statements from other chapters.
 full structure of whole paper is in the attached file

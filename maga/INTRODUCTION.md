@@ -179,5 +179,8 @@
   - RISC - Reduced Instruction Set Computer (Вычислитель с Сокращённым Набором Команд)
   - TCB - Trusted Computing Base (Доверенная Вычислительная База)
   - PMP - Physical Memory Protection (Защита Физической Памяти)
+  - FPGA - Field Programmable Gate Array (Программируемая Пользователем Вентильная Матрица)
+  - ПО - Программное Обеспечение
+  - TA - Trusted Application (Доверенное Приложение)
 
 ---
