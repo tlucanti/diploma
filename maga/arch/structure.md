@@ -39,6 +39,10 @@
    #### Overview
    #### Advantages
    #### Disadvantages
+  ### RISC-V's Physical Memory Protection (PMP)
+   #### Overview
+   #### Advantages
+   #### Disadvantages
   ### RISC-V’s World Guard Extension: Decentralized Isolation
    #### Overview
    #### Advantages

@@ -58,6 +58,10 @@ I have a draft of chapter 1:
    #### Overview
    #### Advantages
    #### Disadvantages
+  ### RISC-V's Physical Memory Protection (PMP)
+   #### Overview
+   #### Advantages
+   #### Disadvantages
   ### RISC-V’s World Guard Extension: Decentralized Isolation
    #### Overview
    #### Advantages
@@ -78,21 +82,17 @@ I have a draft of chapter 1:
    #### Linux Integration for Secure OS Communication
    #### TEE Interface and OpenSBI Extensions
 
-Starting with 1.4.2. Intel Software Guard Extensions (SGX): Enclave-Based Isolation.
+Starting with 1.4.4. RISC-V's Physical Memory Protection (PMP).
 I have a draft of this section:
 
 #### Overview
-- Enclaves are isolated regions of memory with hardware enforced in-flight encryption and integrity protection
-- Applications selectively isolate sensitive code/data inside enclaves with fine granularity
+ - ...
 #### Advantages
-- Flexible on a per-application basis; multiple enclaves can co-exist
-- Strong memory encryption and attestation capabilities
-- Does not require a separate secure OS
+ - part of base ISA
+ - ...
 #### Disadvantages
-- Limited Enclave Page Cache (EPC) size
-- Complex programming model and compatibility issues
-- Vulnerabilities found in side-channels and speculative execution attacks
-- can execute only in ring-3 mode, so TEE with Secure OS is not acheveable with SGX
+ - ...
+ - Only Exception Level isolation: not suitable for TEEs
 
 write contents of section based on draft.
 If needed - maybe add some points if there is anything else to say by topic.

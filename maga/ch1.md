@@ -234,17 +234,17 @@
 
    #### Disadvantages
    A primary limitation of SGX is the typically restricted size of the Enclave Page Cache (EPC), the secure RAM area where enclave pages are stored, which can impact the performance and feasibility of porting large applications. The programming model for SGX is complex, often necessitating significant code restructuring and potentially introducing compatibility challenges with existing libraries or system call-heavy applications. SGX enclaves are constrained to execute only in user mode (CPU ring 3), which means a full-fledged, privileged secure operating system cannot be hosted within an SGX enclave. Furthermore, SGX has been the target of numerous side-channel and speculative execution attacks, requiring ongoing research and mitigations. Performance overhead associated with enclave entry (ECALL) and exit (OCALL) operations, as well as memory encryption, can also be a factor for certain workloads.
-  ### AMD Secure Encrypted Virtualization (SEV)
+
+  ### AMD Secure Encrypted Virtualization (SEV): VM-Level Memory Encryption
    #### Overview
-   - Encrypts entire VM memory transparently to protect guest VMs from a compromised hypervisor
-   - Targets cloud scenarios with multi-tenant isolation
+   AMD's Secure Encrypted Virtualization (SEV) technology is engineered to bolster security within virtualized environments. It achieves this by providing transparent full memory encryption for guest Virtual Machines (VMs), thereby shielding them from potential threats originating from a compromised or malicious hypervisor. SEV is primarily oriented towards cloud computing scenarios, where robust isolation between multiple tenants coexisting on shared physical hardware is paramount. Each guest VM's memory can be encrypted using a unique key, managed by the AMD Secure Processor, ensuring that data remains confidential even if the hypervisor gains unauthorized access to the guest's memory pages.
+
    #### Advantages
-   - Seamless protection for virtual machines with little change to guest OS.
-   - Strong hardware encryption of memory with real-time decryption
+   One of the significant benefits of SEV is the largely seamless manner in which it provides protection for virtual machines; guest operating systems and their applications typically require little to no modification to leverage this encrypted memory. The technology employs strong, hardware-accelerated AES encryption for VM memory. This encryption and decryption process is performed in real-time by dedicated hardware within the CPU and memory controllers during memory accesses, aiming to safeguard the confidentiality of guest VM data while it resides in DRAM or is in transit.
+
    #### Disadvantages
-   - Focused on virtualization; not suitable for all embedded or mobile scenarios
-   - Trust anchored primarily on hypervisor and hardware
-   - Limited granularity compared to enclave or secure world models
+   Despite its effectiveness in protecting VM memory, SEV's design, centered on entire VM encryption, makes it inherently less suited for the role of a general-purpose Trusted Execution Environment (TEE) in the context of isolating individual applications. Its primary focus on virtualization security means it operates at a much coarser granularity—the entire VM—compared to enclave-based models like Intel SGX or distinct secure world architectures like ARM TrustZone. Consequently, SEV is fundamentally a mechanism to protect VMs from an untrusted hypervisor, rather than providing a dedicated, isolated environment for running specific trusted applications with fine-grained control within a single operating system, which is a typical use case for TEEs. This distinction limits its applicability for scenarios requiring application-level isolation and a specific programming model for trusted code execution distinct from the main OS.
+
   ### RISC-V’s World Guard Extension: Decentralized Isolation
    #### Overview
    - Hardware extensions enabling memory and execution partitioning at finer granularity than TrustZone
