@@ -203,16 +203,28 @@
  ## Comparison with Existing Architectures
   ### ARM TrustZone: Centralized Secure World Model
    #### Overview
-   - Hardware-enforced split between Normal World and Secure World running on the same CPU cores
-   - Secure World hosts a Secure OS managing Trusted Applications
+   ARM TrustZone technology establishes a hardware-enforced division of a system-on-chip (SoC) into two distinct execution environments: the Normal World (NWd) and the Secure World (SWd). This separation is achieved at the processor level, with a special processor mode (Monitor Mode) and system-level hardware controlling access to memory and peripherals based on the current security state of the executing core. The Normal World typically runs a rich operating system, such as Linux or Android, while the Secure World is designed to host a smaller, more trusted operating system (Trusted OS or Secure OS). This Secure OS, in turn, manages and executes Trusted Applications (TAs), providing them with a protected environment. Transitions between the Normal World and Secure World are mediated by a Secure Monitor Call (SMC) instruction, which triggers a switch into Monitor Mode, responsible for securely managing the context switch. Both worlds can operate on the same CPU cores, with the hardware ensuring that Normal World software cannot directly access resources allocated to the Secure World.
+
    #### Advantages
-   - Mature ecosystem with broad adoption (mobile, embedded)
-   - Efficient context switching between secure and normal worlds
-   - Well-supported industry standards (e.g., GlobalPlatform TEE)
+   Mature Ecosystem and Broad Adoption: TrustZone has been available for many years and is widely deployed across a vast range of devices, particularly in mobile and embedded systems. This has resulted in a mature ecosystem with extensive tooling, documentation, developer expertise, and readily available Secure OS implementations.
+
+   Efficient Context Switching: The hardware-assisted mechanism for switching between the Normal and Secure Worlds, primarily through the SMC instruction and dedicated hardware support, is generally efficient. This allows for relatively low-latency transitions when secure services are invoked from the Normal World.
+
+   Well-Supported Industry Standards: TrustZone implementations often adhere to industry standards, notably those defined by GlobalPlatform. These standards specify APIs and system behaviors for TEEs, promoting interoperability between different TAs and Secure OS implementations, and facilitating the development of a common TEE software stack.
+
    #### Disadvantages
-   - Centralized model: single secure world may become a bottleneck
-   - Limited scalability on multi-core systems (single Secure World across cores).
-   - Security boundary depends strongly on software (Trusted OS) correctness.
+   Centralized Architecture: The Secure World in TrustZone typically operates as a single, monolithic entity managed by one Secure OS instance. All secure operations from all cores often funnel through this centralized Secure World, which can become a performance bottleneck if many Normal World applications or cores simultaneously require secure services.
+
+   High Cost for Full Communication Cycle: A complete request from a Normal World user-space application (EL0) to a Trusted Application in the Secure World (often also at EL0 equivalent) and a response back can involve up to eight distinct context switches through various privilege levels and monitor mode. This significantly increases the overall latency and processing overhead for inter-world communication, despite the efficiency of individual hardware-assisted switches.
+
+   Blocking Secure Operations: When a Normal World application on a specific core makes a call (e.g., via SMC) to the Secure World, that core is typically blocked, waiting for the Secure World operation to complete and return. This can negatively impact the responsiveness and performance of the Normal World application running on that core.
+
+   Limited Scalability on Multi-Core Systems: While individual cores can switch to the Secure World, the common model involves a single instance of the Secure OS governing the entire Secure World across all cores. This can lead to contention for shared secure resources and complexities in managing concurrent secure operations, potentially limiting scalability in highly parallel multi-core scenarios.
+
+   Large Trusted Computing Base (TCB): The security of the entire TrustZone-based TEE heavily relies on the correctness and integrity of the Secure OS running in the Secure World. The Secure OS itself is part of the Trusted Computing Base (TCB), and any vulnerability within it can potentially compromise the entire Secure World and all TAs it hosts.
+
+   Susceptibility to Side-Channel Attacks: Despite the hardware-enforced isolation, the sharing of underlying physical hardware resources (such as caches, memory controllers, and buses) between the Normal and Secure Worlds can still expose vulnerabilities to side-channel attacks, potentially leaking information across the security boundary.
+
   ### Intel Software Guard Extensions (SGX): Enclave-Based Isolation
    #### Overview
    - Enclaves are isolated regions of memory with hardware enforced encryption and integrity protection

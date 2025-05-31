@@ -78,16 +78,22 @@ I have a draft of chapter 1:
    #### Linux Integration for Secure OS Communication
    #### TEE Interface and OpenSBI Extensions
 
-Starting with 1.3.2.2. Untapped Potential for Secure Applications (use cases):
+Starting with 1.4.1. ARM TrustZone: Centralized Secure World Model:
 I have a draft of this section:
 
-  - Opportunity for RISC-V to enter markets currently dominated by proprietary ISAs with an open and transparent security story
-  - Potential applications demanding trustworthiness:
-  - secure personal devices
-  - automotive systems
-  - confidential cloud workloads
-  - IoT ecosystems
-  - Open-source secure components can drastically lower barriers for adoption and innovation
+#### Overview
+- Hardware-enforced split between Normal World and Secure World running on the same CPU cores
+- Secure World hosts a Secure OS managing Trusted Applications
+#### Advantages
+- Mature ecosystem with broad adoption (mobile, embedded)
+- Efficient context switching between secure and normal worlds
+- Well-supported industry standards (e.g., GlobalPlatform TEE)
+#### Disadvantages
+- Centralized model: single secure world may become a bottleneck
+- secure operations are blocking on caller core
+- Limited scalability on multi-core systems (single Secure World across cores).
+- Security boundary depends strongly on software (Trusted OS) correctness.
+- Side channel attacks are still possible
 
 write contents of section based on draft.
 If needed - maybe add some points if there is anything else to say by topic.

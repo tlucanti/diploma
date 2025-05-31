@@ -188,5 +188,6 @@
   - ADAS - Advanced Driver-Assistance Systems (Усовершенствованная Система Помощи Водителю)
   - V2X - Vehicle-to-everything (Транспортное средство-ко-всему)
   - CCC - Confidential Cloud Computing (Конфиденциальные Облачные Вычисления)
+  - SMC - Secure Monitor Call (Вызов Защищенного Диспетчера)
 
 ---
