@@ -189,5 +189,6 @@
   - V2X - Vehicle-to-everything (Транспортное средство-ко-всему)
   - CCC - Confidential Cloud Computing (Конфиденциальные Облачные Вычисления)
   - SMC - Secure Monitor Call (Вызов Защищенного Диспетчера)
+  - EPC - Enclave Page Cache (Кэша Страниц Анклава)
 
 ---

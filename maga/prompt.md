@@ -78,22 +78,21 @@ I have a draft of chapter 1:
    #### Linux Integration for Secure OS Communication
    #### TEE Interface and OpenSBI Extensions
 
-Starting with 1.4.1. ARM TrustZone: Centralized Secure World Model:
+Starting with 1.4.2. Intel Software Guard Extensions (SGX): Enclave-Based Isolation.
 I have a draft of this section:
 
 #### Overview
-- Hardware-enforced split between Normal World and Secure World running on the same CPU cores
-- Secure World hosts a Secure OS managing Trusted Applications
+- Enclaves are isolated regions of memory with hardware enforced in-flight encryption and integrity protection
+- Applications selectively isolate sensitive code/data inside enclaves with fine granularity
 #### Advantages
-- Mature ecosystem with broad adoption (mobile, embedded)
-- Efficient context switching between secure and normal worlds
-- Well-supported industry standards (e.g., GlobalPlatform TEE)
+- Flexible on a per-application basis; multiple enclaves can co-exist
+- Strong memory encryption and attestation capabilities
+- Does not require a separate secure OS
 #### Disadvantages
-- Centralized model: single secure world may become a bottleneck
-- secure operations are blocking on caller core
-- Limited scalability on multi-core systems (single Secure World across cores).
-- Security boundary depends strongly on software (Trusted OS) correctness.
-- Side channel attacks are still possible
+- Limited Enclave Page Cache (EPC) size
+- Complex programming model and compatibility issues
+- Vulnerabilities found in side-channels and speculative execution attacks
+- can execute only in ring-3 mode, so TEE with Secure OS is not acheveable with SGX
 
 write contents of section based on draft.
 If needed - maybe add some points if there is anything else to say by topic.

@@ -227,16 +227,13 @@
 
   ### Intel Software Guard Extensions (SGX): Enclave-Based Isolation
    #### Overview
-   - Enclaves are isolated regions of memory with hardware enforced encryption and integrity protection
-   - Applications selectively isolate sensitive code/data inside enclaves with fine granularity
+   Intel Software Guard Extensions (SGX) enable the creation of enclaves, which are private regions of memory isolated within an application's address space. These enclaves are protected by the CPU, providing hardware-enforced confidentiality and integrity for the code and data residing within them, even from privileged software such as the operating system or hypervisor. Memory associated with an enclave is encrypted by the processor. Applications can selectively place sensitive portions of their code and data into these enclaves, offering fine-grained isolation on a per-process basis.
+
    #### Advantages
-   - Flexible on a per-application basis; multiple enclaves can co-exist
-   - Strong memory encryption and attestation capabilities
-   - Does not require a separate secure OS
+   SGX offers notable flexibility, as applications can define and manage their own enclaves independently, allowing multiple enclaves from different applications to coexist on a system. It incorporates strong memory encryption capabilities for data within enclaves and provides robust remote attestation mechanisms. Attestation allows a remote party to verify the authenticity and integrity of the software running inside an enclave. A key architectural distinction is that SGX does not require a separate, dedicated secure operating system; enclaves operate as protected user-mode environments managed, yet not accessed, by the host OS.
+
    #### Disadvantages
-   - Limited enclave size and complexity constraints
-   - Complex programming model and compatibility issues
-   - Vulnerabilities found in side-channels and speculative execution attacks
+   A primary limitation of SGX is the typically restricted size of the Enclave Page Cache (EPC), the secure RAM area where enclave pages are stored, which can impact the performance and feasibility of porting large applications. The programming model for SGX is complex, often necessitating significant code restructuring and potentially introducing compatibility challenges with existing libraries or system call-heavy applications. SGX enclaves are constrained to execute only in user mode (CPU ring 3), which means a full-fledged, privileged secure operating system cannot be hosted within an SGX enclave. Furthermore, SGX has been the target of numerous side-channel and speculative execution attacks, requiring ongoing research and mitigations. Performance overhead associated with enclave entry (ECALL) and exit (OCALL) operations, as well as memory encryption, can also be a factor for certain workloads.
   ### AMD Secure Encrypted Virtualization (SEV)
    #### Overview
    - Encrypts entire VM memory transparently to protect guest VMs from a compromised hypervisor
