@@ -271,18 +271,22 @@
 
   ### RISC-V’s World Guard Extension: Decentralized Isolation
    #### Overview
-   - Hardware extensions enabling memory and execution partitioning at finer granularity than TrustZone
-   - Supports multiple isolated domains (“worlds”) potentially running in parallel on multi-core systems
+   RISC-V WorldGuard is a hardware extension designed to enable robust memory and execution partitioning. It offers a more granular approach to isolation than traditional two-world models like ARM TrustZone. WorldGuard facilitates the creation of multiple, independent isolated execution domains, referred to as "worlds." These worlds can be assigned distinct privileges and resources, and on multi-core systems, different worlds can potentially operate in parallel on separate CPU cores. The extension provides mechanisms to control access to memory regions and peripherals, enforcing isolation between these worlds at the hardware level.
+
    #### Advantages
-   - Decentralized design enhances scalability and flexibility for multi-core/multi-tenant use cases
-   - Open ISA allows community-driven security extensions and transparent implementation
-   - Enables novel Secure OS designs with tailored isolation policies
-   - WorldGuard has a superset of capabilities compared with TrustZone, so if only two worlds used - this will closely match TrustZone model and GlobalPlatform TEE API can be used with WorldGuard
+   -   Decentralized Design and Scalability: The architecture supports multiple independent worlds, enhancing scalability and flexibility, particularly for multi-core processors and multi-tenant environments. Each core can operate in a distinct world context, allowing for true parallelism between isolated environments.
+   -   Openness and Transparency: As part of the open RISC-V ISA, WorldGuard benefits from community-driven development and scrutiny, leading to transparent security extension implementations.
+   -   Support for Novel Secure OS Architectures: The fine-grained, multi-world isolation enables innovative Secure OS designs with tailored security policies, moving beyond traditional monolithic secure monitors.
+   -   Enhanced Capabilities and Compatibility: WorldGuard offers a superset of security features compared to simpler models. For instance, a two-world configuration can closely emulate the TrustZone model, facilitating the use of established APIs like the GlobalPlatform TEE API.
+   -   Non-Blocking Secure Services: The ability to dedicate specific cores to secure worlds (e.g., a Secure OS) allows for non-blocking calls from other worlds (e.g., a Rich OS like Linux), improving system responsiveness compared to architectures requiring a world switch on the same core.
+   -   Multiple Concurrent TEEs: The design inherently supports the co-existence and concurrent operation of multiple TEE instances, each potentially serving different security requirements or tenants.
+   -   Fine-grained Resource Control: WorldGuard allows for precise and configurable partitioning of system resources, including memory and peripherals, among different worlds.
+
    #### Disadvantages
-   - Early Stage of Standardization and Development: lacking wide hardware and software support
-   - Limited Ecosystem and Tooling Support: Unlike ARM TrustZone or Intel SGX, which have mature SDKs, secure OSes, middleware, and developer tools, World Guard currently lacks a rich ecosystem
-   - Need for Accompanying Secure Software Stack: Hardware support alone is insufficient; a complete trusted execution environment requires well-designed Secure OS, runtime environments, drivers, and APIs — these are still under development or experimental for World Guard
-   - Adoption and Interoperability Challenges: Fragmentation or vendor-specific variations could impede standardization and cross-platform TEE portability
+   -   Early Standardization and Ecosystem Maturity: WorldGuard is a relatively new extension. Standardization is ongoing, and widespread, mature hardware implementations and comprehensive software support are still emerging.
+   -   Requirement for a Comprehensive Secure Software Stack: The hardware capabilities of WorldGuard alone are insufficient. A complete TEE solution necessitates a robust and specifically designed Secure OS, runtime environments, trusted application development tools, secure boot mechanisms, and drivers. This foundational software ecosystem is currently under active development or exists primarily in experimental stages.
+   -   Potential for Increased Complexity: Managing multiple isolated worlds, their distinct security policies, and inter-world communication protocols can introduce additional complexity in system design, development, and verification compared to simpler two-world models.
+
   ### Summary and Comparative Analysis
    - *Side-by-side comparison table or structured summary across key dimensions*
    - ...

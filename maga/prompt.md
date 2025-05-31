@@ -82,17 +82,22 @@ I have a draft of chapter 1:
    #### Linux Integration for Secure OS Communication
    #### TEE Interface and OpenSBI Extensions
 
-Starting with 1.4.4. RISC-V's Physical Memory Protection (PMP).
+Starting with 1.4.5. RISC-V's WorldGuard Extension: Decentralized Isolation.
 I have a draft of this section:
 
-#### Overview
- - ...
-#### Advantages
- - part of base ISA
- - ...
-#### Disadvantages
- - ...
- - Only Exception Level isolation: not suitable for TEEs
+   #### Overview
+   - Hardware extensions enabling memory and execution partitioning at finer granularity than TrustZone
+   - Supports multiple isolated domains (“worlds”) potentially running in parallel on multi-core systems
+   #### Advantages
+   - Decentralized design enhances scalability and flexibility for multi-core/multi-tenant use cases
+   - Open ISA allows community-driven security extensions and transparent implementation
+   - Enables novel Secure OS designs with tailored isolation policies
+   - WorldGuard has a superset of capabilities compared with TrustZone, so if only two worlds used - this will closely match TrustZone model and GlobalPlatform TEE API can be used with WorldGuard
+   - supported different context on each CPU, so Secure OS can be on separate core, and calls to Secure OS can be non-blocking, unlike in TrustZone
+   - Can run multiple TEEs
+   #### Disadvantages
+   - Early Stage of Standardization and Development: lacking wide hardware and software support
+   - Need for Accompanying Secure Software Stack: Hardware support alone is insufficient; a complete trusted execution environment requires well-designed Secure OS, runtime environments, drivers, and APIs — these are still under development or experimental for World Guard
 
 write contents of section based on draft.
 If needed - maybe add some points if there is anything else to say by topic.

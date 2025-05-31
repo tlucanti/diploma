@@ -201,6 +201,6 @@
   - TOR - Top of Range (Верхняя Граница Диапазона)
   - NA4 - Naturally Aligned Four-byte (Естественно Выровненные Четыре Байта)
   - NAPOT - Naturally Aligned Power-of-Two (Естественно Выровненные по Степени Двойки)
-
+  - CPU (ЦП) - Central Processing Unit (Центральный Процессор)
 
 ---
