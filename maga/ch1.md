@@ -245,6 +245,30 @@
    #### Disadvantages
    Despite its effectiveness in protecting VM memory, SEV's design, centered on entire VM encryption, makes it inherently less suited for the role of a general-purpose Trusted Execution Environment (TEE) in the context of isolating individual applications. Its primary focus on virtualization security means it operates at a much coarser granularity—the entire VM—compared to enclave-based models like Intel SGX or distinct secure world architectures like ARM TrustZone. Consequently, SEV is fundamentally a mechanism to protect VMs from an untrusted hypervisor, rather than providing a dedicated, isolated environment for running specific trusted applications with fine-grained control within a single operating system, which is a typical use case for TEEs. This distinction limits its applicability for scenarios requiring application-level isolation and a specific programming model for trusted code execution distinct from the main OS.
 
+  ### 1.4.4 RISC-V's Physical Memory Protection (PMP): Privilege-Level Memory Isolation
+
+   #### Overview
+   RISC-V Physical Memory Protection (PMP) is a standard hardware feature defined in the RISC-V Privileged ISA Specification. It provides a mechanism for controlling access rights to physical memory regions. PMP allows privileged software, typically executing in Machine Mode (M-mode), to define multiple memory regions, each with specific access permissions (Read, Write, Execute). These permissions can be set independently for different privilege levels (Machine, Supervisor, User). PMP configuration is managed through a set of Control and Status Registers (CSRs), primarily `pmpcfgN` for configuration and `pmpaddrN` for addresses, where N denotes the PMP entry index.
+
+   #### Advantages
+   - Standardized Inclusion: Being part of the base Privileged ISA, PMP is available on most RISC-V processors, offering a baseline memory protection capability without requiring custom extensions or incurring additional licensing costs for this feature.
+
+   - Hardware-Enforced Security: Access permission checks are performed by the hardware for every memory access, ensuring low performance overhead and robust enforcement of the defined memory protection policies.
+
+   - Privilege Level Isolation: PMP is effective for establishing fundamental isolation boundaries between different privilege modes. For instance, it can prevent User-mode (U-mode) applications from accessing Supervisor-mode (S-mode) OS memory or M-mode firmware regions.
+
+   - Flexible Region Definition: PMP supports various region matching modes, including Top of Range (TOR), Naturally Aligned Four-byte (NA4), and Naturally Aligned Power-of-Two (NAPOT). NAPOT, in particular, allows for efficient protection of power-of-two sized and aligned memory blocks with a single entry.
+
+   - Simplicity for Basic Use Cases: For straightforward memory protection tasks like securing firmware or isolating basic OS components, PMP offers a relatively simple configuration model compared to more complex MMUs or dedicated security extensions.
+
+   #### Disadvantages
+   - Privilege-Level Centric Isolation: PMP primarily enforces isolation based on privilege levels (M, S, U). It does not inherently provide mechanisms to isolate software components running *within* the same privilege level, nor does it establish distinct "worlds" or security domains independent of privilege level, which is a foundational requirement for TEEs like the one proposed. Thus, it is not suitable on its own for comprehensive TEE implementations.
+   - Limited Number of Regions: The RISC-V standard specifies a modest number of PMP entries (e.g., 8, 16, or up to 64 for RV64). This limited count can be insufficient for complex systems needing fine-grained compartmentalization of many memory regions.
+   - Primarily Static Configuration: PMP entries are typically configured by M-mode software during early boot. While reconfigurable, PMP is not designed for the highly dynamic creation and management of isolated memory regions at runtime by less privileged entities, as often required by TEEs for enclave-like functionalities or managing multiple Trusted Applications.
+   - No Intrinsic Cryptographic Protection: PMP controls memory access permissions (read, write, execute) but offers no built-in mechanisms for memory encryption or integrity verification. Data in PMP-protected regions remains vulnerable to physical attacks or access by sufficiently privileged software if not otherwise cryptographically protected.
+   - Absence of TEE-Specific Features: PMP lacks dedicated hardware support for core TEE functionalities such as secure attestation, trusted storage primitives, or controlled context switching mechanisms between a Normal World and a Secure World. It serves as a basic building block for memory protection rather than a complete TEE solution.
+   - Configuration Management Complexity: As the number of PMP entries used increases, managing their configurations, ensuring no unintended overlaps or gaps, and verifying the correctness of the overall protection scheme can become complex and error-prone.
+
   ### RISC-V’s World Guard Extension: Decentralized Isolation
    #### Overview
    - Hardware extensions enabling memory and execution partitioning at finer granularity than TrustZone

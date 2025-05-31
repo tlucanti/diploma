@@ -195,5 +195,12 @@
   - SEV - Secure Encrypted Virtualization
   - TZ - TrustZone
   - WG - WorldGuard
+  - CSR - Control and Status Registers (Контрольные и Статусные Регистры)
+  - SBI - Supervisor Binary Interface (Бинарный Интерфейс Супервизора)
+  - SEE - Supervisor Execution Environment (Среда Выполнения Супервизора)
+  - TOR - Top of Range (Верхняя Граница Диапазона)
+  - NA4 - Naturally Aligned Four-byte (Естественно Выровненные Четыре Байта)
+  - NAPOT - Naturally Aligned Power-of-Two (Естественно Выровненные по Степени Двойки)
+
 
 ---
