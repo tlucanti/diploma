@@ -176,7 +176,17 @@
    > *Commonly, the assignment of agents and resources to their respective worlds is carried out once when the system boots. Locking these configurations subsequently provides an additional layer of security.*
 
    #### Generic WG Checker
-   - *chapter 3.1.0*
+   While WorldGuard (WG) checkers can be tailored for specific resource types within a system, this section presents a standardized interface for a general-purpose checker. This proposed design is suitable for direct use in scenarios that demand adaptable world configurations across extensive resource address spaces. Furthermore, it can serve as a foundational model for developing more specialized checker implementations.
+
+   The core function of this generic checker is to oversee a predefined range of physical addresses. It permits software to set up access permissions within this specified range. The checker contains several programmable "slots." Each slot has the capability to define a "rule" that applies to a continuous segment of addresses within the checker's total monitored memory area. This rule specifies the read and write access rights for each world concerning that particular address segment.
+
+   A checker is typically positioned at a certain point within a platform's bus system. The address space monitored by the checker may be more extensive than the actual address space of the devices it is protecting. For instance, a peripheral device occupying the address range `0x1000_0000`-`0x2FFF_FFFF` could be secured by a checker that covers a wider range, such as `0x0_0000_0000`-`0x3_FFFF_FFFF`. To make the checker's circuitry less complex, its entire monitored address range will generally align with a naturally aligned power-of-2 (NAPOT) sized area. The checker's designated region might be considerably larger than the address space of the devices it protects; this facilitates the reuse of the same checker design in various locations within the bus hierarchy. The checker's operation is not affected even if the system's bus matrix does not direct all addresses within the checker's full range to it.
+
+   This part of the document focuses solely on the software programming interface for such a checker.
+
+   *A Note on Implementation:*
+   It is important to understand that complete specifications for implementation would necessitate numerous additional platform-specific details, such as those concerning bus interfaces, reset procedures, clocking mechanisms, and power management, among others.
+
    #### Configuration Register Memory Map
    - *chapter 3.1.1*
    #### Rule Slot Format
