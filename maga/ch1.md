@@ -288,8 +288,31 @@
    -   Potential for Increased Complexity: Managing multiple isolated worlds, their distinct security policies, and inter-world communication protocols can introduce additional complexity in system design, development, and verification compared to simpler two-world models.
 
   ### Summary and Comparative Analysis
-   - *Side-by-side comparison table or structured summary across key dimensions*
-   - ...
+   #### Summary
+   The following table provides a side-by-side comparison of the discussed TEE-enabling architectures and mechanisms across several key dimensions.
+
+   | Feature                     | ARM TrustZone                            | Intel SGX                                     | AMD SEV                                         | RISC-V PMP                                      | RISC-V World Guard                              |
+   |-----------------------------|------------------------------------------|-----------------------------------------------|-------------------------------------------------|-------------------------------------------------|-------------------------------------------------|
+   | Core Isolation Mechanism    | Hardware-enforced Secure & Normal Worlds | CPU-protected enclaves (memory & execution)   | Encrypted Virtual Machines                      | M-mode configured memory access permissions     | Hardware-defined, isolated execution "Worlds"   |
+   | Isolation Granularity       | OS-level (Secure OS vs. Rich OS)         | Application functions/modules                 | Entire Virtual Machines                         | Physical memory regions                         | Configurable (e.g., OS-level per World)         |
+   | Typical Software Model      | Full Secure OS in Secure World           | SDK for enclave development; managed by OS    | Hypervisor manages encrypted guest OS           | M-mode firmware/monitor configures regions      | Full Secure OS within a dedicated World         |
+   | Openness (Architecture/Spec)| ISA licensed; implementations proprietary| Proprietary Intel technology                  | Proprietary AMD technology; interfaces openable | Open RISC-V standard                            | Open RISC-V standard (emerging)                 |
+   | Designed for Full Secure OS?| Yes                                      | No (Enclave-centric)                          | No (VM-centric)                                 | No (Building block only)                        | Yes                                             |
+   | Key Strength                | Mature, system-wide TEE model            | Strong application isolation from OS/VMM      | Strong VM isolation from hypervisor             | Basic, flexible memory protection primitive     | Open, flexible world-based isolation on RISC-V  |
+   | Key Limitation              | Proprietary ecosystem, licensing         | Not for monolithic Secure OS; complex TCB     | Not for co-resident Secure/Rich OS model        | Insufficient alone for TEE; lacks world concept | Newer, ecosystem still developing               |
+
+   #### Comparative Analysis
+   This comparative analysis of existing TEE-enabling architectures and mechanisms reveals distinct approaches to achieving isolated execution, each with implications for developing a Secure OS:
+
+   ARM TrustZone offers a well-established model for a comprehensive Secure OS running alongside a Rich OS, bifurcating the system into Secure and Normal Worlds. While effective, its deployment is tied to the proprietary ARM architecture and its associated licensing models.
+
+   Intel SGX focuses on protecting application-specific code and data within enclaves, isolating them from a potentially malicious OS or VMM. This model, while providing fine-grained protection for targeted application portions, is not designed for hosting a full, independent Secure OS with system-wide responsibilities as pursued in this work. The underlying hardware and microcode also represent a significant and complex proprietary TCB.
+
+   AMD SEV aims to secure entire virtual machines by encrypting their memory, protecting them from a compromised or untrusted hypervisor. This is valuable for cloud environments but, like SGX, SEV's VM-centric isolation is not architected for the co-resident, dual-OS model typical of TrustZone-style TEEs and envisioned for this project.
+
+   RISC-V's Physical Memory Protection (PMP) mechanism is a standard feature providing fundamental hardware-enforced memory region access controls. PMP is an essential building block for any secure system on RISC-V, including TEEs, by enabling memory isolation. However, PMP alone does not define distinct execution "worlds" or provide the comprehensive architectural support needed for a full TEE; it primarily serves M-mode in segmenting memory access for less privileged modes and lacks inherent mechanisms for distinct world switching or complex privilege management beyond standard RISC-V modes.
+
+   RISC-V's World Guard Extension specifically addresses the need for a robust, hardware-enforced TEE framework on the open RISC-V architecture. By enabling the creation of multiple, isolated "worlds," it provides a direct architectural counterpart to concepts like ARM TrustZone's Secure World, and potentially offers more decentralized isolation capabilities. This makes World Guard highly suitable for implementing a dedicated, monolithic Secure OS. Its characteristic openness and flexibility align with the goals of fostering a transparent and adaptable security ecosystem for RISC-V, representing a key enabler for the Secure OS developed in this thesis, which aims to leverage these features for a capability-based secure environment.
 
  ## Related Work
   ### Academic Research on RISC-V TEEs
