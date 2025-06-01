@@ -6,21 +6,25 @@
    A Trusted Execution Environment (TEE) is a secure, isolated area within a main processor. It is designed to execute code and process data with higher levels of confidentiality and integrity than the standard operating environment, often referred to as the Rich Execution Environment (REE) or Normal World. The TEE ensures that assets, such as sensitive data and critical code, stored and processed within it are protected, even if the REE's operating system or applications are compromised. This protection is achieved through a combination of hardware and software mechanisms that enforce strong isolation between the TEE (Secure World) and the REE (Normal World). The operation and security guarantees of a TEE are founded upon several core principles, which are elaborated upon in the subsequent sections.
 
    #### Isolation
-   - separaion on Rich Environment and Trusted Environment
+   Isolation in a TEE refers to the fundamental principle of separating the execution environment into two distinct domains: the Rich Execution Environment (REE), also known as the Normal World, and the Trusted Execution Environment, or Secure World. This separation ensures that operations and data within the Secure World are protected from interference or unauthorized access by software running in the Normal World, including the main operating system and its applications. Hardware-enforced boundaries are typically employed to maintain this separation, preventing code in one world from directly accessing resources or memory allocated to the other, unless explicitly permitted through controlled interfaces.
+
    #### Integrity
-   - guarantees that the code and data within it are untampered
+   Integrity assurances within a TEE guarantee that the code and data residing and processed in the Secure World remain untampered and in their intended state. This means that neither external entities in the Normal World nor unauthorized processes within the Secure World can modify sensitive code, such as the TEE's operating system or Trusted Applications (TAs), or critical data they manage. Integrity is typically upheld through mechanisms like secure boot, code signing, runtime memory protection, and cryptographic checksums, ensuring that only verified and authentic software components execute and that data is not maliciously altered.
+
    #### Confidentiality
-   - Data and code inside the TEE are kept confidential
-   - No software outside the TEE can access data inside the TEE
+   Confidentiality is the TEE principle ensuring that data and code within the Secure World are protected from unauthorized disclosure. This means that no software component operating outside the TEE, including a potentially compromised Normal World operating system or privileged applications, can read or access the TEE's private memory regions. Confidentiality applies to data in use (e.g., cryptographic keys being processed, sensitive application logic) and, when combined with secure storage, to data at rest. This protection is critical for safeguarding secrets and proprietary algorithms.
+
    #### Secure Storage
-   - storage of sensitive data even when powered off
+   Secure Storage is a TEE capability that provides a mechanism for persistently storing sensitive data, such as cryptographic keys, user credentials, or other confidential information, in a way that protects its confidentiality and integrity even when the system is powered off. Data stored using this mechanism is typically encrypted and integrity-protected using keys managed within the TEE. Access to this stored data is strictly controlled and mediated by the TEE, ensuring that only authorized TAs can retrieve or modify their respective sensitive information.
+
    #### Attestation
-   - integrity approval from remote server
+   Attestation allows a TEE to prove its authenticity and the integrity of the software environment running within it to a remote party. This process typically involves the TEE generating a signed report containing measurements of its hardware, firmware, TEE OS, and loaded Trusted Applications. The remote party can verify this report using a trusted key, thereby gaining confidence that they are communicating with a genuine TEE and that the software configuration is as expected and has not been tampered with. This is crucial for establishing trust in secure services.
+
    #### Trusted Execution
-   - Only authorized and verified code can run within the TEE
+   Trusted Execution ensures that only authorized and verified code is permitted to run within the confines of the TEE. This involves mechanisms to authenticate the code (e.g., through digital signatures) before it is loaded and executed inside the Secure World. By restricting execution to known and vetted software components, the TEE maintains a controlled and secure environment, preventing the execution of malicious or untrusted code that could compromise its security objectives or the assets it protects.
+
    #### Minimal Trusted Computing Base (TCB)
-   - minimizing ccomponents that must be trusted
-   - root of trust
+   The Minimal Trusted Computing Base (TCB) principle dictates that the set of all hardware, firmware, and software components critical to enforcing the system's security policy should be as small as possible. By minimizing the TCB, the attack surface is reduced, simplifying security analysis and verification, and lowering the probability of vulnerabilities that could compromise the entire TEE. The TCB typically includes the secure hardware elements, secure boot firmware, the TEE OS kernel, and potentially a minimal set of core trusted services. The foundation of the TCB's trustworthiness often relies on a hardware-based Root of Trust.
 
   ### Security Requirements and Design Goals
    #### Core Components

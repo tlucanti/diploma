@@ -204,6 +204,7 @@
   - CPU (ЦП) - Central Processing Unit (Центральный Процессор)
   - PoC - Proof of Concept (Концептуальный прототип)
   - OEM - Original Equipment Manufacturer (Оригинальный Производитель Оборудования)
+  - RoT - Root of Trust (Корень Доверия)
 
 <div style="page-break-after: always;"></div>
 ---
