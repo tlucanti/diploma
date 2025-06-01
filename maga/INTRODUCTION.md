@@ -209,6 +209,7 @@
   - DMA (ПДП) - Direct Memory Access (Прямой Доступ к Памяти)
   - IOMMU - Input/Output Memory Management Unit (Блок Управления Памятью Ввода/Вывода)
   - MITM - Man-in-the-Middle (Человек Посередине)
+  - WID - World Identifier (Идентификатор Мира)
 
 <div style="page-break-after: always;"></div>
 ---

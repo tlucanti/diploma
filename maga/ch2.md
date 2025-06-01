@@ -121,12 +121,23 @@
    A secure boot process, anchored in a hardware Root of Trust (RoT), is essential. This involves cryptographic verification of the digital signatures of each software component in the boot chain, from the initial immutable boot ROM or OTP-stored code up to the Secure OS and Trusted Applications, ensuring their authenticity and integrity before execution.
 
  ## World Guard Extension
-  ### Overview of the World Guard Concept
-   #### ...
-   - *chapter 1 from wg spec*
   ### RISC-V ISA WorldGuard
    #### ISA WorldGuard Extensions
-   - *chapter 2.0 from wg spec*
+   RISC-V cores (harts) that incorporate WorldGuard functionality ensure that every memory access originating from that hart is associated with a World Identifier (WID). The WorldGuard extensions provide a mechanism for different privilege levels operating on a hart to be identified with distinct WIDs.
+
+   There are three distinct tiers of WorldGuard (WG) support for RISC-V harts.
+   *   The most basic tier does not necessitate any Instruction Set Architecture (ISA) extensions; it assigns a single, fixed WID for all privilege modes on a particular hart.
+   *   The second tier introduces the Smwg extension, which grants M-mode the capability to determine the WID used by privilege modes operating at lower levels.
+   *   The third tier, known as the Smwgd extension, further allows M-mode to delegate the responsibility of assigning WIDs to lower-privilege modes to the [H]S-mode; this in turn incorporates the Sswg extension for [H]S-mode operations.
+
+   All types of memory accesses, which include indirect memory operations like fetching instructions and performing page-table walks, are required to be tagged with the correct WID. From the perspective of WG permission enforcement, instruction fetches are considered equivalent to memory read operations.
+
+   > NOTE: Bus interconnect systems usually do not differentiate between instruction fetches and general memory read operations. As a result, WG permission enforcement units (checkers) situated on the far side of the bus interconnect are incapable of distinguishing these two scenarios.
+
+   WorldGuard's design prohibits any privilege mode from altering its own WID. The WID assigned to M-mode on a hart is configured by the external system environment and remains unchanged between system resets.
+
+   > NOTE: It is possible for different harts within a single system to operate with distinct WIDs in M-mode.
+
    #### WorldGuard CSRs
    - *chapter 2.1*
    #### One world per hart
