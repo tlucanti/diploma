@@ -78,25 +78,33 @@ I have a draft of chapter 2:
    #### One-Time Programmable (OTP) Memory
    #### Secure Boot Implementation
 
-Starting with 2.2.1. Normal World Assumptions
+Starting with 2.2.2. Attack vectors
 I have a draft of thess sections:
 
- #### untrasted OS
- - The Normal World is assumed to be fully untrusted
- - Normal World can be compromised by malware, user-level or kernel-level rootkits
- - No sensitive data can be placed in Normal World
- #### Hostile OS
- - The Normal World may attempt to attack the TEE by using privileged access
- - read or tamper with TEE memory
- - intercept or replay communication with the TEE
- - Launching DoS (Denial of Service) attacks against TEE services
- #### Limited Visibility
- - The TEE assumes that the Normal World cannot access TEE data
- #### Control over Non-secure resources
- - Normal World is responsible for forwarding requests between trusted applications in the TEE and external sources / user
- #### Schedule priorities
- - The Normal World may refuse to schedule or service TEE requests
- - so by desigh - not Normal world should call TEE, but TEE should check requests by itself
+  ### Attack vectors
+   #### Direct Memory Access Attacks
+   - If DMA engines (e.g., from peripherals) are not properly restricted, they might access Secure World memory
+   - Usage of IOMMU is crucial
+   #### Side-Channel Attacks
+   - Exploit indirect information leakage (timing, power, electromagnetic radiation, cache behavior)
+   - like Meltdown, Spectre, Red Bleeding
+   - Constant-time algorithms in the TEE, side-channel resistant hardware, noise introduction, cache partitioning or flushing techniques should be used
+   #### Physical Attacs
+   - Physical attacs Using power glitches, clock glitches, voltage variations, or electromagnetic interference to cause faults
+   - Physical access combined with Normal World privileges could help mount attacks like probing or injecting malicious signals
+   #### API Exploitation
+   - Malicious Normal World software crafts malicious inputs or sequences of calls to the Secure World, causing buffer overflows, logic bugs, or privilege escalation within the Secure World
+   - Strict input validation robust secure OS design should be used
+   #### Man-in-the-Middle Attacks
+   - The communication channel between Normal and Secure World is a major interface
+   - Normal World manipulates, replays, or drops messages to confuse or exploit Secure World services
+   - Use cryptographic nonce, session tokens, to validate integrity and freshness
+   #### Denial of Service Attacs
+   - Flooding Secure World with calls, starves it of resources, or blocks communication
+   - Rate limiting, watchdog timers, graceful degradation
+   #### Boot and Firmware Attacks
+   - Compromise of bootloader or firmware update process can undermine Secure World trust (load malicious secure OS or patch trusted apps).
+   - Secure boot, cryptographic verification of firmware and Secure World images should be used
 
 write contents of sections based on draft.
 If needed - maybe add some points if there is anything else to say by topic.

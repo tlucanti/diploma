@@ -86,28 +86,39 @@
 
   ### Attack vectors
    #### Direct Memory Access Attacks
-   - If DMA engines (e.g., from peripherals) are not properly restricted, they might access Secure World memory
-   - Usage of IOMMU is crucial
+   Unrestricted Direct Memory Access (DMA) engines, particularly those controlled by peripherals in the Normal World, pose a significant threat. If not properly isolated, these engines could be programmed by malicious Normal World software to arbitrarily read from or write to Secure World memory, bypassing CPU-enforced isolation mechanisms.
+   A compromised Normal World driver, for instance, could instruct its associated peripheral's DMA controller to target memory regions allocated to the Secure OS or Trusted Applications, leading to confidentiality and integrity breaches.
+   The employment of an Input/Output Memory Management Unit (IOMMU) is essential. The IOMMU can enforce memory protection by translating device addresses to physical addresses and checking permissions, ensuring that peripherals can only access authorized memory regions. Proper IOMMU configuration, typically managed by a trusted entity like the Secure OS or supervisor-level software, is crucial to prevent such attacks.
+
    #### Side-Channel Attacks
-   - Exploit indirect information leakage (timing, power, electromagnetic radiation, cache behavior)
-   - like Meltdown, Spectre, Red Bleeding
-   - Constant-time algorithms in the TEE, side-channel resistant hardware, noise introduction, cache partitioning or flushing techniques should be used
-   #### Physical Attacs
-   - Physical attacs Using power glitches, clock glitches, voltage variations, or electromagnetic interference to cause faults
-   - Physical access combined with Normal World privileges could help mount attacks like probing or injecting malicious signals
+   These attacks exploit indirect information leakage from the system's physical implementation rather than direct software vulnerabilities. Information can be inferred through observations of execution time, power consumption patterns, electromagnetic emissions, or cache access patterns.
+   Examples include attacks like Meltdown and Spectre, which exploit microarchitectural features (e.g., speculative execution, caches), and power/EM analysis which can reveal cryptographic keys or other sensitive data processed within the TEE.
+   Mitigation strategies involve designing cryptographic operations and sensitive code paths using constant-time algorithms to avoid data-dependent timing variations. Hardware support for side-channel resistance, introduction of noise into physical emanations, and software techniques like cache partitioning or flushing between security contexts can reduce leakage, though complete elimination is often challenging.
+
+   #### Physical Attacks
+   Physical attacks involve direct interaction with the hardware to compromise the TEE. This includes fault injection techniques, such as inducing power or clock glitches, varying voltage, or using focused electromagnetic interference, to cause malfunctions in the CPU or memory, potentially bypassing security checks or corrupting critical operations within the Secure World.
+   If an attacker gains physical access to the device, they might combine this with Normal World privileges to mount more sophisticated attacks, such as microprobing internal buses or cryptographic coprocessors, or injecting malicious signals directly into the hardware.
+   While robust logical isolation is the primary goal of TEEs like the one extending RISC-V World Guard, physical security measures for the underlying hardware platform (e.g., tamper resistance, shielding) are necessary complements, as purely software-based TEEs cannot defend against all physical threats.
+
    #### API Exploitation
-   - Malicious Normal World software crafts malicious inputs or sequences of calls to the Secure World, causing buffer overflows, logic bugs, or privilege escalation within the Secure World
-   - Strict input validation robust secure OS design should be used
+   The interface exposed by the Secure World to the Normal World represents a critical attack surface. Malicious or compromised Normal World software can meticulously craft inputs or sequences of API calls (e.g., to the Global Platform API subset implemented by the Secure OS) to trigger vulnerabilities within the Secure OS or Trusted Applications.
+   Such an exploitation could lead to buffer overflows, integer overflows, use-after-free, logic bugs, or Time-of-Check-to-Time-of-Use (TOCTOU) vulnerabilities, potentially resulting in denial of service, information disclosure, or privilege escalation within the Secure World.
+   Robust defense requires rigorous input validation for all data received from the Normal World, secure coding practices, formal verification of critical API handlers, and a robust Secure OS design adhering to the principle of least privilege, even for internal components.
+
    #### Man-in-the-Middle Attacks
-   - The communication channel between Normal and Secure World is a major interface
-   - Normal World manipulates, replays, or drops messages to confuse or exploit Secure World services
-   - Use cryptographic nonce, session tokens, to validate integrity and freshness
-   #### Denial of Service Attacs
-   - Flooding Secure World with calls, starves it of resources, or blocks communication
-   - Rate limiting, watchdog timers, graceful degradation
+   The communication channel between the Normal World and Secure World, such as the shared memory queues used in this project, is a prime target. The untrusted Normal World, by its nature, controls its side of this communication.
+   A malicious Normal World can attempt to intercept, modify, replay, or drop messages exchanged between a Normal World client and a Secure World service or Trusted Application. This could lead to confusing the Secure World logic, transaction manipulation, or session hijacking.
+   To counter these threats, communication protocols between worlds must incorporate cryptographic mechanisms such as message authentication codes (MACs) to ensure integrity, sequence numbers or nonces to prevent replay attacks, and potentially session tokens or encrypted channels to ensure freshness and confidentiality of parameters or results.
+
+   #### Denial of Service Attacks
+   The Normal World can attempt to disrupt the operation of the Secure World or specific Trusted Applications by launching Denial of Service (DoS) attacks. Given the Secure OS operates on a dedicated core, these attacks could manifest as flooding the Secure World with an excessive number of service requests, thereby exhausting CPU resources of the secure core.
+   Other DoS vectors include consuming all available resources allocated for inter-world communication (e.g., filling shared memory queues faster than they can be processed), or repeatedly invoking computationally expensive operations, thus starving legitimate Secure World tasks or Trusted Applications.
+   Mitigations include implementing rate-limiting mechanisms on API calls from the Normal World, using watchdog timers to detect unresponsive secure services, and designing the Secure OS for graceful degradation of non-critical services under heavy load.
+
    #### Boot and Firmware Attacks
-   - Compromise of bootloader or firmware update process can undermine Secure World trust (load malicious secure OS or patch trusted apps).
-   - Secure boot, cryptographic verification of firmware and Secure World images should be used
+   The security guarantees of the TEE fundamentally rely on a trusted boot process and the integrity of its foundational firmware and software. Compromising any stage of the boot sequence (e.g., First Stage Bootloader, OpenSBI) or the firmware update process can undermine the entire trust model of the Secure World.
+   An attacker with the ability to modify these early components could load a malicious or compromised Secure OS, patch trusted applications with malicious code before they are loaded, or disable/misconfigure hardware security mechanisms like the World Guard extension itself.
+   A secure boot process, anchored in a hardware Root of Trust (RoT), is essential. This involves cryptographic verification of the digital signatures of each software component in the boot chain, from the initial immutable boot ROM or OTP-stored code up to the Secure OS and Trusted Applications, ensuring their authenticity and integrity before execution.
 
  ## World Guard Extension
   ### Overview of the World Guard Concept

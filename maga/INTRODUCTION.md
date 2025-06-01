@@ -206,6 +206,9 @@
   - OEM - Original Equipment Manufacturer (Оригинальный Производитель Оборудования)
   - RoT - Root of Trust (Корень Доверия)
   - DoS - Denial of Service (Отказ в Обслуживании)
+  - DMA (ПДП) - Direct Memory Access (Прямой Доступ к Памяти)
+  - IOMMU - Input/Output Memory Management Unit (Блок Управления Памятью Ввода/Вывода)
+  - MITM - Man-in-the-Middle (Человек Посередине)
 
 <div style="page-break-after: always;"></div>
 ---
