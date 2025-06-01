@@ -155,10 +155,26 @@
    With this configuration, the RISC-V hart does not undergo any modifications observable at the Instruction Set Architecture (ISA) level. Upon system reset, the hart is initialized to operate within one specific world. Consequently, every memory access initiated by this hart, irrespective of its privilege level, is marked with the World Identifier (WID) associated with that singular world. The mechanisms for allocating a hart to its world, as well as the provisions for a hart to obtain details about the WorldGuard (WG) setup, are determined by the specific design of the hardware platform.
 
    #### Response to permission violations
-   - *chapter 2.5*
+   When a hart (processor core) attempts a memory operation, whether explicit or implicit, that encounters a WorldGuard (WG) permission failure, this action may or may not result in an access-fault exception of the corresponding type (e.g., instruction-access, load-access, or store/AMO-access fault). If an access-fault exception is not triggered, the instruction initiating the memory operation can still complete (retire). However, in such cases, any writes directed to the protected physical memory address are ignored. Similarly, any memory reads from that protected location will return data that is deliberately unconnected to the actual stored value, ensuring that memory isolation is not compromised.
+
+   NOTE:
+   It is typical for secure system designs to incorporate a mechanism for notifying a designated agent whenever an illicit access is attempted. This notification is intended to occur even if the hart context itself does not experience an access-fault exception.
+
+   NOTE:
+   It is not possible to enforce a requirement that reads failing permission checks (but not causing access-fault exceptions) must return a specific, predetermined value (for instance, zero) to the hart. Such a requirement would conflict with certain cache-coherence protocols. These protocols might need to allow for the modification of data already present in the cache, even when the underlying physical memory locations are protected and previous bus transactions for those locations had returned zero.
+
   ### Non-ISA WorldGuard Hardware Platform Components
    #### WorldGuard Markers and Checkers
-   - *chapter 3.0*
+   The specific way WorldGuard is integrated into a hardware platform can differ from one system to another. A hardware platform might incorporate components known as *markers*, which are responsible for attaching World Identifiers (WIDs) to accesses initiated by hardware agents. Additionally, it may feature *checkers*, which verify access permissions at certain points along the data path leading to system resources. It is essential that all accesses aimed at a resource protected by WorldGuard are linked to a WID.
+
+   The design of these WorldGuard markers and checkers can be specifically adapted for individual device agents and the resources they interact with, respectively.
+
+   > *A primary motivation behind WorldGuard is to make platform-level security more cost-effective. This is achieved by customizing WID checks directly at the resources, rather than mandating that all access control information be handled in a standardized, generic manner by the initiating agents.*
+
+   The settings for WorldGuard markers and checkers can either be permanently established during the hardware design phase or be managed through alterable (writable) states. When markers and checkers utilize dynamic configuration states, it is advisable that these states revert upon reset to a known, platform-specific configuration or to a secure default state that disallows unauthorized accesses. Typically, this dynamic configuration state is set up by trusted software during the system's boot sequence. A mechanism ought to be in place to lock this configuration after its initial setup, preventing modifications until the next system reset.
+
+   > *Commonly, the assignment of agents and resources to their respective worlds is carried out once when the system boots. Locking these configurations subsequently provides an additional layer of security.*
+
    #### Generic WG Checker
    - *chapter 3.1.0*
    #### Configuration Register Memory Map
