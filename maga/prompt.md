@@ -82,13 +82,7 @@ I have a draft of chapter 1:
    #### Linux Integration for Secure OS Communication
    #### TEE Interface and OpenSBI Extensions
 
-Starting with 1.4.6. Summary and Comparative Analysis.
-I have a draft of this section:
-
-  ### Summary and Comparative Analysis
-   - *Side-by-side comparison table and structured summary across key dimensions*
-   - *Intel SGX, AMD SEV and RISC-V are not sutable for TEE implementation*
-   - ...
+Starting with 1.5.1.2. Gaps identified in academia researches.
 
 write contents of section based on draft.
 If needed - maybe add some points if there is anything else to say by topic.
