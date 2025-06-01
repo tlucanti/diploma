@@ -28,30 +28,34 @@
 
   ### Security Requirements and Design Goals
    #### Core Components
-   - ...
+   The design of the Trusted Execution Environment (TEE) is predicated on a set of fundamental components, each contributing to the overall security architecture. These components, detailed in the subsequent sections, collectively establish and maintain the trusted environment by defining its structure, operational boundaries, and interaction protocols.
+
    #### Isolated Execution Unit
-   - dedicated CPU core
-   - or isolated CPU state
+   A fundamental requirement is an Isolated Execution Unit, which provides hardware-enforced separation for executing secure code. In this project, this is realized as a dedicated CPU core (the first core) exclusively assigned to the Secure OS. This unit ensures that operations within the TEE are shielded from direct observation or interference by untrusted software operating on other cores or in less privileged execution states.
+
    #### Normal World
-   - where Rich Execution Environment runs
+   The Normal World (NW) represents the untrusted execution domain where the Rich Execution Environment (REE), such as a general-purpose operating system like Linux, and its applications operate. All software in the Normal World is considered potentially compromised from the TEE's perspective and is prevented by hardware mechanisms from directly accessing Secure World resources.
+
    #### Secure World
-   - where Trusted Execution environment runs
+   Conversely, the Secure World (SW) is the hardware-protected domain where the TEE, comprising the Secure OS and Trusted Applications (TAs), executes. It is designed to be resistant to threats originating from the Normal World, guaranteeing the confidentiality and integrity of the assets it manages and the computations it performs.
+
    #### Trusted Applications
-   - Applications running inside the TEE that perform sensitive tasks
+   Trusted Applications (TAs) are specialized software modules that execute within the Secure World to perform security-sensitive operations on behalf of Normal World clients or internal TEE services. These applications are further isolated (as per the capability model) by the Secure OS, providing functionalities such as secure data processing, cryptographic operations, or management of sensitive credentials, invoked through well-defined and controlled interfaces.
+
    #### Secure Storage
-   - data stored outside TEE and always encrypted
-   - but keys can never leave TEE
+   Secure Storage mechanisms are required to protect the confidentiality and integrity of sensitive data when persisted outside the TEE's volatile memory, typically in Normal World storage systems. This is achieved by ensuring that all such data is cryptographically protected (e.g., encrypted and integrity-protected) using keys managed exclusively within the TEE; these keys are never exposed to the Normal World.
+
    #### Memory Isolation
-   - RAM is divided to Normal, Secure and Shared areas
-   - Normal area can not be accesed by TEE
-   - Secure area can not be accessed by REE
-   - only shared area can be used to transfer data
+   Robust memory isolation, enforced by hardware mechanisms like the RISC-V World Guard extension, is a critical design goal. Physical Random Access Memory (RAM) must be partitioned into distinct regions: a Secure area, accessible only by Secure World components; a Normal area, accessible only by Normal World components; and specifically designated Shared memory areas. Direct access from the Normal World to the Secure area (and vice-versa for non-shared regions) must be strictly prohibited by the hardware. The Shared memory regions, such as the inter-world communication pages, serve as the sole configured conduits for data exchange, operating under strict TEE supervision and predefined protocols.
+
    #### Cryptographic Engine
-   - hardware or software module providing secure cryptographic functions
+   A Cryptographic Engine is an essential component for providing fundamental security services within the TEE. This engine, which can comprise dedicated hardware accelerators (if available) or a rigorously vetted software library executing within the Secure World, offers functions such as encryption, decryption, hashing, digital signatures, and secure random number generation, accessible to both the Secure OS and Trusted Applications.
+
    #### Attestation Mechanism
-   - hashes of TEE components signed with secure keys
+   An Attestation Mechanism is required to enable the TEE to prove its authenticity and current integrity state to a challenging party (either local or remote). This involves cryptographically measuring the TEE's software components (e.g., Secure OS, TAs) and signing these measurements with a private key whose corresponding public key is part of a trusted certificate chain. This chain should be rooted in a hardware-protected secret, forming a Root of Trust for Measurement and Reporting.
+
    #### Secure APIs
-   - Interfaces through which normal applications or the Rich Execution Environment can request services from the TEE
+   Secure APIs define the controlled interfaces through which Normal World software can request services from the Secure World, specifically from Trusted Applications. These APIs, such as the subset of the GlobalPlatform TEE Client API used in this project, act as rigorously controlled gateways. They are responsible for marshalling data and ensuring that all interactions are explicitly defined, validated, and authorized according to the TEE’s security policies before any service is executed within the Secure World.
 
  ## Threat Model
   ### Normal World Assumptions
