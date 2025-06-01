@@ -331,36 +331,21 @@
    *   Inadequate Attention to Full-Stack Integration Challenges: Academic prototypes sometimes simplify or overlook the complexities involved in integrating a Secure OS with the complete system stack. This includes the detailed engineering efforts required for firmware modifications (e.g., OpenSBI to support WorldGuard context switching and initialization), and the development of secure, efficient, and practical communication drivers for a Rich OS like Linux.
    *   Scarcity of Open-Source, Replicable, Full-Stack Implementations Utilizing WorldGuard: There is a discernible lack of publicly available, well-documented, and easily replicable open-source TEE solutions for RISC-V that offer a complete stack—Secure OS, necessary firmware adaptations, and Normal World drivers—specifically designed for and demonstrating the practical application of the WorldGuard extension.
 
-  ### Proprietary vs- Opsn-Source TEE Solutions
-   #### Alibaba Cloud Link
-   - tightly integrated with Alibaba ecosystem
-   - used in:
-   - Alibaba Cloud
-   - IoT Platform
-   - IoT Edge Computing
+ ### Proprietary vs Open-Source TEE Solutions
+   #### Alibaba Cloud Link TEE
+   Alibaba Cloud Link TEE is a proprietary trusted execution environment developed by Alibaba Group. It is deeply integrated within the Alibaba ecosystem, designed primarily to secure communications and data for devices connecting to Alibaba Cloud services. Its applications span across Alibaba's IoT Platform and IoT Edge Computing solutions, focusing on device authentication, secure data transmission, and trusted computations at the edge.
+
    #### Apple Secure Enclave
-   - Hardware-backed TEE in Apple SoCs
-   - used in:
-   - all apple devices: phones, TVs, ...
+   The Apple Secure Enclave is a hardware-based TEE, implemented as a dedicated secure coprocessor fabricated within Apple's System on Chips (SoCs). This proprietary technology is a cornerstone of security on Apple devices, including iPhones, iPads, Macs, and Apple Watches. It is responsible for protecting highly sensitive data such as cryptographic keys, biometric information for Face ID and Touch ID, and ensures the integrity of secure boot processes. The Secure Enclave operates with its own secure microkernel and memory, isolated from the main application processor.
+
    #### Huawei iTrustee
-   - Platform security solution deployed across Huawei devices; proprietary and closed ecosystem
-   - used in:
-   - all huawei devices: phones, TVs, ...
-   #### Google Trusty
-   - Android’s open-source TEE OS managed by Google
-   - used in:
-   - google pixel
-   - chromebook
+   Huawei iTrustee is a proprietary TEE security solution, forming an integral part of Huawei's overall platform security architecture. Deployed across a wide range of Huawei devices, such as smartphones and tablets, iTrustee provides a secure environment for critical operations. It underpins functionalities including secure boot, trusted payment services, Digital Rights Management (DRM), and protection of sensitive user data within a closed ecosystem.
+
+   #### Google Trusty TEE
+   Google Trusty is an open-source TEE operating system developed and maintained by Google, primarily for Android and Chrome OS devices. While the Trusty OS itself is open-source, its security relies on underlying hardware support for memory isolation and protection. It is designed to provide a secure environment for running Trusted Applications (TAs) that handle sensitive tasks such as cryptographic operations, hardware-backed keystores, and DRM. Trusty is notably used in Google Pixel smartphones and Chromebooks and can be adopted by other device manufacturers.
+
    #### Samsung TEEgris
-   - Samsung's own TEE implementation
-   - used in:
-   - all samsung devices: phones, TVs, ...
-   - also licensed to automotive OEMs
+   Samsung TEEgris is a proprietary TEE implementation developed by Samsung Electronics. It serves as the trusted environment for Samsung's Knox security platform, deployed across a vast array of Samsung devices, including smartphones, tablets, wearables, and smart TVs. TEEgris provides hardware-enforced isolation for secure storage, cryptographic processing, and running trusted applications for features like mobile payments and enterprise security. Samsung also licenses TEEgris technology to third parties, including automotive Original Equipment Manufacturers (OEMs).
 
-  ### Complementary Papers
-   #### Linux Integration for Secure OS Communication
-   - Prior art and current solutions enabling Linux driver support for TEE communication, IPC, and session management
-   #### TEE Interface and OpenSBI Extensions
-   - Existing works on modifying trusted firmware (like OpenSBI) to support new RISC-V security extensions (including WorldGuard)
-
----
+   #### SiFive's private Secure OS for WorldGuard
+   SiFive has developed a private, proprietary Secure OS tailored for its RISC-V cores featuring the WorldGuard security extension. This solution is designed to leverage WorldGuard's hardware capabilities to create isolated execution environments. As a vendor-specific offering, it provides a TEE for SiFive's customers building secure systems with WorldGuard-enabled processors, though its closed nature contrasts with the open ethos of RISC-V itself.

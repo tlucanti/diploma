@@ -82,7 +82,34 @@ I have a draft of chapter 1:
    #### Linux Integration for Secure OS Communication
    #### TEE Interface and OpenSBI Extensions
 
-Starting with 1.5.1.2. Gaps identified in academia researches.
+Starting with 1.5.2. Proprietary vs Opsn-Source TEE Solutions.
+I have a draft of this section:
+
+### Proprietary vs Opsn-Source TEE Solutions
+  #### Alibaba Cloud Link
+  - tightly integrated with Alibaba ecosystem
+  - used in:
+  - Alibaba Cloud
+  - IoT Platform
+  - IoT Edge Computing
+  #### Apple Secure Enclave
+  - Hardware-backed TEE in Apple SoCs
+  - used in:
+  - all apple devices: phones, TVs, ...
+  #### Huawei iTrustee
+  - Platform security solution deployed across Huawei devices; proprietary and closed ecosystem
+  - used in:
+  - all huawei devices: phones, TVs, ...
+  #### Google Trusty
+  - Android’s open-source TEE OS managed by Google
+  - used in:
+  - google pixel
+  - chromebook
+  #### Samsung TEEgris
+  - Samsung's own TEE implementation
+  - used in:
+  - all samsung devices: phones, TVs, ...
+  - also licensed to automotive OEMs
 
 write contents of section based on draft.
 If needed - maybe add some points if there is anything else to say by topic.

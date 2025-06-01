@@ -203,5 +203,6 @@
   - NAPOT - Naturally Aligned Power-of-Two (Естественно Выровненные по Степени Двойки)
   - CPU (ЦП) - Central Processing Unit (Центральный Процессор)
   - PoC - Proof of Concept (Концептуальный прототип)
+  - OEM - Original Equipment Manufacturer (Оригинальный Производитель Оборудования)
 
 ---
