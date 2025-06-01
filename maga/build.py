@@ -5,9 +5,9 @@ from markdown_pdf import MarkdownPdf, Section
 pdf = MarkdownPdf(toc_level=4, optimize=True)
 
 for fname in [
-    "INTRODUCTION.md",
-    "CHAPTER-1.md",
-    "ch2.md",
+    # "INTRODUCTION.md",
+    # "CHAPTER-1.md",
+    "CHAPTER-2.md",
     "ch3.md",
     "ch4.md",
     "conclusion.md",
