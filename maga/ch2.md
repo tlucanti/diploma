@@ -145,9 +145,9 @@
 
    | Register     | Access     | Proposed CSR Address | Size in bits | Description                                                                                                                               |
    | :----------- | :--------- | :------------------- | :----------- | :---------------------------------------------------------------------------------------------------------------------------------------- |
-   | `mlwid`      | RW for M   | 0x390                | XLEN         | Designates the WID to be utilized by privilege modes lower than M-mode. The Ceil(Log<sub>2</sub>NWorlds) least significant bits (LSBs) are active; all other bits are zero. |
-   | `mwiddeleg`  | RW for M   | 0x748                | XLEN         | Represents the set of WID values that M-mode delegates to [H]S-mode, structured as a bit vector. The NWorlds LSBs are active; all other bits are zero. |
-   | `slwid`      | RW for [H]S | 0x190                | XLEN         | Specifies the WID value to be employed in modes with lower privilege than [H]S-mode (i.e., U-mode, VS-mode, or VU-mode). The Ceil(Log<sub>2</sub>NWorlds) LSBs are active; all other bits are zero. |
+   | mlwid      | RW for M   | 0x390                | XLEN         | Designates the WID to be utilized by privilege modes lower than M-mode. The Ceil(Log<sub>2</sub>NWorlds) least significant bits (LSBs) are active; all other bits are zero. |
+   | mwiddeleg  | RW for M   | 0x748                | XLEN         | Represents the set of WID values that M-mode delegates to [H]S-mode, structured as a bit vector. The NWorlds LSBs are active; all other bits are zero. |
+   | slwid      | RW for [H]S | 0x190                | XLEN         | Specifies the WID value to be employed in modes with lower privilege than [H]S-mode (i.e., U-mode, VS-mode, or VU-mode). The Ceil(Log<sub>2</sub>NWorlds) LSBs are active; all other bits are zero. |
 
    These extensions accommodate a number of worlds (NWorlds) up to the native integer register width (XLEN) of the processor.
 
@@ -180,7 +180,7 @@
 
    The core function of this generic checker is to oversee a predefined range of physical addresses. It permits software to set up access permissions within this specified range. The checker contains several programmable "slots." Each slot has the capability to define a "rule" that applies to a continuous segment of addresses within the checker's total monitored memory area. This rule specifies the read and write access rights for each world concerning that particular address segment.
 
-   A checker is typically positioned at a certain point within a platform's bus system. The address space monitored by the checker may be more extensive than the actual address space of the devices it is protecting. For instance, a peripheral device occupying the address range `0x1000_0000`-`0x2FFF_FFFF` could be secured by a checker that covers a wider range, such as `0x0_0000_0000`-`0x3_FFFF_FFFF`. To make the checker's circuitry less complex, its entire monitored address range will generally align with a naturally aligned power-of-2 (NAPOT) sized area. The checker's designated region might be considerably larger than the address space of the devices it protects; this facilitates the reuse of the same checker design in various locations within the bus hierarchy. The checker's operation is not affected even if the system's bus matrix does not direct all addresses within the checker's full range to it.
+   A checker is typically positioned at a certain point within a platform's bus system. The address space monitored by the checker may be more extensive than the actual address space of the devices it is protecting. For instance, a peripheral device occupying the address range 0x1000_0000-0x2FFF_FFFF could be secured by a checker that covers a wider range, such as 0x0_0000_0000-0x3_FFFF_FFFF. To make the checker's circuitry less complex, its entire monitored address range will generally align with a naturally aligned power-of-2 (NAPOT) sized area. The checker's designated region might be considerably larger than the address space of the devices it protects; this facilitates the reuse of the same checker design in various locations within the bus hierarchy. The checker's operation is not affected even if the system's bus matrix does not direct all addresses within the checker's full range to it.
 
    This part of the document focuses solely on the software programming interface for such a checker.
 
@@ -201,12 +201,94 @@
    0x18        8              RW       erraddr         Address of a permissions violation
    0x20        (nslots+1)*32  RW       slot[nslots:0]  Array of slots
 
-   The read-only `vendor` and `impid` registers offer details about the checker's vendor and its implementation version.
-   The `nslots` parameter, also read-only, is represented as a 4-byte unsigned integer. It specifies the quantity of configurable rule slots present in the checker. A minimum value of 1 is required for `nslots`. It should be noted that the read-only `slot[0]` is not included in this `nslots` count.
-   The `errcause` and `erraddr` registers are utilized for reporting permission violations, the specifics of which are detailed in a subsequent section.
+   The read-only vendor and impid registers offer details about the checker's vendor and its implementation version.
+   The nslots parameter, also read-only, is represented as a 4-byte unsigned integer. It specifies the quantity of configurable rule slots present in the checker. A minimum value of 1 is required for nslots. It should be noted that the read-only slot[0] is not included in this nslots count.
+   The errcause and erraddr registers are utilized for reporting permission violations, the specifics of which are detailed in a subsequent section.
 
-   #### Rule Slot Format
-   - *chapter 3.1.2*
+   #### 3.1.2. Rule Slot Structure
+   Every slot establishes a single rule and utilizes 32 bytes of address space, structured as detailed below:
+
+   Table 3. WG Generic Checker Slot Configuration (32 bytes total per slot)
+   | Offset | Bytes | Name                | Description                                                     |
+   | :----- | :---- | :------------------ | :-------------------------------------------------------------- |
+   | 0x00   | 4     | addr[33:2]        | Address for the rule                                            |
+   | 0x04   | 4     | addr[65:34]       | Address for the rule (specific to RV64 systems; zero for RV32)  |
+   | 0x08   | 8     | perm[nWorlds-1:0] | Read and Write permissions applicable to a maximum of 32 worlds |
+   | 0x10   | 4     | cfg               | Configuration settings for the rule                             |
+   | 0x14   | 12    |                     | Reserved for future use                                         |
+
+   The addr[65:2] register stores a unique physical address for the rule. This address is shifted right by two bits, enabling the initial 32-bit register to encompass the 34-bit physical address space characteristic of an Sv32 system. It's possible for address registers to be restricted (WARL) to exclusively contain addresses that are naturally aligned to a specific protection granularity, such as 4KiB.
+
+   The perm register contains two bits for each World Identifier (WID), defining that WID's read and write access rights for the rule. Specifically, bit 2*i signifies the read permission for WID i, while bit 2*i+1 signifies the write permission for WID i.
+
+   The cfg register dictates the operational characteristics of the rule and is organized into distinct fields as outlined below:
+
+   Table 4. WG Rule Configuration Register
+   | Bits   | Name    | Description                                  |
+   | :----- | :------ | :------------------------------------------- |
+   | 1:0    | A[1:0]| Configuration for the address range          |
+   | 7:2    |         | Reserved (must be written as zero)           |
+   | 8      | ER    | Signal read violations as bus errors         |
+   | 9      | EW    | Signal write violations as bus errors        |
+   | 10     | IR    | Signal read violations via interrupts        |
+   | 11     | IW    | Signal write violations via interrupts       |
+   | 30:12  |         | Reserved (must be written as zero)           |
+   | 31     | L     | Bit for locking the entry                    |
+
+   The A[1:0] field determines the method used to construct the rule's address range, as detailed in the table below:
+
+   Table 5. WG A[1:0] encoding
+   | A[1:0] | Name    | Description                                                                 |
+   | :------- | :------ | :-------------------------------------------------------------------------- |
+   | 0        | OFF   | Rule is inactive (confers no access permissions)                            |
+   | 1        | TOR   | Upper boundary of the range                                                 |
+   | 2        | NA4   | Region of four bytes, naturally aligned                                     |
+   | 3        | NAPOT | Naturally aligned region with a size that is a power of two, 8 bytes or larger |
+
+   If A is set to OFF, the rule confers no access permissions.
+
+   If A is set to TOR, the rule's addr register defines the upper limit of its address range. The lower limit of this range is provided by the addr register of the immediately preceding slot, provided that the cfg field of that preceding slot is configured as OFF or TOR. A TOR rule applies to an address y if the condition slot[i-1].addr <= y < slot[i].addr # slot[i-1].cfg = OFF or TOR is met.
+
+   The A=NA4 and A=NAPOT encoding schemes draw from the RISC-V PMP encoding format. These allow a single addr register to specify both a base address and the size of a naturally aligned power-of-two (NAPOT) region.
+
+   The subsequent illustration demonstrates the differences in NAPOT range encoding for a slot compared to RISC-V PMPs. Generally, the entire checker oversees a substantial, fixed NAPOT portion of the total physical address space. Address bits denoted by b signify the non-modifiable bits within addr; these bits store the base address for the complete NAPOT checker region. Modifiable address bits within the addr registers are indicated by a. The specific sizes supported by any given checker are dependent on its implementation; notably, smaller sizes, NA4 included, may not be available.
+
+   Table 6. WG NAPOT range encoding for a checker covering a NAPOT total address range.
+   | addr[65:2]     | A[1:0] | Match type and size                                   |
+   | :--------------- | :------- | :---------------------------------------------------- |
+   | bb…bb000…0000  |          | Address of first byte in checker range (slot[0].addr) |
+   | bb…bbaaa…aaaa  | NA4    | 4-byte NAPOT range                                    |
+   | bb…bbaaa…aaa0  | NAPOT  | 8-byte NAPOT range                                    |
+   | bb…bbaaa…aa01  | NAPOT  | 16-byte NAPOT range                                   |
+   | bb…bbaaa…a011  | NAPOT  | 32-byte NAPOT range                                   |
+   | …                | …        | …                                                     |
+   | bb…bba01…1111  | NAPOT  | half of checker range                                 |
+   | bb…bb011…1111  | NAPOT  | all of checker range                                  |
+   | bb…bb111…1111  | NAPOT  | all of checker range                                  |
+   |                  |          | Address of last four-byte word in checker range (slot[nslots].addr - 4) |
+
+   In the A=NA4 configuration, the addr value, which consists of fixed b bits and variable a bits, contains the base address for the four-byte NAPOT range.
+
+   For the A=NAPOT configuration, a sequence of consecutive '1's in the lower bits of addr determines the size of the slot's NAPOT region. The least-significant '0' bit indicates the most-significant bit that is excluded from the slot's base address (for instance, addr[3] is zero for a 16-byte NAPOT region). The addr bits positioned above this least-significant '0' bit (comprising both fixed b bits and variable a bits) establish the base address for the slot's NAPOT region. If the highest modifiable a bit is set to '0', the slot's NAPOT range encompasses the complete address space monitored by the checker. Similarly, if all modifiable a bits are set to '1', the range also covers the entire checker's address space; in this NAPOT encoding scenario, the state of the highest a bit becomes irrelevant when all lower a bits are '1'.
+
+   NOTE: The thermometer encoding method for NAPOT masked address bits was chosen to streamline the logic required for NAPOT address comparisons.
+
+   Diverging further from the RISC-V PMP encoding, if a NAPOT slot serves as the base address for a TOR configuration in the subsequent higher-numbered slot, the address employed for comparison is incremented by one beyond the highest byte address within the NAPOT slot's region. That is, a TOR rule applies to an address y under the condition:
+   slot[i-1].napot_top <= y < slot[i].addr # slot[i-1].cfg = NA4 or NAPOT
+   where napot_top represents an address that is one greater than the highest-addressed byte in the NAPOT range of slot[i-1].
+
+   NOTE: In comparison to the standard RISC-V PMP encoding, this enhancement diminishes by one the quantity of slots required to delineate a variably-sized region succeeding a NAPOT region within the address map. This approach does not necessitate substantial supplementary comparator logic beyond that of the standard PMP design.
+
+   The IR and IW bits determine if an interrupt should be triggered when an access attempt fails the global permission checks yet falls within the rule's defined address range. The IR bit pertains to read transactions, and the IW bit pertains to write transactions. If either the IR or IW bit is not set (clear), no interrupts are signaled. Conversely, if the IR or IW bits are set, interrupts are signaled for permission breaches associated with this rule.
+
+   The ER and EW bits signify whether bus-error responses should be issued for bus transactions that do not pass global permission checks but are within the rule's address range. The ER bit dictates the handling of read transactions, whereas the EW bit dictates write transaction handling. If ER is set, read operations yield zero data along with an error response. If EW is set, write operations are disregarded but an error response is returned. The specific type and encoding of these error responses depend on the bus protocol. If the ER bit is clear, reads return zero data, and the transaction response does not signal an error. If the EW bit is clear, writes are ignored, and the transaction response also does not signal an error.
+
+   NOTE: The IR, IW, ER, and EW bits serve to customize the checker's actions for memory areas that may be cacheable, idempotent, or non-idempotent.
+
+   The L bit signifies that the current entry is locked. After this bit is activated, the slot's data cannot be altered or unlocked unless the checker undergoes a reset. It is important to note that if two slots are utilized to define a range, both must be locked independently to safeguard the range from modifications.
+
+   Any remaining bits within the cfg register are designated for future purposes and must be written with the value zero.
+
    #### Error-reporting registers
    - *chapter 3.1.4*
    #### Operation of the Checker
