@@ -59,22 +59,31 @@
 
  ## Threat Model
   ### Normal World Assumptions
-   #### untrasted OS
-   - The Normal World is assumed to be fully untrusted
-   - Normal World can be compromised by malware, user-level or kernel-level rootkits
-   - No sensitive data can be placed in Normal World
+   #### Untrusted OS
+   The Normal World operating system (e.g., Linux) and all applications executing within it are fundamentally considered untrusted from the Secure World's perspective.
+   This assumption acknowledges the Normal World's susceptibility to compromise by various forms of malware, including user-level or kernel-level rootkits, due to its larger codebase and attack surface.
+   Consequently, no sensitive data, such as cryptographic keys or private information processed by Trusted Applications, can be stored or processed in the Normal World without robust TEE-managed protection. Code executing in the Normal World cannot be presumed to maintain its integrity.
+
    #### Hostile OS
-   - The Normal World may attempt to attack the TEE by using privileged access
-   - read or tamper with TEE memory
-   - intercept or replay communication with the TEE
-   - Launching DoS (Denial of Service) attacks against TEE services
+   Beyond being merely untrusted, the Normal World OS is assumed to be potentially hostile, implying it may actively attempt to undermine the security an integrity of the TEE.
+   It might leverage its privileged access to physical resources to attempt unauthorized access, such as trying to read or tamper with memory regions allocated to the Secure World, despite hardware protections.
+   The Normal World OS could attempt to intercept, analyze, modify, or replay communications passing through the shared memory interfaces between the Normal World and the Secure World.
+   Attacks on the TEE's availability, such as Denial of Service (DoS), could be initiated from the Normal World by flooding communication channels with spurious requests or by manipulating non-secure resources critical for TEE operation.
+
    #### Limited Visibility
-   - The TEE assumes that the Normal World cannot access TEE data
-   #### Control over Non-secure resources
-   - Normal World is responsible for forwarding requests between trusted applications in the TEE and external sources / user
-   #### Schedule priorities
-   - The Normal World may refuse to schedule or service TEE requests
-   - so by desigh - not Normal world should call TEE, but TEE should check requests by itself
+   A critical assumption, enforced by hardware mechanisms such as the RISC-V World Guard extension, is that the Normal World OS has no direct visibility into the private memory regions (code and data) of the Secure OS and its Trusted Applications.
+   Even with kernel-level privileges in the Normal World, the Normal World OS principal should be prevented by the hardware from directly reading, writing, or executing code within the Secure World's protected memory. This is the primary basis for TEE confidentiality and integrity guarantees.
+
+   #### Control over Non-secure Resources
+   The Normal Word retains control over all system esources not explicitly designated as secure or managed by the Secure OS. This includes most peripherals (e.g., networking, general-purpose storage, user interfaces) and system-wide resource management functions.
+   As such, the Normal World OS is responsible for multiplexing access to these shared peripherals and typically acts as an intermediary for external communication required by Trusted Applications, forwarding requests from external entities or Normal World applications to the TEE and relaying results back. However, the *content* of sensitive payloads within these communications is protected by the TEE.
+
+   #### Schedule Priorities and Control
+   The Normal World OS maintains full scheduling authority over applications and tasks executing on CPU cores allocated to it. The execution priority and timing of Normal World processes, including those that will initiate communication with the TEE, are determined by Normal World OS policies.
+   In contrast, the Secure OS operates with execution autonomy on its dedicated core (CPU0). Once this core is in the Secure World state, the Secure OS directly manages its own execution flow and the scheduling of any internal tasks or Trusted Applications, independent of Normal World OS scheduling decisions.
+   The Secure OS polls shared memory queues for incoming requests issued by Normal World client applications. This design ensures that the TEE autonomously drives the consumption of requests, rather than being passively scheduled by or waiting for explicit signals from the Normal World for each transaction.
+   While the Secure OS's internal processing on CPU0 is independent, aggressive de-prioritization of TEE client applications by the Normal World OS can delay request submission to the shared queues. This could extend the overall latency for services requiring TEE interaction, though the TEE's capacity to process requests once they are available remains unhindered by Normal World OS scheduling policies concerning the Secure OS itself.
+
   ### Attack vectors
    #### Direct Memory Access Attacks
    - If DMA engines (e.g., from peripherals) are not properly restricted, they might access Secure World memory

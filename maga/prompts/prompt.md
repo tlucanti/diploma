@@ -78,34 +78,25 @@ I have a draft of chapter 2:
    #### One-Time Programmable (OTP) Memory
    #### Secure Boot Implementation
 
-Starting with 2.1.1. Security Requirements and Design Goals
+Starting with 2.2.1. Normal World Assumptions
 I have a draft of thess sections:
 
-   #### Core Components
-   - ...
-   #### Isolated Execution Unit
-   - dedicated CPU core
-   - or isolated CPU state
-   #### Normal World
-   - where Rich Execution Environment runs
-   #### Secure World
-   - where Trusted Execution environment runs
-   #### Trusted Applications
-   - Applications running inside the TEE that perform sensitive tasks
-   #### Secure Storage
-   - data stored outside TEE and always encrypted
-   - but keys can never leave TEE
-   #### Memory Isolation
-   - RAM is divided to Normal, Secure and Shared areas
-   - Normal area can not be accesed by TEE
-   - Secure area can not be accessed by REE
-   - only shared area can be used to transfer data
-   #### Cryptographic Engine
-   - hardware or software module providing secure cryptographic functions
-   #### Attestation Mechanism
-   - hashes of TEE components signed with secure keys
-   #### Secure APIs
-   - Interfaces through which normal applications or the Rich Execution Environment can request services from the TEE
+ #### untrasted OS
+ - The Normal World is assumed to be fully untrusted
+ - Normal World can be compromised by malware, user-level or kernel-level rootkits
+ - No sensitive data can be placed in Normal World
+ #### Hostile OS
+ - The Normal World may attempt to attack the TEE by using privileged access
+ - read or tamper with TEE memory
+ - intercept or replay communication with the TEE
+ - Launching DoS (Denial of Service) attacks against TEE services
+ #### Limited Visibility
+ - The TEE assumes that the Normal World cannot access TEE data
+ #### Control over Non-secure resources
+ - Normal World is responsible for forwarding requests between trusted applications in the TEE and external sources / user
+ #### Schedule priorities
+ - The Normal World may refuse to schedule or service TEE requests
+ - so by desigh - not Normal world should call TEE, but TEE should check requests by itself
 
 write contents of sections based on draft.
 If needed - maybe add some points if there is anything else to say by topic.

@@ -205,6 +205,7 @@
   - PoC - Proof of Concept (Концептуальный прототип)
   - OEM - Original Equipment Manufacturer (Оригинальный Производитель Оборудования)
   - RoT - Root of Trust (Корень Доверия)
+  - DoS - Denial of Service (Отказ в Обслуживании)
 
 <div style="page-break-after: always;"></div>
 ---
