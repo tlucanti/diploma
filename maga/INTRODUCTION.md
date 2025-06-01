@@ -205,4 +205,5 @@
   - PoC - Proof of Concept (Концептуальный прототип)
   - OEM - Original Equipment Manufacturer (Оригинальный Производитель Оборудования)
 
+<div style="page-break-after: always;"></div>
 ---
