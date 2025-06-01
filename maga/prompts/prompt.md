@@ -1,13 +1,8 @@
-I am doing a project with 3 parts:
- 1. Secure OS for RISC-V World Guard extension.
- 2. Linux driver for communication with Secure OS.
- 3. OpenSBI modification to support World Guard extension.
-
+project background:
 Secure OS is a monolith OS with capability based model, so the idea is that everything is a handle, all handles (that are listed at predefined Manifest) are given by root task to Trusted Application when it spawned. Creation of objects are done with fabric object handle. Every action to handle is checked with capability model and granted or denied.
 Secure OS always works on first cpu core, other cores are left for Linux. Communication between Linux and Secure OS is provided using two shared pages. One page for requests (to secure OS) queue, second page for responses queue. It uses subset of Global Platform API as interface for communications.
 
-I need to write Master's thesis abort part with Secure OS.
-It should have 4 chapters:
+Paper should have 4 chapters:
 
 # Chapter 1: Foundations and Motivation for an Open Secure OS on RISC-V
 # Chapter 2: Core Principles of Trusted Execution Environment and Threat Model
@@ -83,25 +78,34 @@ I have a draft of chapter 2:
    #### One-Time Programmable (OTP) Memory
    #### Secure Boot Implementation
 
-Starting with 2.1.1.2-8:
+Starting with 2.1.1. Security Requirements and Design Goals
 I have a draft of thess sections:
 
-#### Isolation
-- separaion on Rich Environment and Trusted Environment
-#### Integrity
-- guarantees that the code and data within it are untampered
-#### Confidentiality
-- Data and code inside the TEE are kept confidential
-- No software outside the TEE can access data inside the TEE
-#### Secure Storage
-- storage of sensitive data even when powered off
-#### Attestation
-- integrity approval from remote server
-#### Trusted Execution
-- Only authorized and verified code can run within the TEE
-#### Minimal Trusted Computing Base (TCB)
-- minimizing ccomponents that must be trusted
-- root of trust
+   #### Core Components
+   - ...
+   #### Isolated Execution Unit
+   - dedicated CPU core
+   - or isolated CPU state
+   #### Normal World
+   - where Rich Execution Environment runs
+   #### Secure World
+   - where Trusted Execution environment runs
+   #### Trusted Applications
+   - Applications running inside the TEE that perform sensitive tasks
+   #### Secure Storage
+   - data stored outside TEE and always encrypted
+   - but keys can never leave TEE
+   #### Memory Isolation
+   - RAM is divided to Normal, Secure and Shared areas
+   - Normal area can not be accesed by TEE
+   - Secure area can not be accessed by REE
+   - only shared area can be used to transfer data
+   #### Cryptographic Engine
+   - hardware or software module providing secure cryptographic functions
+   #### Attestation Mechanism
+   - hashes of TEE components signed with secure keys
+   #### Secure APIs
+   - Interfaces through which normal applications or the Rich Execution Environment can request services from the TEE
 
 write contents of sections based on draft.
 If needed - maybe add some points if there is anything else to say by topic.
