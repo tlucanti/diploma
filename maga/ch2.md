@@ -188,7 +188,23 @@
    It is important to understand that complete specifications for implementation would necessitate numerous additional platform-specific details, such as those concerning bus interfaces, reset procedures, clocking mechanisms, and power management, among others.
 
    #### Configuration Register Memory Map
-   - *chapter 3.1.1*
+   The generic checker's configuration registers reside in a distinct area of physical memory addresses, accessible via memory mapping. This region is typically secured to ensure that only trusted software, generally during the system boot process, can modify the configuration.
+   The memory-mapped interface is designed to function using individual 32-bit read and write accesses. Support for wider accesses is advisable where possible, as they can offer improved performance.
+
+   Table 2. WG Generic Checker Configuration Register
+   Offset      Bytes          Access   Name            Description
+   0x00        4              R        vendor          Vendor ID
+   0x04        4              R        impid           Implementation revision
+   0x08        4              R        nslots          Number of rule slots
+   0x0C        4                                       Reserved
+   0x10        8              RW       errcause        Information about a permissions violation
+   0x18        8              RW       erraddr         Address of a permissions violation
+   0x20        (nslots+1)*32  RW       slot[nslots:0]  Array of slots
+
+   The read-only `vendor` and `impid` registers offer details about the checker's vendor and its implementation version.
+   The `nslots` parameter, also read-only, is represented as a 4-byte unsigned integer. It specifies the quantity of configurable rule slots present in the checker. A minimum value of 1 is required for `nslots`. It should be noted that the read-only `slot[0]` is not included in this `nslots` count.
+   The `errcause` and `erraddr` registers are utilized for reporting permission violations, the specifics of which are detailed in a subsequent section.
+
    #### Rule Slot Format
    - *chapter 3.1.2*
    #### Error-reporting registers
