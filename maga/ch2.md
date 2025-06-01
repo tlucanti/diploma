@@ -205,7 +205,7 @@
    The nslots parameter, also read-only, is represented as a 4-byte unsigned integer. It specifies the quantity of configurable rule slots present in the checker. A minimum value of 1 is required for nslots. It should be noted that the read-only slot[0] is not included in this nslots count.
    The errcause and erraddr registers are utilized for reporting permission violations, the specifics of which are detailed in a subsequent section.
 
-   #### 3.1.2. Rule Slot Structure
+   #### Rule Slot Structure
    Every slot establishes a single rule and utilizes 32 bytes of address space, structured as detailed below:
 
    Table 3. WG Generic Checker Slot Configuration (32 bytes total per slot)
@@ -289,8 +289,38 @@
 
    Any remaining bits within the cfg register are designated for future purposes and must be written with the value zero.
 
-   #### Error-reporting registers
-   - *chapter 3.1.4*
+   #### 3.1.4. Error-reporting registers
+   The checker is equipped with two registers, errcause and erraddr, dedicated to error reporting; these are updated when an access violation is detected. The erraddr register captures the physical address that triggered the violation. This address is stored shifted right by two bits (referred to as addr[65:2]), a design choice that permits a 32-bit register to represent the entire 34-bit physical address range characteristic of an RV32 system.
+
+   The layout of the errcause register is specified in the table that follows.
+
+   Table 7. WG Error cause register errcause format
+   | Bits  | Name   | Description                      |
+   |-------|--------|----------------------------------|
+   | 7:0   | wid    | The WID that cause the error     |
+   | 8     | r      | If set, a read caused the error  |
+   | 9     | w      | If set, a write cause the error  |
+   | 31:10 |        | Reserved (write zero)            |
+   | 61:32 |        | Reserved (write zero)            |
+   | 62    | be     | Bus error generated              |
+   | 63    | ip     | Interrupt generated              |
+
+   The wid, r, and w fields serve to log the World Identifier (WID) and the nature of the access (read or write) for the transaction that precipitated the error.
+   The be (bus error) bit signifies whether the violation prompted a bus error report: it is asserted if a bus error was reported and de-asserted otherwise.
+   In a similar manner, the ip (interrupt pending) bit is asserted when the violation results in an interrupt.
+
+   NOTE
+   The ip bit offers a level-sensitive interrupt signal, which can be routed to an interrupt controller specific to the hardware platform.
+
+   A single violation has the potential to set both the be and ip bits concurrently.
+   If either the be or ip bit is in a set state, any subsequent violations will not lead to an update of the errcause or erraddr registers.
+   Software intervention is required to clear the be and ip bits; this action re-enables the reporting of subsequent errors and the generation of new interrupts.
+
+   NOTE
+   Typically, a software routine handling the error will first read the errcause and erraddr register contents prior to clearing the relevant status bits within errcause.
+
+   The mechanism for generating bus-error responses functions independently of the errcause register's current value. As such, bus-error responses will persist in being generated irrespective of errcause's state. However, the capacity to generate new interrupts is suspended until both the be and ip fields within errcause have been cleared.
+
    #### Operation of the Checker
    - *chapter 3.1.5*
    #### Checker Reset
