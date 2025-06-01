@@ -151,6 +151,9 @@
 
    These extensions accommodate a number of worlds (NWorlds) up to the native integer register width (XLEN) of the processor.
 
+   #### One world per hart
+   With this configuration, the RISC-V hart does not undergo any modifications observable at the Instruction Set Architecture (ISA) level. Upon system reset, the hart is initialized to operate within one specific world. Consequently, every memory access initiated by this hart, irrespective of its privilege level, is marked with the World Identifier (WID) associated with that singular world. The mechanisms for allocating a hart to its world, as well as the provisions for a hart to obtain details about the WorldGuard (WG) setup, are determined by the specific design of the hardware platform.
+
    #### Response to permission violations
    - *chapter 2.5*
   ### Non-ISA WorldGuard Hardware Platform Components
