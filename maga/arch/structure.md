@@ -14,10 +14,7 @@
   ### Current State of TEEs on RISC-V Architecture
    #### Current Status of RISC-V’s Security Ecosystem
    #### WorldGuard State
-  ### The Emerging Need for Open and Flexible Solutions
-   #### Deficiency of Open TEE Standards and Interfaces for RISC-V
-   #### Motivation for an Open-Source Trusted Operation System
-   #### Ecosystem Benefits
+  #### Software support on WorldGuard extension
  ## Relevance and Applications
   ### Rapid Growth of RISC-V in Commercial and Industrial Domains
    #### Wide Deployment Across Diverse Product Areas
@@ -35,11 +32,11 @@
    #### Overview
    #### Advantages
    #### Disadvantages
-  ### AMD Secure Encrypted Virtualization (SEV)
+  ### AMD Secure Encrypted Virtualization (SEV): VM-Level Memory Encryption
    #### Overview
    #### Advantages
    #### Disadvantages
-  ### RISC-V's Physical Memory Protection (PMP)
+  ### 1.4.4 RISC-V's Physical Memory Protection (PMP): Privilege-Level Memory Isolation
    #### Overview
    #### Advantages
    #### Disadvantages
@@ -48,20 +45,19 @@
    #### Advantages
    #### Disadvantages
   ### Summary and Comparative Analysis
+   #### Summary
+   #### Comparative Analysis
  ## Related Work
   ### Academic Research on RISC-V TEEs
    #### Survey of recent research on trusted execution for RISC-V
    #### Gaps identified in academia researches
-  ### Proprietary vs- Opsn-Source TEE Solutions
-   #### Alibaba Cloud Link
+ ### Proprietary vs Open-Source TEE Solutions
+   #### Alibaba Cloud Link TEE
    #### Apple Secure Enclave
    #### Huawei iTrustee
-   #### Google Trusty
+   #### Google Trusty TEE
    #### Samsung TEEgris
    #### SiFive's private Secure OS for WorldGuard
-  ### Complementary Papers
-   #### Linux Integration for Secure OS Communication
-   #### TEE Interface and OpenSBI Extensions
 # Chapter 2. Core Principles of Trusted Execution Environment and Threat Model
  ## TEE Overview
   ### Definition and Core Principles
