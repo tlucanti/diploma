@@ -210,6 +210,8 @@
   - IOMMU - Input/Output Memory Management Unit (Блок Управления Памятью Ввода/Вывода)
   - MITM - Man-in-the-Middle (Человек Посередине)
   - WID - World Identifier (Идентификатор Мира)
+  - LSB (МЗБ) - Least Significant Bit (Младший Значащий Бит)
+  - MSB (СЗБ) - Most Significant Bit (Старший Значащий Бит)
 
 <div style="page-break-after: always;"></div>
 ---

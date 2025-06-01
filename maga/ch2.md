@@ -139,9 +139,18 @@
    > NOTE: It is possible for different harts within a single system to operate with distinct WIDs in M-mode.
 
    #### WorldGuard CSRs
-   - *chapter 2.1*
-   #### One world per hart
-   - *chapter 2.2*
+   The WorldGuard extensions, namely Smwg, Smwgd, and Sswg, provide a mechanism for a hardware thread (hart) to allocate World Identifiers (WIDs) to its various privilege levels. These extensions introduce new Control and Status Registers (CSRs), which are outlined in the table that follows.
+
+   Table 1. WorldGuard Control and Status Registers (CSRs)
+
+   | Register     | Access     | Proposed CSR Address | Size in bits | Description                                                                                                                               |
+   | :----------- | :--------- | :------------------- | :----------- | :---------------------------------------------------------------------------------------------------------------------------------------- |
+   | `mlwid`      | RW for M   | 0x390                | XLEN         | Designates the WID to be utilized by privilege modes lower than M-mode. The Ceil(Log<sub>2</sub>NWorlds) least significant bits (LSBs) are active; all other bits are zero. |
+   | `mwiddeleg`  | RW for M   | 0x748                | XLEN         | Represents the set of WID values that M-mode delegates to [H]S-mode, structured as a bit vector. The NWorlds LSBs are active; all other bits are zero. |
+   | `slwid`      | RW for [H]S | 0x190                | XLEN         | Specifies the WID value to be employed in modes with lower privilege than [H]S-mode (i.e., U-mode, VS-mode, or VU-mode). The Ceil(Log<sub>2</sub>NWorlds) LSBs are active; all other bits are zero. |
+
+   These extensions accommodate a number of worlds (NWorlds) up to the native integer register width (XLEN) of the processor.
+
    #### Response to permission violations
    - *chapter 2.5*
   ### Non-ISA WorldGuard Hardware Platform Components
