@@ -17,99 +17,77 @@ It should have 4 chapters:
 So, 1th chapter is about Foundations and Motivation for an Open Secure OS on RISC-V
 I have a draft of chapter 1:
 
-# Chapter 1: Foundations and Motivation for an Open Secure OS on RISC-V
- ## Background and Motivation
-  ### Background on Trusted Execution Environments
-   #### Introduction to Trusted Execution Environments
-   #### Evolution of Trusted Execution Environments
-   #### The Role of TEEs in Modern Security Architectures
-  ### Current State of TEEs on Proprietary Architectures
-   #### Limitations of existing TEEs on Proprietary Architectures
-   #### Licensing in Proprietary Architectures
-  ### The RISC-V Opportunity: Openness and Extensibility
-   #### Open-Source Hardware and RISC-V’s Emergence
-   #### The RISC-V Instruction Set Architecture (ISA)
- ## Problem Statement
-  ### Current State of TEEs on RISC-V Architecture
-   #### Current Status of RISC-V’s Security Ecosystem
-   #### WorldGuard State
-  ### The Emerging Need for Open and Flexible Solutions
-   #### Deficiency of Open TEE Standards and Interfaces for RISC-V
-   #### Motivation for an Open-Source Trusted Operation System
-   #### Ecosystem Benefits
- ## Relevance and Applications
-  ### Rapid Growth of RISC-V in Commercial and Industrial Domains
-   #### Wide Deployment Across Diverse Product Areas
-   #### Absence of Security-Integrated Products to Date
-   #### Motivation to Develop Secure RISC-V Solutions
-  ### Expanding Security Requirements in Modern Computing
-   #### Essential Security Functions in Contemporary Products
-  #### RISC-V’s Untapped Potential for Secure Applications
- ## Comparison with Existing Architectures
-  ### ARM TrustZone: Centralized Secure World Model
-   #### Overview
-   #### Advantages
-   #### Disadvantages
-  ### Intel Software Guard Extensions (SGX): Enclave-Based Isolation
-   #### Overview
-   #### Advantages
-   #### Disadvantages
-  ### AMD Secure Encrypted Virtualization (SEV)
-   #### Overview
-   #### Advantages
-   #### Disadvantages
-  ### RISC-V's Physical Memory Protection (PMP)
-   #### Overview
-   #### Advantages
-   #### Disadvantages
-  ### RISC-V’s World Guard Extension: Decentralized Isolation
-   #### Overview
-   #### Advantages
-   #### Disadvantages
-  ### Summary and Comparative Analysis
- ## Related Work
-  ### Academic Research on RISC-V TEEs
-   #### Survey of recent research on trusted execution for RISC-V
-   #### Gaps identified in academia researches
-  ### Proprietary vs- Opsn-Source TEE Solutions
-   #### Alibaba Cloud Link
-   #### Apple Secure Enclave
-   #### Huawei iTrustee
-   #### Google Trusty
-   #### Samsung TEEgris
-   #### SiFive's private Secure OS for WorldGuard
-  ### Complementary Papers
-   #### Linux Integration for Secure OS Communication
-   #### TEE Interface and OpenSBI Extensions
+# Chapter 2. Core Principles of Trusted Execution Environment and Threat Model
+ ## TEE Overview
+  ### Definition and Core Principles
+   #### Trusted Execution Environment
+   #### Isolation
+   #### Integrity
+   #### Confidentiality
+   #### Secure Storage
+   #### Attestation
+   #### Trusted Execution
+   #### Minimal Trusted Computing Base (TCB)
+  ### Security Requirements and Design Goals
+   #### Core Components
+   #### Isolated Execution Unit
+   #### Normal World
+   #### Secure World
+   #### Trusted Applications
+   #### Secure Storage
+   #### Memory Isolation
+   #### Cryptographic Engine
+   #### Attestation Mechanism
+   #### Secure APIs
+ ## Threat Model
+  ### Normal World Assumptions
+   #### untrasted OS
+   #### Hostile OS
+   #### Limited Visibility
+   #### Control over Non-secure resources
+   #### Schedule priorities
+  ### Attack vectors
+   #### Direct Memory Access Attacks
+   #### Side-Channel Attacks
+   #### Physical Attacs
+   #### API Exploitation
+   #### Man-in-the-Middle Attacks
+   #### Denial of Service Attacs
+   #### Boot and Firmware Attacks
+ ## World Guard Extension
+  ### Overview of the World Guard Concept
+   #### ...
+  ### RISC-V ISA WorldGuard
+   #### ISA WorldGuard Extensions
+   #### WorldGuard CSRs
+   #### One world per hart
+   #### Response to permission violations
+  ### Non-ISA WorldGuard Hardware Platform Components
+   #### WorldGuard Markers and Checkers
+   #### Generic WG Checker
+   #### Configuration Register Memory Map
+   #### Rule Slot Format
+   #### Error-reporting registers
+   #### Operation of the Checker
+   #### Checker Reset
+ ## Boot Sequence and Chain of Trust
+  ### RISC-V Boot Sequence Overview
+   #### Background on RISC-V System Booting
+   #### First Stage Bootloader (FSBL)
+   #### OpenSBI Initialization
+   #### Secure OS Startup
+   #### Rich OS Startup
+  ### Chain of Trust
+   #### Principles of Secure Boot and Chain of Trust
+   #### RISC-V Root of Trust
+   #### One-Time Programmable (OTP) Memory
+   #### Secure Boot Implementation
 
-Starting with 1.5.2. Proprietary vs Opsn-Source TEE Solutions.
+Starting with 2.1.1.1. Trusted Execution Environment.
 I have a draft of this section:
 
-### Proprietary vs Opsn-Source TEE Solutions
-  #### Alibaba Cloud Link
-  - tightly integrated with Alibaba ecosystem
-  - used in:
-  - Alibaba Cloud
-  - IoT Platform
-  - IoT Edge Computing
-  #### Apple Secure Enclave
-  - Hardware-backed TEE in Apple SoCs
-  - used in:
-  - all apple devices: phones, TVs, ...
-  #### Huawei iTrustee
-  - Platform security solution deployed across Huawei devices; proprietary and closed ecosystem
-  - used in:
-  - all huawei devices: phones, TVs, ...
-  #### Google Trusty
-  - Android’s open-source TEE OS managed by Google
-  - used in:
-  - google pixel
-  - chromebook
-  #### Samsung TEEgris
-  - Samsung's own TEE implementation
-  - used in:
-  - all samsung devices: phones, TVs, ...
-  - also licensed to automotive OEMs
+- descrption: secure area of a main processor ...
+- list core principles
 
 write contents of section based on draft.
 If needed - maybe add some points if there is anything else to say by topic.

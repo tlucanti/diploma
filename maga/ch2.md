@@ -3,8 +3,8 @@
  ## TEE Overview
   ### Definition and Core Principles
    #### Trusted Execution Environment
-   - descrption: secure area of a main processor ...
-   - list core principles
+   A Trusted Execution Environment (TEE) is a secure, isolated area within a main processor. It is designed to execute code and process data with higher levels of confidentiality and integrity than the standard operating environment, often referred to as the Rich Execution Environment (REE) or Normal World. The TEE ensures that assets, such as sensitive data and critical code, stored and processed within it are protected, even if the REE's operating system or applications are compromised. This protection is achieved through a combination of hardware and software mechanisms that enforce strong isolation between the TEE (Secure World) and the REE (Normal World). The operation and security guarantees of a TEE are founded upon several core principles, which are elaborated upon in the subsequent sections.
+
    #### Isolation
    - separaion on Rich Environment and Trusted Environment
    #### Integrity
