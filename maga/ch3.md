@@ -39,7 +39,7 @@
    - Future Extensibility: While starting with a minimal subset, the GP framework offers a clear path for potential future extensions if more features become necessary. The modular nature of the GP specifications allows for incremental additions.
    - Interoperability (Conceptual): Even with a subset, adhering to GP concepts promotes a degree of conceptual interoperability. Trusted Applications written for this API, while not directly portable without recompilation, would follow familiar design patterns.
 
-   The chosen subset focuses on `TEEC_InitializeContext`, `TEEC_FinalizeContext`, `TEEC_OpenSession`, `TEEC_CloseSession`, `TEEC_InvokeCommand`, `TEEC_AllocateSharedMemory`, and `TEEC_ReleaseSharedMemory`, providing the foundational blocks for secure communication and computation. This selection allows for the development and execution of TAs while minimizing the interface exposed by the Secure OS.
+   The chosen subset focuses on TEEC_InitializeContext, TEEC_FinalizeContext, TEEC_OpenSession, TEEC_CloseSession, TEEC_InvokeCommand, TEEC_AllocateSharedMemory, and TEEC_ReleaseSharedMemory, providing the foundational blocks for secure communication and computation. This selection allows for the development and execution of TAs while minimizing the interface exposed by the Secure OS.
 
  ## System Architecture Overview
   - section provides a high-level perspective on how the Secure OS is structured and how it interacts with the Normal World and hardware.
@@ -148,17 +148,44 @@ Here's the content for the requested sections:
    Violations originating from the Normal World typically result in the offending Normal World core being trapped; the specific handling (e.g., signaling an error to the Linux kernel) allows the Normal World to manage the fault within its own context without compromising the Secure World. If a software component within the Secure World itself were to trigger a World Guard violation (a scenario made less likely by the internal memory management and capability checks), it would also result in a trap handled by the Secure OS, potentially leading to the termination of the errant TA or a controlled system halt if the violation is critical to system integrity. World Guard thus acts as a non-bypassable enforcement mechanism for the high-level security policy of world separation, with defined failure handling pathways for transgressions against these hardware-enforced rules. Error reporting mechanisms ensure that such violations can be logged and, where appropriate, communicated to system administrators or the Normal World if a request cannot be safely processed.
 
   ### TA Lifecycle
-#### Creation
-- Describes how Trusted Applications (TAs) are registered and loaded by the Secure OS when OpenSession TEE call occurs.
-- Explores memory allocation, initial code setup, and the procedure for spawning a TA process or thread.
-#### Compute
-- when created - TA immidiately yields, and waits for InvokeCommand TEE call.
-- when call occures - root task wakes up TA and pass arguments and TA method id to run
-- TAs communicaes with other TAs (including root task) or services via channels
-- also TAs can allocate shared memory when Normal World calls TEE API
-#### Teardown
-- TA is stopped when Normal World application closes it's session
-- TA frees all owned objects and shared memory
+   #### Creation
+   The lifecycle of a Trusted Application (TA) within the Secure OS commences upon an TEEC_OpenSession request from the Normal World. This request is processed by the Root Task, which is responsible for managing TA instantiation. If a TA is not already running and is registered (e.g., its metadata is known to the Secure OS, possibly through pre-loaded manifest information), the Root Task initiates its creation.
+
+   The creation process involves several steps coordinated by the Root Task and core Secure OS services:
+   1.  TA Image Loading: The Secure OS loads the TA's binary image (e.g., an ELF file listed in a predefined manifest or located in a simple RAM-based filesystem) into a newly allocated, isolated memory space. This involves parsing the executable format and mapping its code, data, and BSS segments into the TA's virtual address space.
+   2.  Memory Allocation: Dedicated memory regions are allocated for the TA's stack, heap, and its private data. This memory is protected and isolated from other TAs and the Secure OS kernel itself using mechanisms like World Guard and the MMU.
+   3.  Handle Initialization: Based on the TA's manifest, the Root Task provisions the TA with an initial set of handles. These handles represent capabilities, granting the TA specific access rights to system resources (e.g., a handle to a fabric object for creating further objects, handles for communication channels, or pre-configured service interfaces). The TA's handle page is initialized with these capabilities.
+   4.  Process/Thread Spawning: A new process or task construct is created within the Secure OS to host the TA. An initial thread is spawned within this task, with its entry point set to the TA's designated startup routine (e.g., TA_CreateEntryPoint).
+   5.  Initial State: Upon successful creation and initialization, the TA process is typically brought to a state where it has executed its TA_CreateEntryPoint, performed any necessary self-initialization, and is ready to receive commands but is initially inactive.
+
+   The TEEC_OpenSession call returns a session identifier to the Normal World client if the TA creation and session establishment are successful. This session ID is used for subsequent interactions with this specific TA instance.
+
+   #### Compute
+   Once a TA session is successfully established (via TEEC_OpenSession) and the TA's TA_CreateEntryPoint has completed, the TA typically enters an idle state or yields control back to the Secure OS scheduler. It remains dormant, awaiting specific commands from the Normal World.
+
+   Further interaction is driven by TEEC_InvokeCommand calls from the Normal World client. When such a call arrives:
+   1.  Wake-up and Dispatch: The Root Task, or a designated communication manager within the Secure OS, receives the InvokeCommand request. It identifies the target TA session and the specific command ID (method ID) to be executed. The TA thread is then woken up (scheduled for execution).
+   2.  Argument Passing: Parameters associated with the InvokeCommand, including the command ID and any input/output buffers (often mapped via shared memory), are made available to the TA. The Secure OS ensures that the TA receives these arguments in a secure and defined manner, typically through its execution context or pre-arranged memory locations.
+   3.  TA Execution: The TA executes its TA_InvokeCommandEntryPoint function. Based on the received command ID, the TA performs the requested computation. This may involve:
+      - Accessing its private data and resources.
+      - Utilizing its granted capabilities (handles) to interact with Secure OS services (e.g., cryptographic operations if available, secure storage access).
+      - Communicating with other TAs or the Root Task via secure inter-process W-Pcommunication (IPC) channels, using handles obtained during creation or through service discovery.
+      - Requesting allocation of new shared memory regions, if the command requires passing larger data back and forth with the Normal World. The TEEC_AllocateSharedMemory API call, when invoked by the Normal World client, may relate to memory needs identified during a TEEC_InvokeCommand. Data is then exchanged by the Normal World client and the TA writing to and reading from this shared memory.
+
+   Upon completion of the command, the TA prepares any results (in output buffers or by modifying shared memory) and returns a status code. The Secure OS then relays this status and any relevant data back to the Normal World client as a response to the TEEC_InvokeCommand. The TA might then yield again, awaiting further commands.
+
+   #### Teardown
+   The termination of a Trusted Application instance and the "reclaim" of its resources are initiated when the Normal World client application explicitly closes the session using the TEEC_CloseSession call. This request signals that the TA's services for that particular session are no longer required.
+
+   The teardown process involves the following key steps managed by the Secure OS, often facilitated by or communicated to the Root Task:
+   1.  Session Closure Notification: The TA is notified that its session is being closed, typically by invoking its TA_CloseSessionEntryPoint function. This allows the TA to perform any session-specific cleanup, such as releasing resources allocated specifically for that session.
+   2.  TA Destruction: If no other active sessions are associated with the TA instance (or if the TA is designed as single-session), the Secure OS proceeds to terminate the TA entirely by invoking its TA_DestroyEntryPoint. This function is the TA's final opportunity to perform global cleanup.
+   3.  Resource Deallocation:
+      - Object Release: All handles owned by the TA are systematically invalidated and released. The underlying kernel objects associated with these handles (e.g., memory objects, communication channels) are unreferenced. If the TA was the last holder of a reference, the object itself is deallocated by the respective resource manager in the Secure OS.
+      - Shared Memory Release: Any shared memory regions explicitly allocated for communication between this TA instance and the Normal World (e.g., via TEEC_AllocateSharedMemory) are unmapped from both the Secure World TA's address space and flagged for reclamation. The Linux driver on the Normal World side is typically responsible for also unmapping these regions.
+      - Private Memory Reclamation: The private memory regions allocated for the TA's code, data, stack, and heap are reclaimed by the Secure OS memory manager. The TA's task/process construct and associated threads are destroyed.
+
+   Upon successful completion of these steps, the TA instance ceases to exist, and its resources become available for reallocation. A result code indicating the success or failure of the TEEC_CloseSession operation is returned_ to the Normal World client. The Secure OS ensures that the teardown process is orderly and does not compromise the integrity of the Secure World or other active TAs.
 
  ## WorldGuard Integration
   ### WorldGuard Configuration
@@ -166,14 +193,14 @@ Here's the content for the requested sections:
    - Overview of how the system hardware and memory are split between Secure World and Normal World.
    - Explanation of the two-world design rationale, focusing on isolation guarantees.
    - Definition of the roles of each world (e.g., Secure OS vs. Linux).
-   - Description of how World IDs (or similar identifiers) are assigned and managed.
+   - Description of how World IDs are assigned and managed.
    #### WorldGuard Checker Configuration for Secure Isolation
    - Overview of the hardware/software checker mechanism for enforcing world-based isolation.
    - Configuration of Secure RAM slots and memory regions:
      - Secure memory partitioning approach.
      - Locking down memory regions to the Secure World
    - Setting up enclave/partition boundaries:
-     - Handling multiple enclaves (if applicable) within the Secure World.
+     - Handling multiple enclaves within the Secure World.
      - Policy for controlling access across enclaves or from Normal World.
    - Integration of memory attributes (e.g., read/write/exec permissions) with WorldGuard checks.
   ### Integration with the Secure OS
@@ -635,9 +662,9 @@ Here's the content for the requested sections:
    - Handles are opaque 32-bit values resolved into kernel pointers via per-task object tables.
    - Each handle links to an internal object and permission mask.
    - All syscall-side object accesses invoke a type+capability check.
-   For example, in the `channel_write` syscall, the following enforcement occurs:
-   1. Validate caller owns the provided handle with `CHANNEL_CAP_SEND`.
-   2. Validate all message-passed handles include the `TRANSFER` capability.
+   For example, in the channel_write syscall, the following enforcement occurs:
+   1. Validate caller owns the provided handle with CHANNEL_CAP_SEND.
+   2. Validate all message-passed handles include the TRANSFER capability.
    3. Receiver will only receive transferred handles if it has adequate handle table space.
    This guarantees that:
    - Object accesses are never implicit — they must be manifested in the task manifest.
@@ -650,23 +677,23 @@ Here's the content for the requested sections:
    #### SYS_VM_ALLOCATE
    - Allocates anonymous virtual memory inside a task’s virtual address space.
    #### SYS_VMO_CREATE
-   - Requests creation of a virtual memory object (VMO) via a factory. The new handle is stored in user-writable memory. Capability `FACTORY_CREATE_VMO_CAP` must be present.
+   - Requests creation of a virtual memory object (VMO) via a factory. The new handle is stored in user-writable memory. Capability FACTORY_CREATE_VMO_CAP must be present.
    #### SYS_CHANNEL_CREATE
-   - Asks the factory to produce bidirectional channel endpoints. Returns two handle values referencing peer-connected `channel_endpoint` objects. Requires `FACTORY_CREATE_CHANNEL_CAP`.
+   - Asks the factory to produce bidirectional channel endpoints. Returns two handle values referencing peer-connected channel_endpoint objects. Requires FACTORY_CREATE_CHANNEL_CAP.
    #### SYS_CHANNEL_READ
-   - Attempts to retrieve a pending message from the associated channel endpoint. Caller must possess `CHANNEL_CAP_RECV`. The syscall verifies receiver-side buffer, optional handle array, and copies message from kernel space.
+   - Attempts to retrieve a pending message from the associated channel endpoint. Caller must possess CHANNEL_CAP_RECV. The syscall verifies receiver-side buffer, optional handle array, and copies message from kernel space.
    #### SYS_CHANNEL_WRITE
-   - Enqueues a message to be sent over a channel endpoint. Requires capability `CHANNEL_CAP_SEND`. Handles being transferred are verified for `OBJECT_CAP_TRANSFER`.
+   - Enqueues a message to be sent over a channel endpoint. Requires capability CHANNEL_CAP_SEND. Handles being transferred are verified for OBJECT_CAP_TRANSFER.
    #### SYS_TASK_CREATE
-   - Asks a factory to create an empty task object (stub process). Returns a handle with `TASK_GET_SPACE_CAP` and `TRANSFER`. Initial state is `TASK_CREATED`.
+   - Asks a factory to create an empty task object (stub process). Returns a handle with TASK_GET_SPACE_CAP and TRANSFER. Initial state is TASK_CREATED.
    #### SYS_TASK_GET_SPACE
-   - Grants the caller access to another task’s virtual memory address space (typically for explicit handle passing or object serialization). Requires handle with `TASK_GET_SPACE_CAP`.
+   - Grants the caller access to another task’s virtual memory address space (typically for explicit handle passing or object serialization). Requires handle with TASK_GET_SPACE_CAP.
    #### SYS_VM_MAP_VMO
    - Maps an existing VMO into a task address space with specified offset and permissions.
    #### SYS_VM_FREE
    - Unmaps a virtual address range from a VM space.
    #### SYS_TASK_SPAWN
-   - Spawns a previously created task. Initializes the main thread with a provided entry point. Transitions the task’s state from `CREATED` to `SPAWNED`.
+   - Spawns a previously created task. Initializes the main thread with a provided entry point. Transitions the task’s state from CREATED to SPAWNED.
    #### SYS_OBJECT_CLOSE
    - Releases the given handle in the caller’s object table.
    #### SYS_OBJECT_WAIT_MANY
@@ -674,9 +701,9 @@ Here's the content for the requested sections:
    #### SYS_PHYSMAPPER_MAP
    - Maps physical memory ranges for I/O accesses, used by device drivers or MMIO facilities (access controlled based on TA manifest and task capabilities).
    #### SYS_TASK_SHARE_HANDLE
-   - Allows handle transfer from one task to another. The handle is written along with an identifier string into a memory area expected by the recipient. Available only when receiver is in `CREATED` state. Enforced via handle-page layout in receiver’s address context.
+   - Allows handle transfer from one task to another. The handle is written along with an identifier string into a memory area expected by the recipient. Available only when receiver is in CREATED state. Enforced via handle-page layout in receiver’s address context.
    #### SYS_OBJECT_COPY
-  - Duplicates a handle within the same task, assigning the requested capability mask. Used to derive restricted-view handles (e.g. remove `TRANSFER`).
+  - Duplicates a handle within the same task, assigning the requested capability mask. Used to derive restricted-view handles (e.g. remove TRANSFER).
 
  ## Trusted Application Framework
  - The Trusted Application (TA) Framework provides a lightweight, secure runtime environment and development interface for writing user-mode Trusted Applications atop the Secure OS.
@@ -694,70 +721,70 @@ Here's the content for the requested sections:
     - Typed object and handle access abstraction
   ### Handle Operations Specification
    #### Channel Functions
-   - `channel_read` - Read data from a secure communication channel.
-   - `channel_write` - Send data over a secure communication channel.
-   - `channel_from_handle` - Cast a generic handle into a channel type.
+   - channel_read - Read data from a secure communication channel.
+   - channel_write - Send data over a secure communication channel.
+   - channel_from_handle - Cast a generic handle into a channel type.
    #### Factory Functions (Fabric Object Handle Interface)
-   - `factory_init` - Prepare a factory object for spawning or object creation.
-   - `factory_create_vmo` - Create a Virtual Memory Object (VMO).
-   - `factory_channel_create` - Create a new communication channel.
-   - `factory_task_create` - Create and launch a new Trusted Application task.
-   - `factory_get_handle` - Retrieve system/manually assigned handles.
+   - factory_init - Prepare a factory object for spawning or object creation.
+   - factory_create_vmo - Create a Virtual Memory Object (VMO).
+   - factory_channel_create - Create a new communication channel.
+   - factory_task_create - Create and launch a new Trusted Application task.
+   - factory_get_handle - Retrieve system/manually assigned handles.
    #### Object Functions
-   - `object_copy` - Duplicate a handle reference.
-   - `object_close` - Close and discard a handle.
+   - object_copy - Duplicate a handle reference.
+   - object_close - Close and discard a handle.
    #### Task Functions
-   - `task_spawn` - Spawn a new task using a manifest.
-   - `task_share_handle` - Share handle(s) with another task securely.
+   - task_spawn - Spawn a new task using a manifest.
+   - task_share_handle - Share handle(s) with another task securely.
    #### Memory Management Functions
-   - `vm_init` - Initialize virtual memory structures.
-   - `vm_map_vmp` - Map memory pages into a task's virtual space.
-   - `vm_free` - Free allocated virtual memory regions.
+   - vm_init - Initialize virtual memory structures.
+   - vm_map_vmp - Map memory pages into a task's virtual space.
+   - vm_free - Free allocated virtual memory regions.
   ### I/O Standard Library Specification
    #### Printf-Compatible Functions
-   - `printf` - Wrapper using `tee_log` syscall.
-   - `sprintf` - Internal memory-safe string writing variant.
-   - `vprintf` - Variadic-style printf handler.
+   - printf - Wrapper using tee_log syscall.
+   - sprintf - Internal memory-safe string writing variant.
+   - vprintf - Variadic-style printf handler.
    #### Logging Function
-   - `tee_log` - Internal secure log syscall (invokes `SYS_LOG`, tagged output).
+   - tee_log - Internal secure log syscall (invokes SYS_LOG, tagged output).
   ### Strings Standard Library Specification
    #### String Utility Functions
-   - `memset`
-   - `memcmp`
-   - `memcpy`
-   - `memmove`
-   - `memchr`
-   - `strlen`
-   - `strchr`
-   - `strcmp`
-   - `strtol`
+   - memset
+   - memcmp
+   - memcpy
+   - memmove
+   - memchr
+   - strlen
+   - strchr
+   - strcmp
+   - strtol
    - These are implemented using size-optimized and alignment-aware techniques for low-overhead TA memory environments.
   ### Math Standard Library Specification
    #### Algebraic Functions
-   - `sqrt`, `pow`, `log`, `exp`, `abs`, `floor`, `ceil`
+   - sqrt, pow, log, exp, abs, floor, ceil
    #### Trigonometric Functions
-   - `sin`, `cos`, `tan`, `asin`, `acos`, `atan`
+   - sin, cos, tan, asin, acos, atan
    #### Mathematical Constants
-   - `pi`, `e`, `inf`, `nan`
+   - pi, e, inf, nan
    #### Complex Math Functions
    - Complex number support is syntactically mirrored from real-number APIs.
   ### Crypto Standard Library Specification
    #### Hashing Functions
-   - `sha256(data, len)`
-   - `sha512(data, len)`
-   - `md5(data, len)`
+   - sha256(data, len)
+   - sha512(data, len)
+   - md5(data, len)
    #### Encryption/Decryption Functions
    - in future work support for functionality like:
-   - `aes_encrypt`, `aes_decrypt` - Support for AES-GCM/CTR if hardware-accelerated
-   - `chacha20_encrypt`, `chacha20_decrypt`
+   - aes_encrypt, aes_decrypt - Support for AES-GCM/CTR if hardware-accelerated
+   - chacha20_encrypt, chacha20_decrypt
    #### Key Management and Derivation
    - in future work support for functionality like:
-   - `hkdf` implementation
+   - hkdf implementation
    - Insecure vs. hardware-sealed key storage distinction
    #### Random Number Generation
    - in future work support for functionality like:
-   - `crypto_rng` - Hardware-backed RNG where available
-   - `crypto_rng_init_seed` - Optional API for seed injection
+   - crypto_rng - Hardware-backed RNG where available
+   - crypto_rng_init_seed - Optional API for seed injection
   ### Container Standard Library Specification
    - Note: Trees are all reentrant and zero-alloc in TA context
    #### List Functions
@@ -771,38 +798,38 @@ Here's the content for the requested sections:
    - Balanced binary tree implemented using node-color rules
   ### Concurrency Standard Library Specification
    #### Atomic Operations
-   - `atomic_add_fetch`
-   - `atomic_sub_fetch`
-   - `atomic_or_fetch`, `atomic_and_fetch`
-   - `atomic_read`, `atomic_write`
-   - Memory barrier primitives: `smp_rb()` (read barrier), `smp_wb()` (write barrier)
+   - atomic_add_fetch
+   - atomic_sub_fetch
+   - atomic_or_fetch, atomic_and_fetch
+   - atomic_read, atomic_write
+   - Memory barrier primitives: smp_rb() (read barrier), smp_wb() (write barrier)
    #### Mutex API
-   - `mutex_init()`, `mutex_lock()`, `mutex_unlock()`, `mutex_destroy()`
+   - mutex_init(), mutex_lock(), mutex_unlock(), mutex_destroy()
    #### Spinlock API
-   - `spinlock_init()`, `spin_lock()`, `spin_unlock()`, `spin_trylock()`
+   - spinlock_init(), spin_lock(), spin_unlock(), spin_trylock()
    #### Semaphore API
-   - `sem_init()`, `sem_wait()`, `sem_post()`, `sem_destroy()`
+   - sem_init(), sem_wait(), sem_post(), sem_destroy()
    #### Conditional Variables
-   - `cond_init()`, `cond_wait()`, `cond_signal()`, `cond_broadcast()`
+   - cond_init(), cond_wait(), cond_signal(), cond_broadcast()
   ### Misc Library Functions Specification
    #### Align Macros
-   - `align_up(x, a)`
-   - `align_up_ptr(p, a)`
-   - `align_down(x, a)`
-   - `align_down_ptr(p, a)`
-   - `is_aligned(x, a)`
-   - `is_aligned_ptr(p, a)`
+   - align_up(x, a)
+   - align_up_ptr(p, a)
+   - align_down(x, a)
+   - align_down_ptr(p, a)
+   - is_aligned(x, a)
+   - is_aligned_ptr(p, a)
    #### Bit Manipulation
-   - `bit32(n)`, `bit64(n)`
-   - `is_power_of_two(x)`
-   - `clz32(x)` - Count Leading Zeros (32-bit)
-   - `clz64(x)` - Count Leading Zeros (64-bit)
-   - `log2(x)`
+   - bit32(n), bit64(n)
+   - is_power_of_two(x)
+   - clz32(x) - Count Leading Zeros (32-bit)
+   - clz64(x) - Count Leading Zeros (64-bit)
+   - log2(x)
    #### Compiler and Intrinsic Macros
-   - `barrier()` - Compiler-level memory fence
-   - `container_of(ptr, type, member)` - Offset-based typed accessor
-   - Standardized `__attribute__` usage for alignment/enforced inlining.
-   - `same_type()` - Static type matching check (debug-mode only)
+   - barrier() - Compiler-level memory fence
+   - container_of(ptr, type, member) - Offset-based typed accessor
+   - Standardized __attribute__ usage for alignment/enforced inlining.
+   - same_type() - Static type matching check (debug-mode only)
 
  ## Implementation Challenges and Optimizations
  - This section discusses the practical challenges encountered during the development of the Secure OS and outlines optimizations applied to ensure a balanced trade-off between performance, security, and maintainability.
