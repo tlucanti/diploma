@@ -226,6 +226,7 @@
   - IPC - Inter Process Communication (Межпроцессное Взаимодействие)
   - SATP - Supervisor Address Translation and Protection
   - MMU - Memory Management Unit (Блок Управления Памятью)
+  - PTE - Page Table Entry (Запись в Таблице Страниц)
 
 
 <div style="page-break-after: always;"></div>

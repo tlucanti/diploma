@@ -188,21 +188,51 @@ Here's the content for the requested sections:
    Upon successful completion of these steps, the TA instance ceases to exist, and its resources become available for reallocation. A result code indicating the success or failure of the TEEC_CloseSession operation is returned_ to the Normal World client. The Secure OS ensures that the teardown process is orderly and does not compromise the integrity of the Secure World or other active TAs.
 
  ## WorldGuard Integration
-  ### WorldGuard Configuration
-   #### World Configuration (Two-World Model)
-   - Overview of how the system hardware and memory are split between Secure World and Normal World.
-   - Explanation of the two-world design rationale, focusing on isolation guarantees.
-   - Definition of the roles of each world (e.g., Secure OS vs. Linux).
-   - Description of how World IDs are assigned and managed.
-   #### WorldGuard Checker Configuration for Secure Isolation
-   - Overview of the hardware/software checker mechanism for enforcing world-based isolation.
-   - Configuration of Secure RAM slots and memory regions:
-     - Secure memory partitioning approach.
-     - Locking down memory regions to the Secure World
-   - Setting up enclave/partition boundaries:
-     - Handling multiple enclaves within the Secure World.
-     - Policy for controlling access across enclaves or from Normal World.
-   - Integration of memory attributes (e.g., read/write/exec permissions) with WorldGuard checks.
+Here is the content for Chapter 3, Section 3.3.1 "WorldGuard Configuration":
+  ### 3.3.1 WorldGuard Configuration
+  The RISC-V WorldGuard extension is pivotal for establishing hardware-enforced isolation between the Secure World, hosting the Secure OS, and the Normal World, where Linux operates. Proper configuration of WorldGuard is essential to define these isolated domains and control their interactions. This configuration primarily involves defining the worlds themselves and programming the WorldGuard checkers to enforce memory access policies.
+
+   #### 3.3.1.1 World Configuration (Two-World Model)
+
+   The foundation of the system's security architecture is the division of hardware and software resources into two distinct "worlds": a Secure World (SW) and a Normal World (NW). This partitioning is realized through the WorldGuard extension.
+
+  - System Resource Partitioning:
+       The WorldGuard extension enables a fundamental split of system resources. Physical memory is partitioned into regions exclusively accessible by the Secure World, regions exclusively accessible by the Normal World, and specific, limited regions designated as shared memory for inter-world communication. In this project, CPU core 0 is statically assigned to the Secure World to execute the Secure OS and its Trusted Applications (TAs). All other CPU cores are allocated to the Normal World for Linux execution.
+
+  - Two-World Design Rationale:
+       This two-world model provides strong, hardware-enforced isolation between the trusted environment (Secure World) and the general-purpose, potentially compromised environment (Normal World). This architectural choice is influenced by established TEE designs, offering a clear separation of concerns. It simplifies the Trusted Computing Base (TCB) by dedicating a world to security-critical operations, distinct from the complexities of a feature-rich OS environment.
+
+  - Roles of Each World:
+      - Secure World (SW): Operates with World ID 0 (WID 0). It hosts the Secure OS, which is responsible for executing Trusted Applications, managing cryptographic keys and other secrets, performing security-sensitive computations, and enforcing the capability-based security model. All operations within the Secure World are considered privileged from a security standpoint.
+      - Normal World (NW): Operates with World ID 1 (WID 1). It hosts the Rich OS (Linux) and its applications. The Normal World is treated as untrusted by the Secure World. It interacts with the Secure World only through a strictly defined interface, typically to request services from TAs.
+
+  - World ID Assignment and Management:
+       WorldGuard associates a World ID (WID) with transactions originating from CPU cores. In this system, WID 0 is assigned to the Secure World and WID 1 to the Normal World.
+       The assignment of WIDs to CPU cores is performed by OpenSBI during the early boot stages, leveraging its M-mode privileges. OpenSBI configures CPU core 0 to operate with WID 0 (Secure World) before transferring control to the Secure OS. Other CPU cores are configured with WID 1 (Normal World) before Linux is booted on them.
+       The Secure OS, once initialized and running within the Secure World on core 0, operates under WID 0. It ensures that its memory accesses and, by extension, those of the TAs it manages, are correctly associated with this WID. The mlwid CSR (Machine Lower-privilege World ID) can be used by M-mode (OpenSBI) to set the WID for S-mode (where the Secure OS runs). This static assignment of WIDs forms the basis of the hardware isolation.
+
+   #### 3.3.1.2 WorldGuard Checker Configuration for Secure Isolation
+
+   WorldGuard checkers are hardware units integrated into the system's memory fabric. They monitor memory transactions, compare the WID of the initiator against pre-programmed rules associated with memory regions, and enforce access permissions. The Secure OS is responsible for configuring these checkers during its initialization phase to establish and maintain secure isolation.
+
+  - Configuration of Secure RAM with WG Slots:
+      - Secure Memory Partitioning Approach: The physical address space is partitioned by programming the WorldGuard checker slots. Each slot defines a rule for a specific memory range, associating it with permissions for different WIDs. The Secure OS allocates distinct regions for its own kernel code and data, private memory for each TA, and the shared memory pages used for inter-world communication. These allocations are translated into rules for the WG checker slots. This partitioning is typically static and established at boot time. Default policy dictates that any memory region not explicitly configured by a WG slot might be inaccessible or subject to a default platform-specific rule (often denying all access).
+      - Locking Down Memory Regions to the Secure World: Memory regions designated for the exclusive use of the Secure World (e.g., Secure OS image, TA private heaps and stacks) are configured in WG checker slots. These slots specify that only transactions originated by WID 0 (Secure World) are permitted Read and/or Write access. Any attempt by WID 1 (Normal World) to access these regions is intercepted by the WG checker, resulting in a memory access fault. To ensure the immutability of these critical security configurations, the L (lock) bit in each WG checker slot's configuration register (cfg) is set by the Secure OS after initialization. Once locked, a slot's configuration cannot be altered until the next system reset.
+
+  - Setting up Partition Boundaries:
+       The primary partition enforced by WorldGuard is between the Secure World and the Normal World. This boundary is defined by the collective rules programmed into the WG checker slots.
+      - Normal World Memory: Regions intended for Normal World use (e.g., main RAM for Linux) are configured to allow R/W access by WID 1 and deny access by WID 0. This prevents the Secure World from unintentionally or maliciously accessing Normal World private data, adhering to the principle of least privilege.
+      - Shared Memory Regions: For inter-world communication, specific pages (e.g., for request and response queues) are configured in WG slots to be accessible by both WID 0 and WID 1. However, permissions can be asymmetric: for the request queue, WID 1 (NW) might have Write access while WID 0 (SW) has Read access, and vice-versa for the response queue.
+      - Policy for Controlling Access: The policy is straightforward:
+          - Access from NW to SW private memory is strictly denied (Read, Write, Execute).
+          - Access from SW to NW private memory is generally denied to maintain isolation and prevent SW from becoming a vector for NW attacks.
+          - Access to shared memory is explicitly allowed with carefully defined permissions.
+
+  - Integration of Memory Attributes (Read/Write/Execute) with WorldGuard Checks:
+      - WorldGuard checkers primarily enforce permissions based on Read and Write access types for specified WIDs over memory ranges. The perm field within each checker slot directly encodes these R/W permissions for each world. Violation of these permissions triggers an immediate fault by the checker.
+      - Instruction fetches by a CPU are treated as memory read operations by the bus fabric and thus by the WorldGuard checkers. If a WID is denied read access to a memory region by a WG checker, it will also be implicitly denied instruction fetch (execute) access from that region at the WorldGuard level.
+      - Finer-grained execute permissions (e.g., No-Execute bits for data pages) *within* a world are managed by the Memory Management Unit (MMU) of that world. For instance, the Secure OS uses its MMU (configured via PTEs) to mark its data pages as non-executable for TAs, even if WorldGuard permits WID 0 to read those pages. Thus, WorldGuard provides coarse-grained inter-world isolation (e.g., "this memory block is SW-only"), while the MMU provides finer-grained intra-world protection and virtual memory management.
+
   ### Integration with the Secure OS
    #### Error Reporting
    - Mechanisms to detect and report WorldGuard-related violations (e.g., unauthorized access attempts).

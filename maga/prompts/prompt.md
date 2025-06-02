@@ -204,48 +204,23 @@ I have a draft of chapter 3:
    #### Opportunities for Improvement
 
 
-Starting with chapter 3.2.7 WorldGuard Configuration
+Starting with chapter 3.3.1. WorldGuard Configuration
 I have a draft of chapter sections:
 
   ### WorldGuard Configuration
    #### World Configuration (Two-World Model)
    - Overview of how the system hardware and memory are split between Secure World and Normal World.
-   - Explanation of the two-world design rationale, focusing on isolation guarantees.
+   - Explanation of the two-world design rationale
    - Definition of the roles of each world (e.g., Secure OS vs. Linux).
    - Description of how World IDs are assigned and managed.
    #### WorldGuard Checker Configuration for Secure Isolation
-   - Overview of the hardware/software checker mechanism for enforcing world-based isolation.
-   - Configuration of Secure RAM slots and memory regions:
+   - Configuration of Secure RAM with WG slots:
      - Secure memory partitioning approach.
      - Locking down memory regions to the Secure World
    - Setting up enclave/partition boundaries:
      - Handling enclaves within the Secure World.
      - Policy for controlling access across enclaves or from Normal World.
    - Integration of memory attributes (e.g., read/write/exec permissions) with WorldGuard checks.
-
-
-secure regions mappings for context:
-
-#define ARCH_USERMEM_BEGIN 0x1000
-#define ARCH_USERMEM_END (30UL << 30)
-
-/* -128G */
-#define KERNEL_VIRTUAL_BASE 0xffffffe000000000
-#define KERNEL_VIRTUAL_OFFSET (KERNEL_VIRTUAL_BASE - 0x0000000080200000)
-
-/* 30G */
-#define KERNEL_LINEAR_MAP_BEGIN KERNEL_VIRTUAL_BASE
-#define KERNEL_LINEAR_MAP_END (KERNEL_VIRTUAL_BASE + (30UL << 30))
-
-/* 20G */
-#define KERNEL_DEVICE_BEGIN KERNEL_LINEAR_MAP_END
-#define KERNEL_DEVICE_END (KERNEL_DEVICE_BEGIN + (20UL << 30))
-
-/* 10G */
-#define KERNEL_VMALLOC_BEGIN KERNEL_DEVICE_END
-#define KERNEL_VMALLOC_END (KERNEL_VMALLOC_BEGIN + (10UL << 30))
-
-#define KERNEL_VIRTUAL_END      KERNEL_VMALLOC_END
 
 write contents of these sections based on draft.
 If needed - maybe add some points if there is anything else to say by topic.
