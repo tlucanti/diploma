@@ -1,11 +1,10 @@
 
 # Chapter 3: Design and Implementation of the Secure Operating System
+ ## 3.1 Interface Considerations
+ The choice of an interface for communication between the Normal World (running Linux) and the Secure World (hosting the Secure OS and Trusted Applications) is a critical design decision. It directly impacts usability, security, and the effort required for integration and development of Trusted Applications. This section explores various approaches considered for the TEE Client API, which facilitates inter-world communication, culminating in the rationale for the selected strategy.
 
-  ## 3.1 Interface Considerations
-   The choice of an interface for communication between the Normal World (running Linux) and the Secure World (hosting the Secure OS and Trusted Applications) is a critical design decision. It directly impacts usability, security, and the effort required for integration and development of Trusted Applications. This section explores various approaches considered for the TEE Client API, which facilitates inter-world communication, culminating in the rationale for the selected strategy.
-
-   ### 3.1.1 TEE Client API: Inter-World Communication Interface
-   The TEE Client API defines the functions that Normal World clients use to interact with Trusted Applications running within the Secure OS. This interface must provide mechanisms for establishing a connection, sharing data, invoking secure functions, and managing the lifecycle of secure sessions.
+  ### 3.1.1 TEE Client API: Inter-World Communication Interface
+  The TEE Client API defines the functions that Normal World clients use to interact with Trusted Applications running within the Secure OS. This interface must provide mechanisms for establishing a connection, sharing data, invoking secure functions, and managing the lifecycle of secure sessions.
 
    #### 3.1.1.1 OP-TEE on RISC-V
    OP-TEE (Open Portable TEE) is a prominent open-source Trusted Execution Environment designed primarily for Arm TrustZone. Efforts have been made to port OP-TEE to the RISC-V architecture, leveraging existing security mechanisms or extensions like Physical Memory Protection (PMP) or, more recently, experimental support for WorldGuard-like mechanisms. OP-TEE implements a substantial portion of the GlobalPlatform TEE specifications, providing a rich feature set including a TEE Internal Core API for TA development and a comprehensive TEE Client API.
