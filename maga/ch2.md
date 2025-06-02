@@ -126,9 +126,9 @@
    RISC-V cores (harts) that incorporate WorldGuard functionality ensure that every memory access originating from that hart is associated with a World Identifier (WID). The WorldGuard extensions provide a mechanism for different privilege levels operating on a hart to be identified with distinct WIDs.
 
    There are three distinct tiers of WorldGuard (WG) support for RISC-V harts.
-   *   The most basic tier does not necessitate any Instruction Set Architecture (ISA) extensions; it assigns a single, fixed WID for all privilege modes on a particular hart.
-   *   The second tier introduces the Smwg extension, which grants M-mode the capability to determine the WID used by privilege modes operating at lower levels.
-   *   The third tier, known as the Smwgd extension, further allows M-mode to delegate the responsibility of assigning WIDs to lower-privilege modes to the [H]S-mode; this in turn incorporates the Sswg extension for [H]S-mode operations.
+   - The most basic tier does not necessitate any Instruction Set Architecture (ISA) extensions; it assigns a single, fixed WID for all privilege modes on a particular hart.
+   - The second tier introduces the Smwg extension, which grants M-mode the capability to determine the WID used by privilege modes operating at lower levels.
+   - The third tier, known as the Smwgd extension, further allows M-mode to delegate the responsibility of assigning WIDs to lower-privilege modes to the [H]S-mode; this in turn incorporates the Sswg extension for [H]S-mode operations.
 
    All types of memory accesses, which include indirect memory operations like fetching instructions and performing page-table walks, are required to be tagged with the correct WID. From the perspective of WG permission enforcement, instruction fetches are considered equivalent to memory read operations.
 
@@ -377,14 +377,24 @@
 
   ### Chain of Trust
    #### Principles of Secure Boot and Chain of Trust
-   - Introduces fundamental concepts behind establishing a chain of trust
-   - where each stage of the boot process verifies the integrity and authenticity of the next
-   - Explains how root keys and cryptographic signatures enforce this trust model.
+   Secure Boot establishes a Chain of Trust by ensuring that each software component loaded during the system's startup sequence is verified for integrity and authenticity before execution. This process begins with an immutable Root of Trust (RoT), typically embedded in hardware. Each subsequent stage, from the initial bootloader to the operating system kernel, cryptographically verifies the signature of the next stage using pre-provisioned keys. If a signature is invalid or a component has been tampered with, the boot process can be halted or corrective measures initiated. This hierarchical verification prevents the loading of unauthorized or malicious software, thereby maintaining system integrity from the very first instruction executed. The enforcement of this trust model relies on public-key cryptography, where components are signed with private keys, and their signatures are verified using corresponding public keys anchored in the RoT or a preceding trusted component.
+
    #### RISC-V Root of Trust
-   - Discusses hardware and firmware components acting as roots of trust on RISC-V platforms
-   - Includes details on embedded ROM or OTP memory used for storing immutable secrets and the first authenticated boot stage.
+   On RISC-V platforms, the Root of Trust (RoT) is typically established through a combination of immutable hardware and an initial, unmodifiable piece of firmware. Key components contributing to the RoT include:
+   - Boot ROM: A read-only memory (ROM) containing the first-stage bootloader (FSBL) or initial boot code. Its immutability guarantees that the very first instructions executed by the processor are authentic.
+   - One-Time Programmable (OTP) Memory: Used to securely store cryptographic keys (such as a public key or a hash of a public key for verifying the FSBL), unique device identifiers, and critical security configuration settings. Once programmed, OTP memory cannot be altered.
+   - Secure Hardware Mechanisms: Features like secure JTAG access control or fuses that lock down debug interfaces and secure configuration settings post-provisioning.
+
+   These elements collectively ensure that the initial boot stage is trustworthy and that subsequent software components are verified against an immutable, hardware-anchored anchor.
+
    #### One-Time Programmable (OTP) Memory
-   - Examines the use of OTP memory technologies in storing cryptographic keys, bootloader code, or other critical data that forms the immutable basis of system trust
-   - Explains how this hardware feature prevents modification and enhances security guarantees.
+   One-Time Programmable (OTP) memory is a crucial hardware feature for establishing a strong foundation for system trust. OTP consists of non-volatile memory cells that, once programmed, cannot be electrically erased or rewritten. This immutability makes it an ideal medium for storing:
+   - Root Cryptographic Keys: Such as public keys or hashes used to verify the authenticity of the first mutable bootloader.
+   - Secure Boot Configuration Data: Flags or settings that dictate boot policies or enable security features.
+   - Device-Specific Identifiers: Unique IDs or serial numbers that can be used for attestation or device authentication.
+   - Small, Critical Boot Code Snippets: In some designs, a portion of the very early boot code itself might reside in OTP if ROM space is limited or not available.
+
+   By storing such critical data in OTP, the system ensures that the foundational elements of its security posture are resistant to software-based attacks aiming to modify them. This hardware-enforced permanence significantly enhances security guarantees by preventing unauthorized alteration of the initial trust anchors.
+
    #### Secure Boot Implementation
-   - describes that secure boot is out of scope of this project, but that Secure OS is implemented with consideration of Chain Of Trust, and that there is no limitaion of implementing it in future work
+   A full implementation of a secure boot mechanism, from hardware Root of Trust provisioning to the verification of the Rich OS, is beyond the scope of this specific project. However, the Secure OS developed herein is designed with the principles of a Chain of Trust in mind. Its architecture and initialization sequence are structured to seamlessly integrate into a secure boot process. This consideration ensures that there are no inherent limitations preventing the future work of incorporating this Secure OS into a comprehensive RISC-V secure boot solution. The Secure OS expects to be loaded by a trusted entity (e.g., a verified OpenSBI or a preceding secure bootloader) that has already established a secure state for the system.

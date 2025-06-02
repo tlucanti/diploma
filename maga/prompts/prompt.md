@@ -78,26 +78,22 @@ I have a draft of chapter 2:
    #### One-Time Programmable (OTP) Memory
    #### Secure Boot Implementation
 
-Starting with 2.4.1 RISC-V Boot Sequence Overview
+Starting with 2.4.2 Chain of Trust
 I have a draft of thess sections:
 
- #### Background on RISC-V System Booting
- - Explains the general concept of booting in RISC-V systems. This includes initialization of hardware, loading of firmware components, and establishing the runtime environment for subsequent software layers. It discusses the challenges and constraints in secure boot design.
- - An introduction outlining the overall boot process in the RISC-V system integrating both the Secure OS and the Rich OS (Linux)
- #### First Stage Bootloader (FSBL)
- - Describes the role of the First Stage Bootloader in the secure boot process
- - It is responsible for initial hardware setup, integrity verification of subsequent images, and loading the next boot stage into memory
- - This stage is often stored in One-Time Programmable (OTP) memory, establishing the Root of Trust.
- #### OpenSBI Initialization
- - Details how OpenSBI initializes the RISC-V Supervisor Binary Interface and prepares the system for both the Secure OS and the Rich OS
- - This section explains how OpenSBI manages multi-core initialization while isolating the first core for the Secure OS.
- #### Secure OS Startup
- - Describes the booting and initialization of the Secure OS on the first core
- - setup of secure and non-secure memory
- #### Rich OS Startup
- - Outlines the initialization and booting of the Rich OS (Linux) on the remaining cores
- - Explains how linux starts and initializes a driver for communication with Secure World
- - Then continue booting as normal
+ #### Principles of Secure Boot and Chain of Trust
+ - Introduces fundamental concepts behind establishing a chain of trust
+ - where each stage of the boot process verifies the integrity and authenticity of the next
+ - Explains how root keys and cryptographic signatures enforce this trust model.
+ #### RISC-V Root of Trust
+ - Discusses hardware and firmware components acting as roots of trust on RISC-V platforms
+ - Includes details on embedded ROM or OTP memory used for storing immutable secrets and the first authenticated boot stage.
+ #### One-Time Programmable (OTP) Memory
+ - Examines the use of OTP memory technologies in storing cryptographic keys, bootloader code, or other critical data that forms the immutable basis of system trust
+ - Explains how this hardware feature prevents modification and enhances security guarantees.
+ #### Secure Boot Implementation
+ - describes that secure boot is out of scope of this project, but that Secure OS is implemented with consideration of Chain Of Trust, and that there is no limitaion of implementing it in future work
+
 
 write contents of sections based on draft.
 If needed - maybe add some points if there is anything else to say by topic.

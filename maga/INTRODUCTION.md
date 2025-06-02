@@ -212,11 +212,13 @@
   - WID - World Identifier (Идентификатор Мира)
   - LSB (МЗБ) - Least Significant Bit (Младший Значащий Бит)
   - MSB (СЗБ) - Most Significant Bit (Старший Значащий Бит)
-  - FSBL
-  - ОЗУ
-  - ПЗУ
-  - RAM
-  - OTP
+  - FSBL - First Stage Boot Loader (Загрузчик Первой Ступени)
+  - ОЗУ - Оперативное Запоминающее Устройство
+  - ПЗУ - Постоянное Запоминающее Устройство
+  - RAM - Random Access Memory
+  - OTP - One-Time Programmable (Одноразовая Программируемая Память)
+  - ROM
+  - JTAG
 
 <div style="page-break-after: always;"></div>
 ---
