@@ -219,6 +219,10 @@
   - OTP - One-Time Programmable (Одноразовая Программируемая Память)
   - ROM
   - JTAG
+  - RPC
+  - GP - Global Platform
+  - IPI
+
 
 <div style="page-break-after: always;"></div>
 ---

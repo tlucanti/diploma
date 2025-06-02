@@ -1,26 +1,82 @@
 
 # Chapter 3: Design and Implementation of the Secure Operating System
 
- ## Interface Considerations
-  ### TEE Client API: Inter-World Communication Interface
-   #### OP-TEE on RISC-V
-   - *1.0 from TEE-Client-Api.md*
-   #### Develop own minimal GlobalPlatform TEE interface
-   - *2.0 from TEE-Client-Api.md*
-   #### Experemental of Research Prototypes
-   - *3.0 from TEE-Client-Api.md*
-   #### Rationale for Adopting a Global Platform-based API Subset
-   - Presents the justification for selecting a carefully chosen subset of the Global Platform TEE Client API.
+  ## 3.1 Interface Considerations
+   The choice of an interface for communication between the Normal World (running Linux) and the Secure World (hosting the Secure OS and Trusted Applications) is a critical design decision. It directly impacts usability, security, and the effort required for integration and development of Trusted Applications. This section explores various approaches considered for the TEE Client API, which facilitates inter-world communication, culminating in the rationale for the selected strategy.
+
+   ### 3.1.1 TEE Client API: Inter-World Communication Interface
+   The TEE Client API defines the functions that Normal World clients use to interact with Trusted Applications running within the Secure OS. This interface must provide mechanisms for establishing a connection, sharing data, invoking secure functions, and managing the lifecycle of secure sessions.
+
+   #### 3.1.1.1 OP-TEE on RISC-V
+   OP-TEE (Open Portable TEE) is a prominent open-source Trusted Execution Environment designed primarily for Arm TrustZone. Efforts have been made to port OP-TEE to the RISC-V architecture, leveraging existing security mechanisms or extensions like Physical Memory Protection (PMP) or, more recently, experimental support for WorldGuard-like mechanisms. OP-TEE implements a substantial portion of the GlobalPlatform TEE specifications, providing a rich feature set including a TEE Internal Core API for TA development and a comprehensive TEE Client API.
+
+   While OP-TEE offers a mature and widely adopted TEE solution, its architecture presents different considerations. OP-TEE itself is a small, secure operating system typically running alongside a rich OS. For this project, which focuses on a custom-designed monolithic Secure OS with a specific capability-based model and tight integration with the RISC-V World Guard extension, adopting OP-TEE directly would involve either a significant porting and adaptation effort or would dictate architectural choices less aligned with the project's goal of a minimal, deeply understood TCB tailored to World Guard. Furthermore, OP-TEE's internal complexity, while offering extensive features, might be excessive for the project's initial scope focused on fundamental secure services and the unique aspects of the WorldGuard extension.
+
+   #### 3.1.1.2 Develop own minimal GlobalPlatform TEE interface
+   An alternative approach considered was the development of a bespoke, minimal TEE interface derived from the GlobalPlatform TEE Client API specifications. This path involves implementing only the essential API functions required for basic Trusted Application interaction: context management, session management, shared memory handling, and command invocation.
+
+   Developing a custom, minimal interface offered several advantages:
+   - Reduced Complexity: A smaller API surface simplifies the implementation within the Secure OS, potentially leading to a smaller Trusted Computing Base (TCB) and fewer an attack vectors.
+   - Tailored to World Guard: The interface could be specifically designed to leverage the World Guard extension's two-world model and its inter-world communication primitives efficiently. For instance, the shared memory communication paradigm dictated by the project (two shared pages) can be directly mapped to the API design.
+   - Alignment with Secure OS Architecture: The interface could be closely integrated with the Secure OS's monolithic design and capability-based security model.
+   - Controlled Scope: For a research-oriented Master's project, this approach allows for a focused implementation effort on the core TEE functionalities and their interaction with World Guard.
+   - Pedagogical Value: Building the interface provides deeper insight into TEE mechanics and inter-world communication protocols.
+
+   The primary challenge of this approach is ensuring compliance, even with a subset, and providing sufficient functionality for meaningful Trusted Applications.
+
+   #### 3.1.1.3 Experimental of Research Prototypes
+   The academic and research community has proposed various TEE designs and inter-world communication mechanisms, particularly for RISC-V, often focusing on novel hardware features or specific security properties. Some prototypes explore custom RPC mechanisms, differing memory sharing models, or entirely new API paradigms distinct from GlobalPlatform.
+
+   While these research prototypes offer valuable insights into potential TEE enhancements and specialized security solutions (e.g., fine-grained compartmentalization, advanced attestation methods), they often lack standardization and broader ecosystem support critical for developing portable Trusted Applications. Adopting an entirely experimental API would deviate from industry-recognized standards, increasing the learning curve for potential developers and limiting compatibility. However, concepts from such prototypes, particularly those related to efficient use of RISC-V-specific features or lightweight communication, could inform the implementation of a standard-based subset.
+
+   #### 3.1.1.4 Rationale for Adopting a Global Platform-based API Subset
+   After evaluating the alternatives, the decision was made to adopt a carefully selected subset of the GlobalPlatform (GP) TEE Client API for inter-world communication. This approach aims to balance standardization with the specific requirements and constraints of the project.
+
+   The rationale for this choice is as follows:
+   - Standardization and Familiarity: The GlobalPlatform TEE specifications provide a well-defined, industry-recognized standard for TEE client-TA interaction. Adopting a subset leverages this existing knowledge base, making it easier for developers familiar with TEE concepts to understand and use the system.
+   - Core Functionality: The GP TEE Client API defines essential concepts like contexts, sessions, shared memory, and command invocation that are fundamental to most TEE interactions. Implementing a subset containing these core elements provides sufficient functionality for a range of Trusted Applications.
+   - Reduced Implementation Effort and TCB: By selecting only essential API calls, the implementation complexity within the Secure OS is significantly reduced compared to a full GP implementation. This contributes to a smaller TCB, which is crucial for security, and makes the development feasible within the project's timeframe.
+   - Alignment with Project Goals: A minimal subset can be more easily tailored to the specifics of the Secure OS's monolithic, capability-based architecture and its single-core design for the secure world. It also aligns well with the two-shared-page communication mechanism provided by the World Guard integration. The API subset was chosen to map directly to the intended communication primitives, ensuring efficient use of the shared memory queues.
+   - Future Extensibility: While starting with a minimal subset, the GP framework offers a clear path for potential future extensions if more features become necessary. The modular nature of the GP specifications allows for incremental additions.
+   - Interoperability (Conceptual): Even with a subset, adhering to GP concepts promotes a degree of conceptual interoperability. Trusted Applications written for this API, while not directly portable without recompilation, would follow familiar design patterns.
+
+   The chosen subset focuses on `TEEC_InitializeContext`, `TEEC_FinalizeContext`, `TEEC_OpenSession`, `TEEC_CloseSession`, `TEEC_InvokeCommand`, `TEEC_AllocateSharedMemory`, and `TEEC_ReleaseSharedMemory`, providing the foundational blocks for secure communication and computation. This selection allows for the development and execution of TAs while minimizing the interface exposed by the Secure OS.
 
  ## System Architecture Overview
   - section provides a high-level perspective on how the Secure OS is structured and how it interacts with the Normal World and hardware.
-  ### High-Level Architecture
-   #### Architectural Layers
-   - Introduces the layered nature of the system, from hardware/firmware (OpenSBI) to the Secure OS, and then to the Normal World OS (Linux).
-   - Emphasizes the isolation between the Secure World and the Normal World.
-   #### Secure vs. Normal World Overview
-   - Explains how the Secure OS permanently occupies the first CPU core while Linux runs on the remaining cores.
-   - Highlights the roles and responsibilities of each world, along with the boundary-enforcement mechanisms.
+Here's the content for the requested sections:
+
+   #### 3.2.1.1 Architectural Layers
+   The system architecture is structured in distinct layers, each fulfilling specific roles and operating at different privilege levels. At the foundational layer, the RISC-V hardware platform is initialized by OpenSBI (Open Supervisor Binary Interface), which acts as the firmware. OpenSBI provides essential low-level hardware abstraction, performs initial security configurations, and manages the handover process to the operating systems.
+
+   Above the firmware, the Secure OS operates within the dedicated Secure World, enabled by the RISC-V World Guard extension. This monolithic kernel is designed with a minimal Trusted Computing Base (TCB). Its primary responsibilities include executing Trusted Applications (TAs) in isolation, managing secure resources, and enforcing the system's security policies.
+
+   Concurrently, the Normal World OS, typically a feature-rich operating system such as Linux, runs in a separate domain. It provides the environment for general-purpose applications and user interactions.
+
+   The RISC-V World Guard extension is the core hardware mechanism that underpins this layered structure, enforcing strong isolation boundaries between the Secure World (hosting the Secure OS and TAs) and the Normal World (hosting Linux). This separation is fundamental to preventing unauthorized access or interference between the two environments.
+
+   #### 3.2.1.2 Secure vs. Normal World Overview
+   The system utilizes a static partitioning of CPU resources to maintain a strict separation between security domains. The Secure OS is permanently resident on and executes exclusively on the first CPU core (core0). This core is dedicated to secure operations and the execution of Trusted Applications.
+
+   All other CPU cores are allocated to the Normal World, where the Linux operating system runs. The Normal World provides a rich, general-purpose computing environment but is considered untrusted from the perspective of the Secure World.
+
+   The primary roles and responsibilities are distinct:
+   *   Secure World (Secure OS):
+   - Provides an isolated execution environment for Trusted Applications (TAs).
+   - Manages secure system resources, such as cryptography hardware or protected memory regions.
+   - Enforces the capability-based security model, where TAs operate using handles granted to them via a manifest by a root task, dictating their permissible actions and resource access.
+   - Handles sensitive operations and services requested by the Normal World through a well-defined interface.
+
+   *   Normal World (Linux):
+   - Executes general-purpose applications and manages untrusted system resources.
+   - Interacts with the Secure World exclusively through a predefined communication
+           interface (based on a subset of the Global Platform API) to request secure services.
+   - Cannot directly access memory or resources belonging to the Secure World unless explicitly permitted and mediated by the Secure OS.
+
+   Boundary enforcement is achieved through a combination of hardware and software mechanisms:
+   *   The RISC-V World Guard extension provides hardware-enforced isolation, preventing the Normal World from directly accessing memory regions or peripherals assigned to the Secure World.
+   *   Inter-world communication is strictly managed through dedicated shared memory queues for requests and responses, along with Inter-Processor Interrupts (IPIs) for signaling. This controlled channel ensures that all interactions are explicit and auditable.
+
   ### Core System Components
    #### Kernel, Resource Managers, and TEE Services
    - Details the internal architecture of the Secure OS, covering the Secure Kernel, resource managers (for tasks, memory, and IPC), and TEE service layers.
@@ -793,4 +849,3 @@
    - Technical debt around early bootloader glue code and MMU bring-up code.
 
 ---
-
