@@ -204,17 +204,22 @@ I have a draft of chapter 3:
    #### Opportunities for Improvement
 
 
-Starting with 3.2.5 Security and Policy Enforcement
-I have a draft of thess sections:
+Starting with chapter 3.2.6 TA Lifecycle
+I have a draft of chapter sections:
 
-#### Capability-Based Security Model
-- Introduces the core concepts behind object handles, secure syscalls, and fine-grained access control.
-- Briefly explains how capabilities are validated and enforced at runtime to prevent privilege escalation.
-#### World Guard Integration
-- Consolidates the hardware-based checks provided by the World Guard extension with the Secure OS’s software policy.
-- Provides an overview of failure handling when unauthorized accesses or invalid world transitions occur.
+#### Creation
+- Describes how Trusted Applications (TAs) are registered and loaded by the Secure OS when OpenSession TEE call occurs.
+- Explores memory allocation, initial code setup, and the procedure for spawning a TA process or thread.
+#### Compute
+- when created - TA immidiately yields, and waits for InvokeCommand TEE call.
+- when call occures - root task wakes up TA and pass arguments and TA method id to run
+- TAs communicaes with other TAs (including root task) or services via channels
+- also TAs can allocate shared memory when Normal World calls TEE API
+#### Teardown
+- TA is stopped when Normal World application closes it's session
+- TA frees all owned objects and shared memory
 
-write contents of sections based on draft.
+write contents of these sections based on draft.
 If needed - maybe add some points if there is anything else to say by topic.
 full structure of whole paper is in the attached file
 Do not repeat yourself! Keep it concise! Do not include statements from other chapters! Write only section contents, no summary or reasoning.

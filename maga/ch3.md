@@ -129,22 +129,36 @@ Here's the content for the requested sections:
    Context switching within the Secure OS involves saving the execution context (registers, stack pointer, program counter) of the current TA or task and restoring the context of the next scheduled entity. Given that the Secure OS and its TAs execute exclusively on core 0, their scheduling activities are entirely independent of and do not interfere with the Linux kernel's scheduler, which manages tasks on the other CPU cores operating in the Normal World. The design aims for Secure OS operations to be relatively short-lived to ensure timely responses to TAs and Normal World requests.
 
   ### Security and Policy Enforcement
-   #### Capability-Based Security Model
-   - Introduces the core concepts behind object handles, secure syscalls, and fine-grained access control.
-   - Explains how capabilities are validated and enforced at runtime to prevent privilege escalation.
-   #### World Guard Integration
-   - Consolidates the hardware-based checks provided by the World Guard extension with the Secure OS’s software policy.
-   - Provides an overview of failure handling when unauthorized accesses or invalid world transitions occur.
+  The Secure OS employs a multi-layered approach to security and policy enforcement, combining hardware-level isolation mechanisms provided by the RISC-V World Guard extension with a software-defined, fine-grained access control model. This ensures that both the Secure World itself and the Trusted Applications (TAs) running within it are protected from the non-secure Normal World and, crucially, from each other, adhering to the principle of least privilege.
+
+   #### 3.2.5.1 Capability-Based Security Model
+   The Secure OS implements a capability-based security model, where access to all system resources and kernel services is mediated through *handles*. A handle acts as an unforgeable token representing a specific *capability*—a grant of authority to perform a defined set of operations on an associated kernel object (e.g., memory regions, communication channels, task control blocks). This model contrasts with traditional identity-based access control by focusing on specific permissions tied to object instances rather than broad user privileges.
+
+   Trusted Applications are initially endowed with a set of handles through a predefined *Manifest*, provisioned by the system's root task upon TA instantiation. New objects, and consequently new handles with specific capabilities, are generally created by invoking methods on *fabric objects* (factory objects), for which the TA must also possess an appropriate handle. Operations on these objects are requested via *secure syscalls*, which are the primary interface between TAs and the kernel. By presenting a handle during a syscall, a TA implicitly asserts its right to perform the requested action. This mechanism enables *fine-grained access control*, as each handle explicitly defines the permissible interactions with its corresponding object.
+
+   Runtime enforcement is central to this model. Upon receiving a secure syscall, the kernel performs rigorous validation. It first verifies the authenticity and validity of the
+    Cmodel handlespresented handle, ensuring it corresponds to an active kernel object and is appropriate for use by the calling TA's context. Subsequently, the kernel checks if the capability encapsulated by the handle explicitly permits the requested operation on the target object. If the capability is insufficient or the handle is invalid, the operation is denied, and an error is returned to the TA. This per-operation check is critical for preventing TAs from forging capabilities or escalating privileges beyond what was explicitly granted. Since TAs cannot directly manipulate handle contents or manufacture new capabilities arbitrarily, they are confined to the authorities given to them through their initial Manifest or legitimately acquired from fabric objects, robustly enforcing the principle of least privilege.
+
+   #### 3.2.5.2 World Guard Integration
+   The RISC-V World Guard extension underpins the Secure OS's security posture by providing fundamental hardware-enforced memory and peripheral isolation between the Secure World (SW) and the Normal World (NW). Its primary role is to create a distinct execution environment for the Secure OS and TAs, operating on a dedicated CPU core, shielded from the Linux environment running on other cores. World Guard achieves this by associating a World ID with each CPU core's memory transactions and comparing this ID against configured access permissions for different physical memory regions and peripheral devices. Attempts by the Normal World to directly access resources exclusively assigned to the Secure World are thus blocked at the hardware level.
+
+   The Secure OS's software-defined capability-based security model complements this coarse-grained hardware isolation by providing fine-grained access control *within* the Secure World. While World Guard prevents the NW from illicitly accessing or disrupting the SW, the capability model meticulously governs how TAs and Secure OS components interact with each other's kernel-managed objects and resources. For instance, World Guard protects the entirety of a TA's private memory from direct access by Linux; simultaneously, the capability system prevents one TA from accessing another TA's private data or invoking its services unless explicit permission is granted via a shared object handle. This layered approach creates a defense-in-depth strategy: World Guard establishes the robust inter-world perimeter, while the capability system enforces strict compartmentalization and adherence to policies inside that perimeter. Policies for inter-world communication via shared memory queues and world transitions are also co-enforced; World Guard validates the legality of these transitions and shared memory accesses at a hardware level, while the Secure OS software policies manage the content, synchronization, and lifecycle of the shared data structures.
+
+   When the World Guard hardware checker detects an unauthorized memory access attempt (e.g., NW code attempting to read SW private memory) or an invalid world transition (e.g., an improper instruction attempting to illicitly change the current world state of a core), it generates a precise hardware trap or fault. The system's response to such a fault is determined by handlers configured by the Secure OS (or OpenSBI, during early boot on behalf of the Secure World).
+   Violations originating from the Normal World typically result in the offending Normal World core being trapped; the specific handling (e.g., signaling an error to the Linux kernel) allows the Normal World to manage the fault within its own context without compromising the Secure World. If a software component within the Secure World itself were to trigger a World Guard violation (a scenario made less likely by the internal memory management and capability checks), it would also result in a trap handled by the Secure OS, potentially leading to the termination of the errant TA or a controlled system halt if the violation is critical to system integrity. World Guard thus acts as a non-bypassable enforcement mechanism for the high-level security policy of world separation, with defined failure handling pathways for transgressions against these hardware-enforced rules. Error reporting mechanisms ensure that such violations can be logged and, where appropriate, communicated to system administrators or the Normal World if a request cannot be safely processed.
+
   ### TA Lifecycle
-   #### Creation
-   - Describes how Trusted Applications (TAs) are registered or loaded by the Secure OS.
-   - Explores memory allocation, initial code setup, and the procedure for spawning a TA process or thread.
-   #### Compute
-   - Outlines how a TA executes in the Secure OS, including interaction with system calls, access to resources, and concurrency.
-   - Discusses how TAs can communicate with other tasks or the Normal World during their operational phases.
-   #### Teardown
-   - Explains the orderly shutdown of a TA, covering handle cleanup, memory deallocation, and final status reporting.
-   - Ensures that no sensitive data remains accessible and that the system reclaims all resources.
+#### Creation
+- Describes how Trusted Applications (TAs) are registered and loaded by the Secure OS when OpenSession TEE call occurs.
+- Explores memory allocation, initial code setup, and the procedure for spawning a TA process or thread.
+#### Compute
+- when created - TA immidiately yields, and waits for InvokeCommand TEE call.
+- when call occures - root task wakes up TA and pass arguments and TA method id to run
+- TAs communicaes with other TAs (including root task) or services via channels
+- also TAs can allocate shared memory when Normal World calls TEE API
+#### Teardown
+- TA is stopped when Normal World application closes it's session
+- TA frees all owned objects and shared memory
 
  ## WorldGuard Integration
   ### WorldGuard Configuration
