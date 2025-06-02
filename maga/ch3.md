@@ -99,25 +99,31 @@ Here's the content for the requested sections:
    This combination of explicitly defined shared memory regions for data payload and IPIs for event notification forms a robust and efficient asynchronous communication channel, fundamental to the cooperative operation of the Secure and Normal Worlds.
 
   ### Memory Layout and Addressing
-   #### Physical and Virtual Addressing
-   - Provides a high-level overview of how the Secure OS configures its page tables and manages physical/virtual addresses.
-   - Explains how memory mappings differ between the Secure World and the Normal World.
-   #### Isolation Mechanisms
-   - Details how World Guard extension enforces secure boundaries at the hardware level.
-   - Shows how the Secure and Normal Worlds remain isolated, preventing unauthorized access to protected pages.
-   #### Shared Memory Queues
-   - Explains the reserved memory regions that serve as shared buffers for secure–normal communication.
-   - Highlights concurrency concerns and locking strategies for ring-buffer manipulation.
+   #### 3.2.3.1 Physical and Virtual Addressing
+   The Secure OS establishes and manages its own distinct set of page tables, governing the translation of virtual addresses to physical addresses within the Secure World. During its initialization, the Secure OS configures the Supervisor Address Translation and Protection (SATP) register for the dedicated secure core (CPU0) to point to its root page table. This enables virtual addressing for the Secure OS kernel, Trusted Applications (TAs), and any secure peripherals assigned to the Secure World. Each TA typically operates within its own isolated virtual address space, managed by the Secure OS, ensuring that TAs cannot directly access each other's memory or kernel memory unless explicitly permitted through shared memory object capabilities.
+
+   Physical memory is partitioned by the Secure OS, leveraging the World Guard extension. Certain physical memory regions are designated as exclusive to the Secure World, while others are allocated to the Normal World, and specific, limited regions are designated as shared. Consequently, memory mappings within the Secure World (established by the Secure OS) provide access to secure physical memory regions that are invisible or inaccessible (or access-restricted) to the Normal World's memory management unit (MMU) configuration, which operates independently on the other CPU cores under Linux's control. The Secure OS's view of physical memory includes awareness of these distinct regions to enforce overarching system memory policies.
+
+   #### 3.2.3.2 Isolation Mechanisms
+   The primary hardware mechanism for enforcing memory isolation between the Secure World and the Normal World is the RISC-V World Guard extension. World Guard associates a "world ID" with memory transactions originating from CPU harts and with peripheral accesses. The Secure OS, during its boot process and ongoing operation on the dedicated secure core, configPSIures World Guard checkers. These checkers are programmed with rules that define which physical memory regions and peripherals are accessible by which world ID.
+
+   For instance, memory pages allocated for the Secure OS kernel, Trusted Applications, and private Secure World data are configured to be accessible only when transactions originate from a hart operating in the Secure World (i.e., with the Secure World ID). If the Normal World OS (Linux), operating on other cores with a Normal World ID, attempts to access a physical memory page exclusively assigned to the Secure World, the World Guard hardware checkers detect this policy violation. Such unauthorized access attempts result in a hardware exception or fault, which is handled as per the World Guard error reporting configuration, effectively preventing the Normal World from directly reading, writing, or executing code within protected Secure World pages. This hardware-enforced boundary is fundamental to the TEE's security guarantees.
+
+   #### 3.2.3.3 Shared Memory Queues
+   Communication between the Secure World and the Normal World is facilitated by reserved physical memory regions configured as shared buffers. Specifically, two dedicated L1-cache aligned physical memory pages are employed: one for requests from the Normal World to the Secure OS (request queue) and another for responses from the Secure OS back to the Normal World (response queue). The Secure OS, in conjunction with World Guard checker configurations, grants both worlds appropriate access permissions to these specific shared pages—typically, the Normal World has write access to the request queue and read access to the response queue, while the Secure OS has read access to the
+   request queue and write access to the response queue.
+
+   These queues are implemented as lock-free ring buffers (also known as circular buffers) to manage concurrent access without traditional locking overhead, which is critical for efficient inter-world communication. The use of lock-free algorithms minimizes contention and latency, particularly as the Normal World might enqueue requests from multiple contexts (though processed sequentially by the single-core Secure OS). Careful management of head and tail pointers, often utilizing atomic operations, ensures data integrity and synchronization between the two worlds when enqueuing and dequeuing messages. The fixed size and predefined location of these queues simplify the memory management and trust model for inter-world data exchange. Context propagation, canary protection and other security considerations for these shared queues are elaborated in section 3.6.
+
   ### Secure OS Execution Flow
    #### Boot Process Overview
    - Summarizes the critical steps in transitioning from OpenSBI to the Secure OS, and eventually handing over the remaining cores to Linux.
-   - Points to more detailed discussion in the “Secure Boot Process and Initialization” section.
    #### Inter-World Transitions
-   - Outlines the mechanism by which execution moves between Secure and Normal Worlds (e.g., SMC calls, interrupts).
+   - Outlines the mechanism by which execution moves between Secure and Normal Worlds (IPI, Polling).
    - Covers validation checks before granting world transitions and how the OS ensures secure state persistence.
    #### Scheduling in Secure OS
-   - Highlights how the Secure OS manages tasks and threads in a uniprocessor environment (the first core).
-   - Discusses scheduling policies, context switching logic, and how TEE tasks do not interfere with Linux scheduling.
+   - Highlights how the Secure OS manages tasks and threads in a uniprocessor environment.
+   - Discusses scheduling policies (Round Robin), context switching logic, and how TEE tasks do not interfere with Linux scheduling.
   ### Security and Policy Enforcement
    #### Capability-Based Security Model
    - Introduces the core concepts behind object handles, secure syscalls, and fine-grained access control.

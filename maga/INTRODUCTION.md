@@ -224,8 +224,9 @@
   - IPI - Inter Processor Interrupt (Межпроцессорное Прерывание)
   - VMO - Virtual Memory Object (Объект Виртуальной Памяти)
   - IPC - Inter Process Communication (Межпроцессное Взаимодействие)
+  - SATP - Supervisor Address Translation and Protection
+  - MMU - Memory Management Unit (Блок Управления Памятью)
 
 
 <div style="page-break-after: always;"></div>
 ---
-

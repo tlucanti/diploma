@@ -204,18 +204,17 @@ I have a draft of chapter 3:
    #### Opportunities for Improvement
 
 
-Starting with 3.2.3 Memory Layout and Addressing
+Starting with 3.2.4 Secure OS Execution Flow
 I have a draft of thess sections:
 
-#### Physical and Virtual Addressing
-- Provides a high-level overview of how the Secure OS configures its page tables and manages physical/virtual addresses.
-- Explains how memory mappings differ between the Secure World and the Normal World.
-#### Isolation Mechanisms
-- Details how World Guard extension enforces secure boundaries at the hardware level.
-- Shows how the Secure and Normal Worlds remain isolated, preventing unauthorized access to protected pages.
-#### Shared Memory Queues
-- Explains the reserved memory regions that serve as shared buffers for secure–normal communication.
-- Highlights concurrency concerns and locking strategies for ring-buffer manipulation.
+#### Boot Process Overview
+- Summarizes the critical steps in transitioning from OpenSBI to the Secure OS, and eventually handing over the remaining cores to Linux.
+#### Inter-World Transitions
+- Outlines the mechanism by which execution moves between Secure and Normal Worlds (IPI, Polling).
+- Covers validation checks before granting world transitions and how the OS ensures secure state persistence.
+#### Scheduling in Secure OS
+- Highlights how the Secure OS manages tasks and threads in a uniprocessor environment.
+- Discusses scheduling policies (Round Robin), context switching logic, and how TEE tasks do not interfere with Linux scheduling.
 
 write contents of sections based on draft.
 If needed - maybe add some points if there is anything else to say by topic.
