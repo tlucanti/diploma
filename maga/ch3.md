@@ -116,14 +116,18 @@ Here's the content for the requested sections:
    These queues are implemented as lock-free ring buffers (also known as circular buffers) to manage concurrent access without traditional locking overhead, which is critical for efficient inter-world communication. The use of lock-free algorithms minimizes contention and latency, particularly as the Normal World might enqueue requests from multiple contexts (though processed sequentially by the single-core Secure OS). Careful management of head and tail pointers, often utilizing atomic operations, ensures data integrity and synchronization between the two worlds when enqueuing and dequeuing messages. The fixed size and predefined location of these queues simplify the memory management and trust model for inter-world data exchange. Context propagation, canary protection and other security considerations for these shared queues are elaborated in section 3.6.
 
   ### Secure OS Execution Flow
-   #### Boot Process Overview
-   - Summarizes the critical steps in transitioning from OpenSBI to the Secure OS, and eventually handing over the remaining cores to Linux.
-   #### Inter-World Transitions
-   - Outlines the mechanism by which execution moves between Secure and Normal Worlds (IPI, Polling).
-   - Covers validation checks before granting world transitions and how the OS ensures secure state persistence.
-   #### Scheduling in Secure OS
-   - Highlights how the Secure OS manages tasks and threads in a uniprocessor environment.
-   - Discusses scheduling policies (Round Robin), context switching logic, and how TEE tasks do not interfere with Linux scheduling.
+   #### 3.2.4.1 Boot Process Overview
+   The boot process commences with OpenSBI, which performs initial platform setup. OpenSBI identifies and loads the Secure OS payload, passing control to it on the designated first CPU core (core 0). The Secure OS then initializes its core components, including memory management for its exclusive use and setting up the World Guard extension to isolate core 0 as the Secure World. This involves configuring World Guard checkers to protect Secure World memory. After its initialization, the Secure OS signals back to OpenSBI. OpenSBI subsequently proceeds to boot the Normal World OS (Linux) on the remaining CPU cores. These cores are configured by OpenSBI to operate in the Normal World, ensuring they cannot interfere with or access the resources dedicated to the Secure OS on core 0 unless explicitly permitted through the defined communication channels.
+
+   #### 3.2.4.2 Inter-World Transitions
+   Execution transitions between the Secure and Normal Worlds are strictly controlled. When the Normal World (Linux) needs to invoke a service from the Secure OS, it prepares a request in the designated shared memory request queue and then typically issues an Inter-Processor Interrupt (IPI) to core 0. This IPI serves as a signal for the Secure OS to check the request queue. The World Guard hardware mechanism facilitates the switch of core 0 from a (potentially) Normal World context (if it was idled awaiting IPIs) to the Secure World context to process the IPI and subsequently the request.
+   The Secure OS processes the request and places a response in the shared memory response queue. The Normal World typically polls this response queue to retrieve the result.
+   Before processing any request from the Normal World, the Secure OS performs validation checks based on the message content and source, adhering to the defined API and security policies. Secure state persistence during transitions is ensured by the World Guard extension, which manages the hardware context (e.g., registers, world ID) for the current world executing on the core. The Secure OS is responsible for saving and restoring specific Trusted Application contexts within the Secure World if multiple TAs or internal tasks are being managed.
+
+   #### 3.2.4.3 Scheduling in Secure OS
+   The Secure OS operates on a single, dedicated CPU core (core 0) and employs a uniprocessor scheduling strategy for managing its internal tasks and any Trusted Applications (TAs) it hosts. A pre-emptive, round-robin scheduling policy is implemented to ensure fair access to the CPU for all runnable entities within the Secure World.
+   Context switching within the Secure OS involves saving the execution context (registers, stack pointer, program counter) of the current TA or task and restoring the context of the next scheduled entity. Given that the Secure OS and its TAs execute exclusively on core 0, their scheduling activities are entirely independent of and do not interfere with the Linux kernel's scheduler, which manages tasks on the other CPU cores operating in the Normal World. The design aims for Secure OS operations to be relatively short-lived to ensure timely responses to TAs and Normal World requests.
+
   ### Security and Policy Enforcement
    #### Capability-Based Security Model
    - Introduces the core concepts behind object handles, secure syscalls, and fine-grained access control.

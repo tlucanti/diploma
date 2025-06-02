@@ -204,17 +204,15 @@ I have a draft of chapter 3:
    #### Opportunities for Improvement
 
 
-Starting with 3.2.4 Secure OS Execution Flow
+Starting with 3.2.5 Security and Policy Enforcement
 I have a draft of thess sections:
 
-#### Boot Process Overview
-- Summarizes the critical steps in transitioning from OpenSBI to the Secure OS, and eventually handing over the remaining cores to Linux.
-#### Inter-World Transitions
-- Outlines the mechanism by which execution moves between Secure and Normal Worlds (IPI, Polling).
-- Covers validation checks before granting world transitions and how the OS ensures secure state persistence.
-#### Scheduling in Secure OS
-- Highlights how the Secure OS manages tasks and threads in a uniprocessor environment.
-- Discusses scheduling policies (Round Robin), context switching logic, and how TEE tasks do not interfere with Linux scheduling.
+#### Capability-Based Security Model
+- Introduces the core concepts behind object handles, secure syscalls, and fine-grained access control.
+- Briefly explains how capabilities are validated and enforced at runtime to prevent privilege escalation.
+#### World Guard Integration
+- Consolidates the hardware-based checks provided by the World Guard extension with the Secure OS’s software policy.
+- Provides an overview of failure handling when unauthorized accesses or invalid world transitions occur.
 
 write contents of sections based on draft.
 If needed - maybe add some points if there is anything else to say by topic.
