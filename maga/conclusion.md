@@ -1,3 +1,4 @@
+
 # Заключение
 
 # References
@@ -7,3 +8,4 @@
 ## TA Manifests
 ## Secure OS Code
 ## Secure Standard Library Code
+

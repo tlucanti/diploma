@@ -398,3 +398,4 @@
 
    #### Secure Boot Implementation
    A full implementation of a secure boot mechanism, from hardware Root of Trust provisioning to the verification of the Rich OS, is beyond the scope of this specific project. However, the Secure OS developed herein is designed with the principles of a Chain of Trust in mind. Its architecture and initialization sequence are structured to seamlessly integrate into a secure boot process. This consideration ensures that there are no inherent limitations preventing the future work of incorporating this Secure OS into a comprehensive RISC-V secure boot solution. The Secure OS expects to be loaded by a trusted entity (e.g., a verified OpenSBI or a preceding secure bootloader) that has already established a secure state for the system.
+

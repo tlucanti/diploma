@@ -349,3 +349,4 @@
 
    #### SiFive's private Secure OS for WorldGuard
    SiFive has developed a private, proprietary Secure OS tailored for its RISC-V cores featuring the WorldGuard security extension. This solution is designed to leverage WorldGuard's hardware capabilities to create isolated execution environments. As a vendor-specific offering, it provides a TEE for SiFive's customers building secure systems with WorldGuard-enabled processors, though its closed nature contrasts with the open ethos of RISC-V itself.
+
