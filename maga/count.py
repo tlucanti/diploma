@@ -4,7 +4,7 @@ import re
 import sys
 
 
-def process_markdown_file(input_file, output_file=None):
+def process_markdown_file(input_file, chapter):
     # Read the markdown file
     with open(input_file, "r", encoding="utf-8") as file:
         content = file.read()
@@ -13,7 +13,7 @@ def process_markdown_file(input_file, output_file=None):
     lines = content.split("\n")
 
     # Initialize counters for each level
-    counters = [0, 0, 0, 0, 0, 0]  # 0-based for h1-h6
+    counters = [chapter - 1, 0, 0, 0, 0, 0]  # 0-based for h1-h6
     processed_lines = []
 
     for line in lines:
@@ -56,20 +56,17 @@ def process_markdown_file(input_file, output_file=None):
     processed_content = "\n".join(processed_lines)
 
     # Write to output file or print to console
-    if output_file:
-        with open(output_file, "w", encoding="utf-8") as file:
-            file.write(processed_content)
-        print(f"Processed content written to {output_file}")
-    else:
-        print(processed_content)
+    with open(input_file, "w", encoding="utf-8") as file:
+        file.write(processed_content)
+    print(f"Processed content written to {input_file}")
 
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print("Usage: python script.py input_file.md [output_file.md]")
+        print("Usage: python script.py input_file.md [chapter]")
         sys.exit(1)
 
     input_file = sys.argv[1]
-    output_file = sys.argv[2] if len(sys.argv) > 2 else input_file
+    chapter = int(sys.argv[2]) if len(sys.argv) > 2 else 1
 
-    process_markdown_file(input_file, output_file)
+    process_markdown_file(input_file, chapter)
