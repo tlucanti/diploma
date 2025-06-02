@@ -212,6 +212,11 @@
   - WID - World Identifier (Идентификатор Мира)
   - LSB (МЗБ) - Least Significant Bit (Младший Значащий Бит)
   - MSB (СЗБ) - Most Significant Bit (Старший Значащий Бит)
+  - FSBL
+  - ОЗУ
+  - ПЗУ
+  - RAM
+  - OTP
 
 <div style="page-break-after: always;"></div>
 ---

@@ -78,33 +78,26 @@ I have a draft of chapter 2:
    #### One-Time Programmable (OTP) Memory
    #### Secure Boot Implementation
 
-Starting with 2.2.2. Attack vectors
+Starting with 2.4.1 RISC-V Boot Sequence Overview
 I have a draft of thess sections:
 
-  ### Attack vectors
-   #### Direct Memory Access Attacks
-   - If DMA engines (e.g., from peripherals) are not properly restricted, they might access Secure World memory
-   - Usage of IOMMU is crucial
-   #### Side-Channel Attacks
-   - Exploit indirect information leakage (timing, power, electromagnetic radiation, cache behavior)
-   - like Meltdown, Spectre, Red Bleeding
-   - Constant-time algorithms in the TEE, side-channel resistant hardware, noise introduction, cache partitioning or flushing techniques should be used
-   #### Physical Attacs
-   - Physical attacs Using power glitches, clock glitches, voltage variations, or electromagnetic interference to cause faults
-   - Physical access combined with Normal World privileges could help mount attacks like probing or injecting malicious signals
-   #### API Exploitation
-   - Malicious Normal World software crafts malicious inputs or sequences of calls to the Secure World, causing buffer overflows, logic bugs, or privilege escalation within the Secure World
-   - Strict input validation robust secure OS design should be used
-   #### Man-in-the-Middle Attacks
-   - The communication channel between Normal and Secure World is a major interface
-   - Normal World manipulates, replays, or drops messages to confuse or exploit Secure World services
-   - Use cryptographic nonce, session tokens, to validate integrity and freshness
-   #### Denial of Service Attacs
-   - Flooding Secure World with calls, starves it of resources, or blocks communication
-   - Rate limiting, watchdog timers, graceful degradation
-   #### Boot and Firmware Attacks
-   - Compromise of bootloader or firmware update process can undermine Secure World trust (load malicious secure OS or patch trusted apps).
-   - Secure boot, cryptographic verification of firmware and Secure World images should be used
+ #### Background on RISC-V System Booting
+ - Explains the general concept of booting in RISC-V systems. This includes initialization of hardware, loading of firmware components, and establishing the runtime environment for subsequent software layers. It discusses the challenges and constraints in secure boot design.
+ - An introduction outlining the overall boot process in the RISC-V system integrating both the Secure OS and the Rich OS (Linux)
+ #### First Stage Bootloader (FSBL)
+ - Describes the role of the First Stage Bootloader in the secure boot process
+ - It is responsible for initial hardware setup, integrity verification of subsequent images, and loading the next boot stage into memory
+ - This stage is often stored in One-Time Programmable (OTP) memory, establishing the Root of Trust.
+ #### OpenSBI Initialization
+ - Details how OpenSBI initializes the RISC-V Supervisor Binary Interface and prepares the system for both the Secure OS and the Rich OS
+ - This section explains how OpenSBI manages multi-core initialization while isolating the first core for the Secure OS.
+ #### Secure OS Startup
+ - Describes the booting and initialization of the Secure OS on the first core
+ - setup of secure and non-secure memory
+ #### Rich OS Startup
+ - Outlines the initialization and booting of the Rich OS (Linux) on the remaining cores
+ - Explains how linux starts and initializes a driver for communication with Secure World
+ - Then continue booting as normal
 
 write contents of sections based on draft.
 If needed - maybe add some points if there is anything else to say by topic.

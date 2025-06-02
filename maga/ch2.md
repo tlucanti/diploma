@@ -357,24 +357,24 @@
    The `errcause.ip` and `errcause.be` fields are mandated to be cleared as part of the reset process.
 
  ## Boot Sequence and Chain of Trust
-  ### RISC-V Boot Sequence Overview
-   #### Background on RISC-V System Booting
-   - Explains the general concept of booting in RISC-V systems. This includes initialization of hardware, loading of firmware components, and establishing the runtime environment for subsequent software layers. It discusses the challenges and constraints in secure boot design.
-   - An introduction outlining the overall boot process in the RISC-V system integrating both the Secure OS and the Rich OS (Linux)
-   #### First Stage Bootloader (FSBL)
-   - Describes the role of the First Stage Bootloader in the secure boot process
-   - It is responsible for initial hardware setup, integrity verification of subsequent images, and loading the next boot stage into memory
-   - This stage is often stored in One-Time Programmable (OTP) memory, establishing the Root of Trust.
-   #### OpenSBI Initialization
-   - Details how OpenSBI initializes the RISC-V Supervisor Binary Interface and prepares the system for both the Secure OS and the Rich OS
-   - This section explains how OpenSBI manages multi-core initialization while isolating the first core for the Secure OS.
-   #### Secure OS Startup
-   - Describes the booting and initialization of the Secure OS on the first core
-   - setup of secure and non-secure memory
-   #### Rich OS Startup
-   - Outlines the initialization and booting of the Rich OS (Linux) on the remaining cores
-   - Explains how linux starts and initializes a driver for communication with Secure World
-   - Then continue booting as normal
+  ### 2.4.1 RISC-V Boot Sequence Overview
+   #### 2.4.1.1 Background on RISC-V System Booting
+   The RISC-V boot process commences upon system power-on or reset, starting with execution from a predefined reset vector. Initial stages involve fundamental hardware initialization, including CPU cores, memory controllers, and essential peripherals. Firmware components are sequentially loaded and executed, each stage potentially verifying and preparing the environment for the next. This process establishes the runtime environment necessary for higher-level software, such as an operating system. Designing a secure boot process in this context involves challenges such as ensuring the authenticity and integrity of each boot component against tampering and establishing a trusted foundation early in the sequence.
+
+   The overall boot process for the described system integrates both the Secure OS and a Rich OS (Linux). It begins with a hardware-validated First Stage Bootloader, followed by OpenSBI, which configures the multi-core environment. OpenSBI then launches the Secure OS on the designated first core and subsequently initiates the Rich OS on the remaining cores. This partitioned boot ensures isolation between the two operating environments from the earliest stages.
+
+   #### 2.4.1.2 First Stage Bootloader (FSBL)
+   The First Stage Bootloader (FSBL) plays a critical role in the secure boot sequence. Its primary responsibilities include performing initial, low-level hardware configuration, such as setting up memory interfaces and basic clocking. A key function of the FSBL is the integrity verification of the subsequent boot stage (e.g., OpenSBI or a dedicated Secure OS loader) using cryptographic signatures or hashes, ensuring that only authorized firmware is loaded. Upon successful verification, the FSBL loads this next stage into memory and transfers execution control. To serve as a foundational element of the Chain of Trust, the FSBL itself is typically stored in immutable Read-Only Memory (ROM) or One-Time Programmable (OTP) memory, making it resistant to modification and establishing the initial Root of Trust.
+
+   #### 2.4.1.3 OpenSBI Initialization
+   OpenSBI (RISC-V Supervisor Binary Interface) serves as a crucial firmware layer, implementing the standard interface between the supervisor-level operating system and the machine-mode (M-mode) execution environment. During its initialization, OpenSBI sets up the necessary hardware contexts, such as trap handling and interrupt controllers, preparing the system for both the Secure OS and the Rich OS. In a multi-core configuration, OpenSBI manages the startup of all cores. For this system, it specifically dedicates the first CPU core (hart 0) for the Secure OS, performing minimal necessary initialization for that core before loading and transferring control to the Secure OS. Concurrently, it prepares the remaining cores for the Rich OS, ensuring proper isolation and resource allocation as dictated by the system architecture. OpenSBI also provides runtime services to the S-mode OSes through the SBI calls.
+
+   #### 2.4.1.4 Secure OS Startup
+   Following the handover from OpenSBI (or a preceding bootloader stage), the Secure OS commences its startup sequence exclusively on the first CPU core. This process involves initializing its kernel, setting up internal data structures, and configuring its execution environment. A critical step is the establishment of memory protection and isolation, configuring hardware mechanisms like RISC-V Physical Memory Protection (PMP) and the WorldGuard extensions to define secure memory regions for the Secure OS itself and its Trusted Applications, distinct from non-secure memory intended for the Rich OS and inter-world communication. This includes setting up its C-runtime environment, initializing schedulers, memory managers, and the IPC mechanisms necessary for its operation and for communication with the Normal World, including the shared memory queues.
+
+   #### 2.4.1.5 Rich OS Startup
+   The Rich OS, typically Linux, begins its initialization on the remaining CPU cores after OpenSBI has prepared them and transferred execution. The Rich OS boot proceeds largely as a standard Linux startup sequence for those designated cores, initializing its kernel, drivers for platform hardware (excluding those exclusively managed by the Secure OS), and system services. A key part of its early initialization involves loading and initializing a specific driver designed for communication with the Secure OS. This driver interfaces with the shared memory pages and Inter-Processor Interrupt (IPI) mechanisms established for requests and responses between the Normal World (Linux) and the Secure World (Secure OS). Once this communication channel is established, the Rich OS continues its normal boot process, eventually bringing up user space and applications.
+
   ### Chain of Trust
    #### Principles of Secure Boot and Chain of Trust
    - Introduces fundamental concepts behind establishing a chain of trust
@@ -388,5 +388,3 @@
    - Explains how this hardware feature prevents modification and enhances security guarantees.
    #### Secure Boot Implementation
    - describes that secure boot is out of scope of this project, but that Secure OS is implemented with consideration of Chain Of Trust, and that there is no limitaion of implementing it in future work
-
----
