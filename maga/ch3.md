@@ -60,29 +60,44 @@ Here's the content for the requested sections:
    All other CPU cores are allocated to the Normal World, where the Linux operating system runs. The Normal World provides a rich, general-purpose computing environment but is considered untrusted from the perspective of the Secure World.
 
    The primary roles and responsibilities are distinct:
-   *   Secure World (Secure OS):
+  - Secure World (Secure OS):
    - Provides an isolated execution environment for Trusted Applications (TAs).
    - Manages secure system resources, such as cryptography hardware or protected memory regions.
    - Enforces the capability-based security model, where TAs operate using handles granted to them via a manifest by a root task, dictating their permissible actions and resource access.
    - Handles sensitive operations and services requested by the Normal World through a well-defined interface.
 
-   *   Normal World (Linux):
+  - Normal World (Linux):
    - Executes general-purpose applications and manages untrusted system resources.
    - Interacts with the Secure World exclusively through a predefined communication
            interface (based on a subset of the Global Platform API) to request secure services.
    - Cannot directly access memory or resources belonging to the Secure World unless explicitly permitted and mediated by the Secure OS.
 
    Boundary enforcement is achieved through a combination of hardware and software mechanisms:
-   *   The RISC-V World Guard extension provides hardware-enforced isolation, preventing the Normal World from directly accessing memory regions or peripherals assigned to the Secure World.
-   *   Inter-world communication is strictly managed through dedicated shared memory queues for requests and responses, along with Inter-Processor Interrupts (IPIs) for signaling. This controlled channel ensures that all interactions are explicit and auditable.
+  - The RISC-V World Guard extension provides hardware-enforced isolation, preventing the Normal World from directly accessing memory regions or peripherals assigned to the Secure World.
+  - Inter-world communication is strictly managed through dedicated shared memory queues for requests and responses, along with Inter-Processor Interrupts (IPIs) for signaling. This controlled channel ensures that all interactions are explicit and auditable.
 
   ### Core System Components
-   #### Kernel, Resource Managers, and TEE Services
-   - Details the internal architecture of the Secure OS, covering the Secure Kernel, resource managers (for tasks, memory, and IPC), and TEE service layers.
-   - Describes how these components collectively provide security, resource allocation, and runtime services to Trusted Applications.
-   #### Shared Memory and IPI-Based Communication
-   - Introduces the fundamental inter-world communication channels, such as shared rings/buffers used for request and response queues.
-   - Describes how RISC-V inter-processor interrupts (IPIs) are employed for signaling events and synchronizing data transfer between Normal and Secure Worlds.
+   #### 3.2.2.1 Kernel, Resource Managers, and TEE Services
+   The Secure OS is architected around a microkernel running on the dedicated secure core (CPU0). This kernel provides fundamental services essential for the TEE, including secure context switching between Trusted Applications (TAs) and internal kernel tasks, trap handling specific to the Secure World, and the core enforcement mechanisms for the capability-based security model. It is responsible for managing the low-level hardware resources allocated to the Secure World.
+
+   Built upon the kernel are several key resource managers:
+  - Task Manager: Oversees the lifecycle of TAs and internal Secure OS tasks. It handles their creation (typically initiated by the Root Task based on Normal World requests), scheduling, and termination. Each TA, and potentially other managed entities like threads, are represented as kernel objects accessible and controllable via handles, adhering to the capability model.
+  - Memory Manager: Governs the allocation, deallocation, and protection of memory within the Secure World. This includes memory for the kernel itself, for individual TAs, and for buffers used in inter-world communication. It leverages underlying hardware mechanisms, such as RISC-V Physical Memory Protection (PMP) in conjunction with the World Guard extension, to enforce strict memory isolation between different TAs, and between the Secure World and the Normal World. Memory resources are often managed as Virtual Memory Objects (VMOs), also accessed via handles.
+  - IPC (Inter-Process Communication) Manager: Facilitates secure communication pathways, primarily within the Secure World, such as between different TAs or between TAs and Secure OS services. This is typically achieved using kernel objects like channels or_pipes, where access and operations are controlled by capabilities represented by handles. The IPC manager also supports the Root Task in its role of relaying communication to and from the Normal World.
+
+   TEE (Trusted Execution Environment) Service Layers are implemented above the kernel and resource managers. These layers expose the Secure OS functionalities to TAs through a defined API, which in this project is a subset of the GlobalPlatform TEE API. Services include managing TA sessions, handling command invocations from the Normal World, and managing shared memory operations from the perspective of a TA. All TEE service requests are mediated by these layers, which interact with the underlying kernel and resource managers while strictly adhering to the enforced capability model. Collectively, the kernel, resource managers, and TEE services establish a trusted foundation, providing security, controlled resource allocation, and a managed runtime environment for Trusted Applications.
+
+   #### 3.2.2.2 Shared Memory and IPI-Based Communication
+   Inter-world communication between the Normal World (Linux) and the Secure OS relies critically on two primary mechanisms: shared memory and Inter-Processor Interrupts (IPIs).
+
+   Two pre-allocated physical memory pages form the data exchange fabric. One page is designated as the Request Queue, enabling the Normal World to enqueue requests for the Secure OS. The second page serves as the Response Queue, through which the Secure OS delivers results and notifications back to the Normal World. These queues are typically implemented as lock-free or minimally-locking ring buffers to ensure efficient data transfer and reduce contention. The World Guard extension ensures that these shared memory regions are accessible only in the manner defined by the system security policy; for instance, the Normal World can write to the request queue which the Secure OS reads, and the Secure OS writes to the response queue which the Normal World reads.
+
+   RISC-V standard Inter-Processor Interrupts (IPIs) are employed as the signaling mechanism to notify the other world of pending messages in the shared queues, thereby avoiding inefficient polling.
+  - Normal World to Secure World Signaling: When Linux (running on a non-secure core) places a new request into the shared request queue, it subsequently issues an IPI to the dedicated secure core (CPU0), alerting the Secure OS that a new request is available for processing.
+  - Secure World to Normal World Signaling: Conversely, after the Secure OS has processed a request and placed a response (or an asynchronous event notification) into the shared response queue, it sends an IPI to a designated Normal World core. This informs Linux that a response is ready to be retrieved.
+
+   This combination of explicitly defined shared memory regions for data payload and IPIs for event notification forms a robust and efficient asynchronous communication channel, fundamental to the cooperative operation of the Secure and Normal Worlds.
+
   ### Memory Layout and Addressing
    #### Physical and Virtual Addressing
    - Provides a high-level overview of how the Secure OS configures its page tables and manages physical/virtual addresses.

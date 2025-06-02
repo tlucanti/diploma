@@ -217,11 +217,13 @@
   - ПЗУ - Постоянное Запоминающее Устройство
   - RAM - Random Access Memory
   - OTP - One-Time Programmable (Одноразовая Программируемая Память)
-  - ROM
-  - JTAG
-  - RPC
+  - ROM - Read Only Memory (Постоянное Запоминающее Устройство)
+  - JTAG - Joint Test Action Group
+  - RPC - Remote Procedure Call (Удаленный Вызов Процедуры)
   - GP - Global Platform
-  - IPI
+  - IPI - Inter Processor Interrupt (Межпроцессорное Прерывание)
+  - VMO - Virtual Memory Object (Объект Виртуальной Памяти)
+  - IPC - Inter Process Communication (Межпроцессное Взаимодействие)
 
 
 <div style="page-break-after: always;"></div>

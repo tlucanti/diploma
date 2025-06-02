@@ -1,5 +1,5 @@
 project background:
-Secure OS is a monolith OS with capability based model, so the idea is that everything is a handle, all handles (that are listed at predefined Manifest) are given by root task to Trusted Application when it spawned. Creation of objects are done with fabric object handle. Every action to handle is checked with capability model and granted or denied.
+Secure OS is a microkernel OS with capability based model, so the idea is that everything is a handle, all handles (that are listed at predefined Manifest) are given by root task to Trusted Application when it spawned. Creation of objects are done with fabric object handle. Every action to handle is checked with capability model and granted or denied.
 Secure OS always works on first cpu core, other cores are left for Linux. Communication between Linux and Secure OS is provided using two shared pages. One page for requests (to secure OS) queue, second page for responses queue. It uses subset of Global Platform API as interface for communications.
 
 Paper should have 4 chapters:
@@ -204,15 +204,18 @@ I have a draft of chapter 3:
    #### Opportunities for Improvement
 
 
-Starting with 3.2.1 High-Level Architecture
+Starting with 3.2.3 Memory Layout and Addressing
 I have a draft of thess sections:
 
-#### Architectural Layers
-- Introduces the layered nature of the system, from hardware/firmware (OpenSBI) to the Secure OS, and then to the Normal World OS (Linux).
-- Emphasizes the isolation between the Secure World and the Normal World.
-#### Secure vs. Normal World Overview
-- Explains how the Secure OS permanently occupies the first CPU core while Linux runs on the remaining cores.
-- Highlights the roles and responsibilities of each world, along with the boundary-enforcement mechanisms.
+#### Physical and Virtual Addressing
+- Provides a high-level overview of how the Secure OS configures its page tables and manages physical/virtual addresses.
+- Explains how memory mappings differ between the Secure World and the Normal World.
+#### Isolation Mechanisms
+- Details how World Guard extension enforces secure boundaries at the hardware level.
+- Shows how the Secure and Normal Worlds remain isolated, preventing unauthorized access to protected pages.
+#### Shared Memory Queues
+- Explains the reserved memory regions that serve as shared buffers for secure–normal communication.
+- Highlights concurrency concerns and locking strategies for ring-buffer manipulation.
 
 write contents of sections based on draft.
 If needed - maybe add some points if there is anything else to say by topic.
