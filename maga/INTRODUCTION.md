@@ -228,6 +228,7 @@
   - MMU - Memory Management Unit (Блок Управления Памятью)
   - PTE - Page Table Entry (Запись в Таблице Страниц)
   - UART - Universal Asynchronous Receiver-Transmitter (Универсальный Асинхронный Приёмопередатчик)
+  - FDT - Flattened Device Tree (Дерево Устройств)
 
 
 <div style="page-break-after: always;"></div>

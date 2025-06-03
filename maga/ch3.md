@@ -309,23 +309,26 @@ Here is the content for Chapter 3, Section 3.3.1 "WorldGuard Configuration":
  ## Secure Boot Process and Initialization
  - This section describes how the Secure OS is bootstrapped, transitioning from platform firmware (OpenSBI) to a fully initialized secure environment.
  - It covers early assembly-level initialization, kernel relocation, MMU enablement, and higher-level subsystem initialization, ultimately concluding with the handover to any “rich OS” components.
-  ### Secure OS Early Initialization
-   #### OpenSBI Handover
-   - Explanation of the OpenSBI boot protocol, which provides the Secure OS with the initial register context (e.g., a0, a1 containing specific parameters).
-   - SBI boots FW_PAYLOAD_PATH (TEEOS futher) on boot core, making this core secure
-   - High-level overview of how the Secure OS entry point (_start) is invoked by OpenSBI.
-   - Handling or storing system parameters (such as the device tree pointer) for further use.
-   #### Setting Up the Stack and Basic Memory Layout
-   - Allocating a stack in physical memory for secure execution.
-   - How the assembly code (head.S) calculates the stack location (via PAGE_SIZE * 6).
-   - Ensuring stack alignment for correct RISC-V operation.
-   #### First Kernel Relocation
-   - performing a “relocation” step due to pie (position-independent executable) nuances.
-   - Creating an identity mapping (physical == virtual) at the kernel load address while also mapping the kernel at its designated virtual base (KERNEL_VIRTUAL_BASE).
-   - Use of large page mappings (e.g., 2MB or 1GB mappings) for simplicity during early boot.
-   #### Enabling the MMU
-   - Explanation of how the SATP register is configured
-   - Ensuring the kernel text, data, and bss segments are accessible at both the physical region and the kernel virtual address.
+
+  ### 3.4.1 Secure OS Early Initialization
+   #### 3.4.1.1 OpenSBI Handover
+   OpenSBI, serving as the Supervisor Execution Environment (SEE), initiates the boot process. It loads the Secure OS firmware payload, designated by FW_PAYLOAD_PATH, into physical memory on the primary CPU core (hart 0), which is designated for secure operations. Execution control is then transferred to the Secure OS entry point, _start. At this juncture, OpenSBI provides critical system parameters to the Secure OS via general-purpose registers: a0 holds the hart ID of the booting core, and a1 contains the physical address of the Flattened Device Tree (FDT). The _start routine in head.S captures these parameters, saving them for subsequent C-level initialization routines, such as early_boot, which utilizes the FDT for platform configuration.
+
+   #### 3.4.1.2 Setting Up the Stack and Basic Memory Layout
+   Prior to enabling the MMU and establishing a full C runtime, an initial stack is essential for assembly routines and early C function calls. This stack is statically allocated within the Secure OS's memory image, its size defined by STACK_SIZE (specified as PAGE_SIZE * 6 in head.S). The _start routine calculates the virtual address for the top of this stack. It determines the physical top of the stack area (derived from the stacks symbol and STACK_SIZE) and adds KERNEL_VIRTUAL_OFFSET (the difference between KERNEL_VIRTUAL_BASE and the kernel's physical load address) to establish the stack pointer (sp) at its final virtual address. The stack's base address is page-aligned, ensuring adherence to RISC-V ABI alignment requirements for the stack pointer. At this stage, the kernel operates with an understanding of its own physical memory layout as loaded by OpenSBI.
+
+   #### 3.4.1.3 First Kernel Relocation
+   The Secure OS is compiled as a Position-Independent Executable (PIE), allowing it to be loaded at arbitrary physical addresses while its internal components are linked to operate from a consistent high virtual address space, KERNEL_VIRTUAL_BASE. To facilitate this, the early MMU setup performs a "first relocation" by establishing two concurrent mappings for the kernel's code and data segments in the initial page tables:
+   1.  An identity mapping (Physical Address = Virtual Address) is created for the region where the kernel is loaded. This ensures that instruction fetching continues uninterrupted from the kernel's physical load address immediately after the MMU is enabled.
+   2.  A high virtual address mapping is also created, mapping the same physical kernel segments to KERNEL_VIRTUAL_BASE. This allows all linked absolute virtual addresses (for functions and global data) within the kernel to resolve correctly once execution transitions to this virtual space.
+   The head.S assembly code implements these dual mappings using large pages (e.g., 2MB pages for Sv39 architecture) to simplify the early page table structures and enhance efficiency for covering the kernel image.
+
+   #### 3.4.1.4 Enabling the MMU
+   Once the initial page tables are populated with the identity and KERNEL_VIRTUAL_BASE mappings for the kernel, the Memory Management Unit (MMU) is activated. This is achieved by configuring the Supervisor Address Translation and Protection (SATP) register. The enable_mmu routine in head.S writes to SATP:
+   1.  The Physical Page Number (PPN) of the root page table (obtained from the physical address of the ptable_cache structure).
+   2.  The address translation mode (Sv39 for 64-bit RISC-V systems, indicated by MODE=8 in the SATP value).
+   Upon writing to SATP, address translation becomes active for all supervisor-mode memory accesses on the core. The pre-established dual mappings ensure operational continuity for the currently executing code. The kernel then performs a jump from its current physical program counter to the corresponding offset within the KERNEL_VIRTUAL_BASE address range (specifically, to the virtual address of the early_boot C function). This action transfers execution fully into the kernel's designated virtual address space, enabling correct C runtime operation and access to global symbols via their linked virtual addresses.
+
   ### Secure OS Initialization
   - Once the minimal MMU and basic mapping are established, the Secure OS transitions to its primary C environment for final setup.
    #### Register Console

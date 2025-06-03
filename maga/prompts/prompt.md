@@ -204,25 +204,28 @@ I have a draft of chapter 3:
    #### Opportunities for Improvement
 
 
-Starting with chapter 3.3.2. Integration with the Secure OS
+Starting with chapter 3.4.1. Secure OS Early Initialization
 I have a draft of chapter sections:
 
-#### Error Reporting
-- Mechanisms to detect and report WorldGuard-related violations (e.g., unauthorized access attempts).
-- Logging and reporting structure within the Secure OS for debugging and auditing.
-- strategies for halting offending tasks in case of critical errors.
-#### Managing World Transitions
-- Description of the control flow when switching between Normal World and Secure World.
-- Handling interrupt-driven transitions across worlds.
-- Use of specific CPU instructions or registers to invoke transitions (if applicable).
-- Ensuring minimal overhead while maintaining security guarantees.
-#### Communication Pages
-- Shared memory pages allocated with permissions for both worlds:
-  - Shared memory region layout and alignment considerations.
-  - Ensuring read/write restrictions are enforced by WorldGuard.
+#### OpenSBI Handover
+- Explanation of the OpenSBI boot protocol, which provides the Secure OS with the initial register context (e.g., a0, a1 containing specific parameters).
+- SBI boots FW_PAYLOAD_PATH (TEEOS futher) on boot core, making this core secure
+- High-level overview of how the Secure OS entry point (_start) is invoked by OpenSBI.
+- Handling or storing system parameters (such as the device tree pointer) for further use.
+#### Setting Up the Stack and Basic Memory Layout
+- Allocating a stack in physical memory for secure execution.
+- How the assembly code (head.S) calculates the stack location (via PAGE_SIZE * 6).
+- Ensuring stack alignment for correct RISC-V operation.
+#### First Kernel Relocation
+- performing a “relocation” step due to pie (position-independent executable) nuances.
+- Creating an identity mapping (physical == virtual) at the kernel load address while also mapping the kernel at its designated virtual base (KERNEL_VIRTUAL_BASE).
+- Use of large page mappings (e.g., 2MB or 1GB mappings) for simplicity during early boot.
+#### Enabling the MMU
+- Explanation of how the SATP register is configured
+- Ensuring the kernel text, data, and bss segments are accessible at both the physical region and the kernel virtual address.
 
 
 write contents of these sections based on draft.
 If needed - maybe add some points if there is anything else to say by topic.
-full structure of whole paper is in the attached file
+full structure of whole paper and some of secure kernel boot code is in the attached file
 Do not repeat yourself! Do not repeat points from other chapters! Keep it concise! Write only section contents, no summary or reasoning.
