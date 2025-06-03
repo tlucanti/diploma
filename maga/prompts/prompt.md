@@ -204,12 +204,26 @@ I have a draft of chapter 3:
    #### Opportunities for Improvement
 
 
-Starting with chapter 3.5.1. Lock-Free Queue Algorithm
+Starting with chapter 3.5.2. Shared Memory Queues
+I have a draft of chapter sections:
 
-I need write chapter about lock-free MPMC algorithm
-it should have general introduction to lock-free algoritms, and than detailed information about algorithm (initialization, insertion, deletion)
+#### Shared Memory Ring Buffers
+- Overview of how the queues are physically placed in shared memory pages accessible to both SWd and NWd.
+- Ring buffer layout: circular array of message slots, head/tail pointers
+- Memory alignment considerations for preventing false sharing or alignment-related issues.
+#### Requests Queue
+- A dedicated ring buffer where the Normal World places requests that the Secure World must handle.
+- Steps for enqueuing:
+  1. Normal World driver writes the message into the ring slot.
+  2. Driver updates the queue head pointer using an atomic operation.
+  3. IPI sent (or polling mechanism invoked) to notify Secure World.
+#### Responses Queue
+- A separate ring buffer for the Secure World to provide responses or event notifications back to the Normal World.
+- The Secure World writes its response into the ring slot, increments the tail pointer, and relies on NWd polling.
+#### Canary Around Shared Pages
+- Canary pages are placed around Shared pages with no access bits, so any access by overflowing will trap
 
-write contents based on draft.
+write contents of these sections based on draft.
 If needed - maybe add some points if there is anything else to say by topic.
 full structure of whole paper and some of secure kernel boot code is in the attached file.
 Do not repeat yourself! Do not repeat points from other chapters! Keep it concise! Write only section contents, no summary or reasoning.

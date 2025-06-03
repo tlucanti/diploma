@@ -497,22 +497,36 @@ Here is the content for Chapter 3, Section 3.3.1 "WorldGuard Configuration":
    *   **Suitability**: This type of queue is well-suited for inter-world communication via shared memory as it avoids kernel intervention (locks, semaphores) for synchronization, reducing overhead. It can operate efficiently even when producers and consumers are in different privilege levels or running on different types of OS environments, provided they map the shared memory and can perform atomic operations.
 
   ### Shared Memory Queues
-   - One of the fundamental mechanisms for communication between the Secure World (SWd) and Normal World (NWd) is through shared memory queues. This approach allows concurrent message passing without requiring complex locking operations.
-   #### Shared Memory Ring Buffers
-   - Overview of how the queues are physically placed in shared memory pages accessible to both SWd and NWd.
-   - Ring buffer layout: circular array of message slots, head/tail pointers, and optional “sequence” fields for synchronization.
-   - Memory alignment considerations for preventing false sharing or alignment-related issues.
-   #### Requests Queue
-   - A dedicated ring buffer where the Normal World places requests that the Secure World must handle.
-   - Steps for enqueuing:
-     1. Normal World driver writes the message into the ring slot.
-     2. Driver updates the queue head pointer using an atomic operation.
-     3. IPI sent (or polling mechanism invoked) to notify Secure World.
-   #### Responses Queue
-   - A separate ring buffer for the Secure World to provide responses or event notifications back to the Normal World.
-   - The Secure World writes its response into the ring slot, increments the tail pointer, and relies on NWd polling.
-   #### Canary Around Shared Pages
-   - Canary pages are placed around Shared pages with no access bits, so any access by overflowing will trap
+  Inter-world communication relies on shared memory queues, which are implemented as ring buffers situated in memory regions accessible by both the Normal World (NWd) and Secure World (SWd). These queues utilize the lock-free MPMC algorithm described in section 3.5.1 for concurrent access.
+
+   #### 3.5.2.1 Shared Memory Ring Buffers
+   The communication queues are implemented as ring buffers residing within two dedicated physical memory pages. These pages are configured by the Secure OS using WorldGuard to grant shared read/write access permissions to both the Secure World and the Normal World, specifically tailored for each queue's producer/consumer roles.
+
+   Each ring buffer is a circular array of fixed-size message slots, designed to hold `wg_tee_cmd` structures. The MPMC queue algorithm, as detailed in section 3.5.1, manages access to these slots using atomic `enqueue` (head) and `dequeue` (tail) counters rather than explicit head/tail pointers directly manipulated by the worlds. This mechanism obviates the need for locks.
+
+   Memory alignment is critical. The `mpmc_queue` structure itself aligns its atomic `enqueue` and `dequeue` counters to cache line boundaries to mitigate false sharing between the CPU core executing the Secure OS and the core(s) executing Linux. Message slots within the ring buffer are also appropriately aligned to accommodate the `wg_tee_cmd` structure, preventing performance degradation due to unaligned accesses.
+
+   #### 3.5.2.2 Requests Queue
+   A dedicated ring buffer, hosted on one of the shared memory pages, serves as the Requests Queue. The Normal World (Linux driver) acts as the producer, placing requests for the Secure World to process. The Secure OS is the consumer of this queue.
+
+   The process for the Normal World to enqueue a request involves:
+   1.  The Linux driver serializes the TEE command into a `wg_tee_cmd` structure.
+   2.  The driver attempts to push this structure into an available slot in the Requests Queue using the `mpmc_queue_push` operation. This function internally handles claiming a slot and atomically updating the queue's `enqueue` counter.
+   3.  Upon successful enqueueing, the Linux driver typically sends an Inter-Processor Interrupt (IPI) to the Secure OS core to notify it of the new request, as detailed in section 3.5.5.2.
+
+   #### 3.5.2.3 Responses Queue
+   A-separate ring buffer, utilizing the second shared memory page, functions as the Responses Queue. The Secure OS acts as the producer, placing results of processed TEE commands or event notifications into this queue. The Normal World (Linux driver) is the consumer.
+
+   The Secure OS enqueues a response by:
+   1.  Populating a `wg_tee_cmd` structure with the result of an operation.
+   2.  Pushing this structure into the Responses Queue using its `mpmc_queue_push` (or equivalent internal) function. This atomically updates the `enqueue` counter for the Responses Queue.
+   3.  The Normal World driver relies on a polling mechanism to check this queue for completed responses, as described in section 3.5.5.3.
+
+   #### 3.5.2.4 Canary Around Shared Pages
+   To detect and prevent buffer overflow or underflow conditions on the shared queue pages, canary pages are implemented. The Secure OS, during initialization (as mentioned in section 3.3.2.3), configures WorldGuard rules for the physical pages immediately adjacent to (before and after) the two shared memory pages used for the queues.
+
+   These canary pages are marked by WorldGuard with permissions denying all types of access (read, write, execute) from both WID 0 (Secure World) and WID 1 (Normal World). If an erroneous operation by either world attempts to access memory beyond the allocated boundaries of a shared queue, it will touch one of these canary pages. This unauthorized access attempt triggers a hardware fault (trap) reported by WorldGuard, allowing the system to detect such memory safety violations and take appropriate action, such as loggingthe error or terminating the offending component.
+
   ### Shared Memory Regions
   - Aside from the primary queues, certain larger buffers or data structures may be shared.
    #### Memory Region Allocation
@@ -580,6 +594,7 @@ Here is the content for Chapter 3, Section 3.3.1 "WorldGuard Configuration":
    - field padding has size of 96 bytes
    - Reserved space to align the structure to 256 bytes overall.
    - Prevents unwanted compiler padding from interfering with the queue alignment.
+
   ### IPI Based Signaling
   - While the shared queues provide a data structure for messages, an Inter-Processor Interrupt (IPI) mechanism triggers real-time notifications.
    #### RISC-V IPI Mechanism
