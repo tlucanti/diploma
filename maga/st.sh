@@ -12,7 +12,8 @@ if [ -z "$1" ]; then
 	exit 1;
 fi
 
-arch ch1.md > structure.md
-arch ch2.md >> structure.md
-frag ch3.md CHAPTER-3.md $1 >> structure.md
-arch ch4.md >> structure.md
+arch ./ch1.md > structure.md
+arch ./ch2.md >> structure.md
+#cat ./CHAPTER-2.md >> structure.md
+frag ./ch3.md ./CHAPTER-3.md $1 >> structure.md
+arch ./ch4.md >> structure.md
