@@ -631,24 +631,6 @@ Here is the content for Chapter 3, Section 3.3.1 "WorldGuard Configuration":
 
    While polling can introduce some latency compared to a direct interrupt, it simplifies the interrupt management on the Linux side and avoids the complexities of a bidirectional IPI signaling protocol for this specific TEE interaction. The polling frequency can be tuned to balance responsiveness and CPU overhead.
 
-  ### IPI Based Signaling
-  - While the shared queues provide a data structure for messages, an Inter-Processor Interrupt (IPI) mechanism triggers real-time notifications.
-   #### RISC-V IPI Mechanism
-   - High-level overview of the RISC-V interrupt controller and how software sets an IPI to a target hart.
-   - Explanation of relevant CSRs, memory-mapped interrupt lines, or OpenSBI calls for sending IPIs.
-   - Typical flows: setting a bit in the IPI register or invoking sbi_send_ipi with a hart mask.
-   #### Normal to Secure World Signaling
-   - Procedure in which the Linux driver or NWd service:
-     1. Fills out wg_tee_cmd struct
-     2. push struct in the request queue.
-     3. Triggers an IPI to the secure hart via an OpenSBI call.
-     4. Waits for response by polling the response queue
-   #### Secure to Normal World Signaling
-   - Due to the RISC-V architecture constraints, the simplest approach is for the Secure OS to place responses in the response queue without any other signaling of Normal World
-   - An IPI back is restricted because of limitations of RISC-V ISA - we can not distinguish Secure OS notification IPI from other types of IPI, so Linux will not be able to handle IPI correctly
-   - so the NWd driver periodically checks the response queue
-   - The requesting thread is then woken, a result is available.
-
  ## TEE API
   ### Global Platform API
    #### Introduction to Global Platform API
@@ -660,6 +642,7 @@ Here is the content for Chapter 3, Section 3.3.1 "WorldGuard Configuration":
    - *sessions chapter*
    #### TEE Shared Memory
    - *shared memory chapter*
+
   ### TEE API Specification
    #### TEEC_UUID
    - describe ...
