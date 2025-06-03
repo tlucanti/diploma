@@ -396,10 +396,108 @@ Here is the content for Chapter 3, Section 3.3.1 "WorldGuard Configuration":
 
  ## Cross-World Communication
  - This chapter describes the mechanisms enabling data exchange and signaling between the Secure OS running on the primary CPU core(s) and the Normal World (e.g., Linux). It focuses on the shared memory queues, the message structure used for TEE commands, and the IPI mechanism for sending interrupts across RISC-V cores.
+
+  ### 3.5.1 Lock-Free Queue Algorithm
+  Communication between the Normal World (Linux) and the Secure World (Secure OS) relies on shared memory queues. To ensure efficient and safe concurrent access from both worlds without traditional locks, a lock-free Multi-Producer Multi-Consumer (MPMC) queue algorithm is employed. This section describes the general principles of lock-free algorithms and details the specific MPMC queue implementation used.
+
+   #### 3.5.1.1 General Introduction to Lock-Free Algorithms
+
+   Lock-free algorithms are a class of concurrent algorithms that ensure system-wide progress: if one or more threads are executing operations on a data structure, at least one thread must complete its operation within a finite number of its own steps, regardless of the state (e.g., suspension, crash) of other threads. This is a stronger guarantee than mutual exclusion using locks, which can suffer from issues such as:
+   *   **Deadlocks**: Where threads indefinitely wait for resources held by each other.
+   *   **Priority Inversion**: Where a high-priority thread is blocked waiting for a low-priority thread holding a lock.
+   *   **Convoying**: Where a queue of threads forms waiting for a lock held for an extended period.
+
+   Lock-free algorithms typically rely on atomic hardware primitives, such as Compare-And-Swap (CAS) or Load-Linked/Store-Conditional (LL/SC), to manage concurrent state changes.
+
+   **Benefits:**
+   *   **Improved Scalability**: Reduced contention points can lead to better performance in multi-core systems.
+   *   **Fault Tolerance**: The progress guarantee means slower or crashed threads do not necessarily block the entire system (for operations on that data structure).
+   *   **Interrupt Safety**: Suitable algorithms can often be used safely in interrupt handlers or other restricted contexts where blocking is not permissible.
+
+   **Challenges:**
+   *   **Complexity**: Designing correct lock-free algorithms is significantly more complex than lock-based ones.
+   *   **ABA Problem**: A common pitfall where a memory location is read twice, has the same value both times, but was modified by another thread in between. Naive CAS operations can incorrectly succeed in such scenarios. Careful design, often using version counters or tags, is needed to avoid it.
+   *   **Memory Reordering**: Compilers and CPUs can reorder memory operations, requiring explicit memory barriers or atomic operations with specific memory ordering semantics (e.g., acquire, release) to ensure correctness.
+
+   #### 3.5.1.2 The Implemented MPMC Queue Algorithm
+
+   The chosen MPMC queue is a bounded, array-based (ring buffer) queue designed for high performance by leveraging atomic operations and careful management of sequence numbers to coordinate producers and consumers. This algorithm is similar in principle to designs like Dmitry Vyukov's bounded MPMC queue.
+
+   ##### 3.5.1.2.1 Core Idea
+   Each slot in the queue's ring buffer is associated with a sequence number (`seq`). Producers and consumers use global atomic counters (`enqueue` and `dequeue` respectively) to obtain "tickets" for accessing specific logical slots. A producer attempting to write to logical slot `pos` can only do so if the target physical cell's `seq` matches `pos`. After writing, the producer updates the cell's `seq` to `pos + 1`. A consumer attempting to read from logical slot `pos` can only do so if the target physical cell's `seq` matches `pos + 1`. After reading, the consumer updates the cell's `seq` to `pos + N` (where N is the queue capacity), marking it available for a future enqueue operation at `pos + N`. This scheme ensures that cells are processed in order and correctly handed off between producers and consumers.
+
+   ##### 3.5.1.2.2 Data Structures
+   The queue implementation relies on two main structures:
+
+   *   **`mpmc_queue`**: Represents the shared queue.
+       ```c
+       typedef struct {
+           void *data;             // Pointer to the backing circular buffer of queue_cell
+           size_t size_mask;       // Mask for calculating index in circular buffer (capacity - 1)
+           size_t cell_size;       // Size of a single queue_cell (including data)
+           size_t data_size;       // Size of the user data within a cell
+           _Atomic size_t enqueue cacheline_aligned; // Global counter for next enqueue ticket
+           _Atomic size_t dequeue cacheline_aligned; // Global counter for next dequeue ticket
+       } mpmc_queue;
+       ```
+       The `enqueue` and `dequeue` counters are aligned to cache lines to prevent false sharing between cores that might be simultaneously trying to produce and consume. The queue capacity must be a power of 2 allowing for efficient index calculation using `size_mask`.
+
+   *   **`queue_cell`**: Represents an individual slot in the queue.
+       ```c
+       typedef struct {
+           _Atomic int seq;        // Sequence number for this cell
+           unsigned char data[];   // Flexible array member for storing the actual data
+       } queue_cell;
+       ```
+       The `seq` field is atomic, as it's the primary mechanism for synchronization between producers and consumers for a given cell.
+
+
+   ##### 3.5.1.2.3 Initialization
+   The `mpmc_queue_init` function initializes the queue:
+   1.  The backing memory buffer, its total size, the size of the data elements, and the calculated cell size are provided.
+   2.  The `enqueue` and `dequeue` atomic counters are initialized to 0 using `atomic_store_explicit` with `__ATOMIC_RELAXED` memory order.
+   3.  The `size_mask` is calculated as `capacity - 1`.
+   4.  Crucially, each `queue_cell` at index `i` in the buffer has its `seq` field initialized to `i` (`atomic_store_explicit(&cell->seq, i, __ATOMIC_RELAXED)`). This state (`cell[i].seq == i`) signifies that cell `i` is ready for the `i`-th enqueue operation (i.e., when the global `enqueue` counter equals `i`).
+
+   ##### 3.5.1.2.4 Enqueue Operation (`mpmc_queue_push`)
+   A producer wishing to add an item to the queue performs the following steps:
+   1.  **Get Ticket**: Atomically load the current `enqueue` counter value, `pos` (`atomic_load_explicit(&queue->enqueue, __ATOMIC_RELAXED)`). This `pos` is the logical slot the producer aims to fill.
+   2.  **Attempt to Claim Slot**:
+       a.  Calculate the physical cell index: `idx = pos & queue->size_mask`.
+       b.  Atomically load the `seq` from `cell[idx]` with `__ATOMIC_ACQUIRE` memory order. This ensures any previous writes to this cell (e.g., by a consumer freeing it) are visible.
+       c.  **Verify Slot State**: Check if `cell[idx].seq == pos`.
+           *   If `true`, a consumer has prepared this cell for the `pos`-th enqueue operation. The producer can try to claim this ticket. It attempts to atomically increment `queue->enqueue` from `pos` to `pos + 1` using `atomic_compare_exchange_weak_explicit` with `__ATOMIC_RELAXED` for both success and failure.
+               *   If CAS succeeds, the producer has successfully claimed the ticket `pos`. It breaks a retry loop.
+               *   If CAS fails, another producer claimed ticket `pos`. The current producer's `pos` is updated by CAS to the current `queue->enqueue` value and it re-evaluates its claim in the loop.
+           *   If `cell[idx].seq < pos`, the queue is full at this cell. The cell is from a previous lap and still holds data that hasn't been dequeued, or it's concurrently being dequeued. The push operation returns `false` (queue full).
+           *   If `cell[idx].seq > pos`, the current `pos` might be stale or based on an older view of `queue->enqueue`. The producer reloads `pos` from `queue->enqueue` (`atomic_load_explicit(&queue->enqueue, __ATOMIC_RELAXED)`) and retries the claim process.
+   3.  **Write Data**: Once a slot is successfully claimed, `memcpy` the user's data into `cell[idx].data`.
+   4.  **Signal Data Ready**: Atomically store `pos + 1` into `cell[idx].seq` using `atomic_store_explicit` with `__ATOMIC_RELEASE` memory order. This makes the data write visible to consumers and signals that the `pos`-th item is ready for dequeue. The `pos + 1` value is what a consumer will expect for this slot.
+
+   ##### 3.5.1.2.5 Dequeue Operation (`mpmc_queue_pop`)
+   A consumer wishing to retrieve an item from the queue performs these steps:
+   1.  **Get Ticket**: Atomically load the current `dequeue` counter value, `pos` (`atomic_load_explicit(&queue->dequeue, __ATOMIC_RELAXED)`). This `pos` is the logical slot the consumer aims to read.
+   2.  **Attempt to Claim Item**:
+       a.  Calculate the physical cell index: `idx = pos & queue->size_mask`.
+       b.  Atomically load the `seq` from `cell[idx]` with `__ATOMIC_ACQUIRE` memory order. This ensures the data write from the producer and its `seq` update are visible.
+       c.  **Verify Slot State**: Check if `cell[idx].seq == pos + 1`.
+           *   If `true`, the `pos`-th enqueue operation has completed for this cell, and it contains data ready for dequeue. The consumer can try to claim this ticket. It attempts to atomically increment `queue->dequeue` from `pos` to `pos + 1` using `atomic_compare_exchange_weak_explicit` with `__ATOMIC_RELAXED` for success and failure.
+               *   If CAS succeeds, the consumer has successfully claimed the item at ticket `pos`. It breaks a retry loop.
+               *   If CAS fails, another consumer claimed this item. The current consumer's `pos` is updated by CAS and it re-evaluates its claim in the loop.
+           *   If `cell[idx].seq < pos + 1`, the queue is empty at this cell. The cell is either in its initial state (`seq == pos`) or has been freed by a previous dequeue from an earlier lap. The pop operation returns `false` (queue empty).
+           *   If `cell[idx].seq > pos + 1`, the current `pos` might be stale. The consumer reloads `pos` from `queue->dequeue` (`atomic_load_explicit(&queue->dequeue, __ATOMIC_RELAXED)`) and retries.
+   3.  **Read Data**: Once an item is successfully claimed, `memcpy` the data from `cell[idx].data` to the user's buffer.
+   4.  **Signal Slot Empty**: Atomically store `pos + queue->size_mask + 1` (which is `pos + capacity`) into `cell[idx].seq` using `atomic_store_explicit` with `__ATOMIC_RELEASE` memory order. This marks the cell as empty and available for a future enqueue operation, specifically the one identified by ticket `pos + capacity`.
+
+   ##### 3.5.1.2.6 Correctness and Performance Considerations
+   *   **Atomicity and Ordering**: The use of atomic operations on `enqueue`, `dequeue`, and `seq` fields, along with appropriate memory ordering semantics (`__ATOMIC_ACQUIRE` on reads of `seq` that gate data access, `__ATOMIC_RELEASE` on writes to `seq` after data operations), ensures correct synchronization and visibility of data between producers and consumers.
+   *   **ABA Problem Avoidance**: The `seq` numbers and the global `enqueue`/`dequeue` ticket counters are monotonically increasing (modulo counter overflow for extremely long-lived queues). A cell's `seq` value cycles through `X`, `X+1`, `X+capacity`, `X+capacity+1`, etc. The specific checks (`cell->seq == pos` for enqueue, `cell->seq == pos + 1` for dequeue) target unique states in this progression relative to the global ticket `pos`, effectively avoiding the ABA problem for the control variables of the queue cell state.
+   *   **Lock-Freedom**: In case of contention on `enqueue` or `dequeue` counters (multiple producers or consumers), the CAS operation ensures that only one thread succeeds at a time, advancing the counter. If a thread's CAS fails, it implies another thread made progress. Thus, system-wide progress is guaranteed.
+   *   **False Sharing**: The `cacheline_aligned` attribute for `enqueue` and `dequeue` counters in the `mpmc_queue` struct is critical for performance. It prevents these frequently updated atomic variables, which are typically modified by different cores (producer core vs consumer core), from residing on the same cache line and causing excessive cache coherency traffic (false sharing).
+   *   **Suitability**: This type of queue is well-suited for inter-world communication via shared memory as it avoids kernel intervention (locks, semaphores) for synchronization, reducing overhead. It can operate efficiently even when producers and consumers are in different privilege levels or running on different types of OS environments, provided they map the shared memory and can perform atomic operations.
+
   ### Shared Memory Queues
    - One of the fundamental mechanisms for communication between the Secure World (SWd) and Normal World (NWd) is through shared memory queues. This approach allows concurrent message passing without requiring complex locking operations.
-   #### Lock-Free Queue Algorithm
-   - *https://pskrgag.github.io/post/mpmc_vuykov/*
    #### Shared Memory Ring Buffers
    - Overview of how the queues are physically placed in shared memory pages accessible to both SWd and NWd.
    - Ring buffer layout: circular array of message slots, head/tail pointers, and optional “sequence” fields for synchronization.

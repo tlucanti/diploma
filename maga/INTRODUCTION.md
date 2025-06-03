@@ -231,6 +231,9 @@
   - FDT - Flattened Device Tree (Дерево Устройств)
   - VMM - Virtual Memory Manager (Менеджер Виртуальной Памяти)
   - PMM - Physical Memory Manager (Менеджер Физической Памяти)
+  - MPMC - Multi-Producer Multi-Consumer (Множество Производителей - Множество Потребителей)
+  - CAS - Compare And Swap (Сравнение с обменом)
+  - LL/SC - Load-Linked/Store-Conditional (Связанная загрузка/Условное сохранение)
 
 
 <div style="page-break-after: always;"></div>

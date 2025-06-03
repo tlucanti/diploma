@@ -204,45 +204,12 @@ I have a draft of chapter 3:
    #### Opportunities for Improvement
 
 
-Starting with chapter 3.4.2. Secure OS Initialization
-I have a draft of chapter sections:
+Starting with chapter 3.5.1. Lock-Free Queue Algorithm
 
-- Once the minimal MMU and basic mapping are established, the Secure OS transitions to its primary C environment for final setup.
-#### Register Console
-- Initializing and registering the console driver (e.g., SBI console) as the primary I/O channel.
-- Setting up early debug/log printing to assist with error reporting.
-#### Initialize Page Tables
-- Creation and configuration of more granular page tables beyond the initial large block mappings.
-- Structures for dynamic region registration and page-level protections.
-#### Second Kernel Relocation (If Needed)
-- Further re-mapping kernel virtual addresses after early-boot.
-- Cleanup of temporary mappings used during the first relocation phase.
-#### Initialize Trap Handler
-- Setting up the vector table or exception table to handle synchronous exceptions and interrupts.
-- Registering fault handlers, system call handlers, and other critical exception vectors.
-#### Initialize Timers
-- Configuring RISC-V timer CSRs or platform-specific timer hardware.
-- Setting up the early tick or scheduling timers.
-#### Initialize Page Allocator
-- Creation of a physical page allocator (pmm_init()) to manage secure RAM.
-- Data structures (e.g., contiguous free-lists, bitmaps) for tracking page usage.
-#### Initialize Slab Allocator
-- A higher-level memory allocator (kmalloc or slab-based).
-- Allocation of kernel objects (e.g., tasks, threads, pipes) efficiently.
-#### Initialize Scheduler
-- Setup of the scheduler data structures to manage secure OS threads or tasks.
-- Timer-driven scheduler hooks using the timer subsystem.
-#### Initialize Root Task
-- Creation of the root task (or initial user-mode process in the Secure World).
-- Loading or spawning any essential system services.
-#### Initialize Normal World Communication Channel
-- Setting up shared memory regions or queues for Normal World <-> Secure World communication.
-- Configuring interrupt mechanisms or other signaling channels (e.g., IPI).
-#### Initialize Trusted Applications
-- Loading and initializing built-in or pre-installed Trusted Applications (TAs).
-- Setting up an environment for TAs, including memory isolation, scheduling, and system call interfaces.
+I need write chapter about lock-free MPMC algorithm
+it should have general introduction to lock-free algoritms, and than detailed information about algorithm (initialization, insertion, deletion)
 
-write contents of these sections based on draft.
+write contents based on draft.
 If needed - maybe add some points if there is anything else to say by topic.
 full structure of whole paper and some of secure kernel boot code is in the attached file.
 Do not repeat yourself! Do not repeat points from other chapters! Keep it concise! Write only section contents, no summary or reasoning.
