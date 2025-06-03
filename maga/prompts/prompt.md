@@ -204,24 +204,22 @@ I have a draft of chapter 3:
    #### Opportunities for Improvement
 
 
-Starting with chapter 3.5.2. Shared Memory Queues
+Starting with chapter 3.5.3. Shared Memory Regions
 I have a draft of chapter sections:
 
-#### Shared Memory Ring Buffers
-- Overview of how the queues are physically placed in shared memory pages accessible to both SWd and NWd.
-- Ring buffer layout: circular array of message slots, head/tail pointers
-- Memory alignment considerations for preventing false sharing or alignment-related issues.
-#### Requests Queue
-- A dedicated ring buffer where the Normal World places requests that the Secure World must handle.
-- Steps for enqueuing:
-  1. Normal World driver writes the message into the ring slot.
-  2. Driver updates the queue head pointer using an atomic operation.
-  3. IPI sent (or polling mechanism invoked) to notify Secure World.
-#### Responses Queue
-- A separate ring buffer for the Secure World to provide responses or event notifications back to the Normal World.
-- The Secure World writes its response into the ring slot, increments the tail pointer, and relies on NWd polling.
-#### Canary Around Shared Pages
-- Canary pages are placed around Shared pages with no access bits, so any access by overflowing will trap
+- Aside from the primary queues, certain larger buffers or data structures may be shared.
+#### Memory Region Allocation
+- allocation is done by calling secure operation TEE_CMD_ID_MAP_SHARED_MEM
+- allocation is done in Secure World, it will allocate pages and set access to Secure world and normal world
+- then Secure OS will map pages to Secure Kernel address space to be able to access them
+- them Linux should map these pages to Linux Kernel address space
+#### Memory Region Deallocation
+- deallocation is done by calling secure operation TEE_CMD_ID_UNMAP_SHARED_MEM
+- Secure World will deallocate pages, and remove access from both Secure world and Normal world
+- them Secure os will unmap pages from Secure Kernel address space
+- then Linux should unmap pages from Linux Kernel address space
+#### Data transfer
+- since memory is mapped to Linux Kernel and Secure OS, Operating Systems can transfer data just by regular memory reads and writes
 
 write contents of these sections based on draft.
 If needed - maybe add some points if there is anything else to say by topic.

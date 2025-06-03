@@ -527,20 +527,31 @@ Here is the content for Chapter 3, Section 3.3.1 "WorldGuard Configuration":
 
    These canary pages are marked by WorldGuard with permissions denying all types of access (read, write, execute) from both WID 0 (Secure World) and WID 1 (Normal World). If an erroneous operation by either world attempts to access memory beyond the allocated boundaries of a shared queue, it will touch one of these canary pages. This unauthorized access attempt triggers a hardware fault (trap) reported by WorldGuard, allowing the system to detect such memory safety violations and take appropriate action, such as loggingthe error or terminating the offending component.
 
-  ### Shared Memory Regions
-  - Aside from the primary queues, certain larger buffers or data structures may be shared.
-   #### Memory Region Allocation
-   - allocation is done by calling secure operation TEE_CMD_ID_MAP_SHARED_MEM
-   - allocation is done in Secure World, it will allocate pages and set access to Secure world and normal world
-   - then Secure OS will map pages to Secure Kernel address space to be able to access them
-   - them Linux should map these pages to Linux Kernel address space
-   #### Memory Region Deallocation
-   - deallocation is done by calling secure operation TEE_CMD_ID_UNMAP_SHARED_MEM
-   - Secure World will deallocate pages, and remove access from both Secure world and Normal world
-   - them Secure os will unmap pages from Secure Kernel address space
-   - then Linux should unmap pages from Linux Kernel address space
-   #### Data transfer
-   - since memory is mapped to Linux Kernel and Secure OS, Operating Systems can transfer data just by regular memory reads and writes
+  ### 3.5.3 Shared Memory Regions
+  Aside from the primary queues used for command and response signaling, the system supports the dynamic allocation and sharing of larger memory regions. These regions facilitate bulk data transfer between the Normal World and Trusted Applications running in the Secure World.
+
+   #### 3.5.3.1 Memory Region Allocation
+   The allocation of a shared memory region is initiated by the Normal World (Linux) by invoking the `TEE_CMD_ID_MAP_SHARED_MEM` secure operation. This request is processed by the Secure OS as follows:
+
+   1.  **Page Allocation in Secure World**: The Secure OS allocates the requested number of physical memory pages from its own managed pool.
+   2.  **Access Configuration**: WorldGuard checker rules are configured for these allocated pages to grant simultaneous access permissions (e.g., read, write) to both the Secure World (acting on behalf of a Trusted Application) and the Normal World. The specific permissions granted can be tailored to the use case.
+   3.  **Secure OS Mapping**: The Secure OS maps these physical pages into its own kernel address space. This allows the Secure OS itself, or subsequently the designated Trusted Application, to access the shared memory. The physical address and size of the region are prepared for return to the Normal World.
+   4.  **Normal World Mapping**: Upon successful allocation and configuration in the Secure World, the Linux driver receives the physical base address and size of the shared region. The driver is then responsible for mapping these physical pages into the Linux kernel's virtual address space, making the region accessible from the Normal World. An identifier for this shared memory region (`shmem_id`) is also returned to the Normal World for future reference.
+
+   #### 3.5.3.2 Memory Region Deallocation
+   Deallocation is initiated by the Normal World by invoking the `TEE_CMD_ID_UNMAP_SHARED_MEM` secure operation, typically referencing the `shmem_id` obtained during allocation. The Secure OS handles this request through the following steps:
+
+   1.  **Secure World Revocation**: The Secure OS first ensures that the Trusted Application (if any) has ceased using the memory. It then reconfigures the WorldGuard checker rules associated with the physical pages of the shared region to revoke all access permissions for both the Secure World and the Normal World.
+   2.  **Secure OS Unmapping**: The Secure OS unmaps the region from its kernel address space.
+   3.  **Page Deallocation**: The physical pages are returned to the Secure OS's free memory pool.
+   4.  **Normal World Unmapping**: After the Secure OS confirms deallocation, the Linux driver unmaps the corresponding memory region from the Linux kernel's virtual address space, releasing the virtual addresses.
+
+   #### 3.5.3.3 Data Transfer
+   Once a shared memory region is successfully allocated and mapped into the virtual address spaces of both the Linux kernel and the Secure OS (making it accessible to a Trusted Application), data transfer between the two worlds can occur directly through standard memory read and write operations.
+
+   *   Both the Normal World and the Secure World component (e.g., a Trusted Application) holding a valid mapping can access the shared data by simply reading from or writing to the virtual addresses corresponding to the shared physical pages.
+   *   No specialized communication primitives or inter-world calls are required for the actual data movement within an established shared_memory region, beyond ensuring appropriate synchronization between the producer and consumer of the data if concurrent access is involved. The efficiency of this transfer is only limited by memory bandwidth and cache coherency mechanisms.
+
   ### Message Structure
   - All commands passed through the request/response queues typically adhere to a consistent message format. This section details the wg_tee_cmd structure, which encapsulates TEE operation parameters and results.
    #### struct wg_tee_cmd
