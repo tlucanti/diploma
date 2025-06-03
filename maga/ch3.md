@@ -234,19 +234,77 @@ Here is the content for Chapter 3, Section 3.3.1 "WorldGuard Configuration":
       - Finer-grained execute permissions (e.g., No-Execute bits for data pages) *within* a world are managed by the Memory Management Unit (MMU) of that world. For instance, the Secure OS uses its MMU (configured via PTEs) to mark its data pages as non-executable for TAs, even if WorldGuard permits WID 0 to read those pages. Thus, WorldGuard provides coarse-grained inter-world isolation (e.g., "this memory block is SW-only"), while the MMU provides finer-grained intra-world protection and virtual memory management.
 
   ### Integration with the Secure OS
-   #### Error Reporting
-   - Mechanisms to detect and report WorldGuard-related violations (e.g., unauthorized access attempts).
-   - Logging and reporting structure within the Secure OS for debugging and auditing.
-   - strategies for halting offending tasks in case of critical errors.
-   #### Managing World Transitions
-   - Description of the control flow when switching between Normal World and Secure World.
-   - Handling interrupt-driven transitions across worlds.
-   - Use of specific CPU instructions or registers to invoke transitions (if applicable).
-   - Ensuring minimal overhead while maintaining security guarantees.
-   #### Communication Pages
-   - Shared memory pages allocated with permissions for both worlds:
-     - Shared memory region layout and alignment considerations.
-     - Ensuring read/write restrictions are enforced by WorldGuard.
+   #### 3.3.2.1 Error Reporting
+   Integration with the Secure Operating System concerning error reporting for WorldGuard violations involves immediate detection, structured logging, and defined responses. Hardware-level WorldGuard controllers detect unauthorized access attempts or configuration errors, populating their errcause and erraddr registers with details such as the offending World ID (WID), access type (read/write), and the target physical address.
+
+   Upon detection of a violation pertinent to the Secure World's domain or its configured resources:
+   1.  Violation Detection and Notification: If a WorldGuard controller is configured with its IR (Interrupt on Read)/IW (Interrupt on Write) or ER (Error on Read)/EW (Error on Write) bits set for a specific rule, a violation triggers a corresponding response. An interrupt, if configured via IR/IW, can be routed to the Secure OS running on core 0. The Secure OS interrupt service routine (ISR) then queries the memory-mapped WorldGuard controller's errcause and erraddr registers to retrieve fault information. Alternatively, critical faults might manifest as precise bus errors or access faults directly trapped by the Secure OS.
+   2.  Logging Structure: The Secure OS maintains a secure log, inaccessible to the Normal World. WorldGuard-related violations are recorded with:
+      - Timestamp of the event.
+      - Contents of errcause: offending WID, type of access (read/write), whether a bus error (be) or interrupt (ip) was signaled by the controller.
+      - Contents of erraddr: physical address of the attempted access.
+      - Identifier of the Secure OS component or Trusted Application (TA) context, if the fault originated from within the Secure World and can be reliably determined.
+       This log serves debugging, auditing, and potential forensic analysis. After logging, the errcause.ip and errcause.be bits are cleared by the Secure OS to allow the controller to report new faults.
+   3.  Response Strategies:
+      - Violations by Normal World (NWd): If the offending WID indicates the Normal World attempting unauthorized access to Secure World (SWd) memory, the Secure OS logs the incident. The primary enforcement is by the WorldGuard hardware blocking the access. Further action by SWd is typically limited to logging, as the NWd is responsible for handling faults on its own cores.
+      - Violations by TA: If a TA within the Secure World triggers a WorldGuard violation (e.g., by attempting to access memory outside its permitted regions not caught by the MMU but by a broader WG rule), the Secure OS will typically:
+          - Log the critical error.
+          - Terminate the offending TA immediately to prevent further compromise or instability.
+          - Release resources held by the TA.
+          - Report an error to the Normal World client that had an active session with the TA.
+      - Violations by Secure OS Kernel: If a WorldGuard violation is attributed to the Secure OS kernel itself, this indicates a severe internal inconsistency or bug. The Secure OS will:
+          - Attempt to log diagnostic information, if possible.
+          - Enter a controlled panic state, halting further operations in the Secure World to prevent potential propagation of an insecure state. This might involve disabling interrupts on core 0 and ceasing further TA execution.
+
+   #### 3.3.2.2 Managing World Transitions
+
+   In the implemented two-world model with WorldGuard, where the Secure OS is statically bound to core 0 (Secure World, WID 0) and Linux to other cores (Normal World, WID 1), "world transitions" primarily refer to the controlled interaction and signaling flows between these statically separated execution environments, rather than dynamic WID changes on a single core for routine calls.
+
+   1.  Control Flow (NWd to SWd):
+      - A Normal World entity (e.g., Linux driver) wishing to invoke a Secure World service prepares a request message and places it into the shared request queue.
+      - The Normal World then triggers an Inter-Processor Interrupt (IPI) targeting core 0. This is typically done via an SBI call (sbi_send_ipi).
+      - The Secure OS, running on core 0, receives this IPI. Its IPI handler, or a task woken by it, then inspects the request queue, dequeues the message, and dispatches it to the appropriate TA or internal service.
+   2.  Control Flow (SWd to NWd):
+      - After processing a request, the Secure OS or TA places a response message into the shared response queue.
+      - In the current design, the Secure OS does not send an IPI back to the Normal World. Instead, the Linux driver in the Normal World employs a polling mechanism (e.g., a dedicated kernel thread) that periodically checks the response queue for completed messages.
+   3.  Interrupt Handling:
+      - The primary interrupt-driven transition is the IPI from NWd to SWd, signaling a new request. The Secure OS's IPI handler must be lightweight, typically deferring actual request processing to a task context to keep ISR execution time minimal.
+      - WorldGuard fault exceptions, if configured to generate interrupts to core 0, are also a form of interrupt-driven event that the Secure OS handles to manage security violations.
+   4.  CPU Instructions/Registers: Traditional world-switching instructions (like Arm's SMC) are not directly applicable here for inter-world calls since WIDs are statically assigned per core by OpenSBI during boot using M-mode CSRs (e.g., mlwid). The hardware (core and WorldGuard checkers) inherently associates memory accesses from core 0 with WID 0 and accesses from other cores with WID 1. The interaction relies on standard IPI mechanisms and shared memory access, policed by WorldGuard.
+   5.  Overhead and Security:
+      - Minimal overhead is pursued by using lock-free algorithms for shared queues, reducing contention and eliminating lock/unlock latencies.
+      - The IPI mechanism for NWd → SWd signaling is direct. The polling mechanism for SWd → NWd responses is chosen to avoid potential complexities or security concerns with SWd-originated IPIs being indistinguishable from other IPI sources by a generic Linux kernel.
+      - Security guarantees are primarily enforced by WorldGuard at the hardware level, ensuring that:
+          - Direct memory access across world boundaries is prevented, except for explicitly configured shared regions.
+          - The integrity of the Secure OS on core 0 is maintained against interference from other cores.
+
+   #### 3.3.2.3 Communication Pages
+
+   The secure integration of communication pages (shared memory regions used for request and response queues) is critical and relies heavily on correct WorldGuard configuration by the Secure OS.
+
+   1.  Shared Memory Region Definition: Two primary shared memory regions are pre-defined, typically each consisting of one or more physical pages (e.g., 4KiB aligned):
+      - Request Queue Page: Used by the Normal World to send requests to the Secure World.
+      - Response Queue Page: Used by the Secure World to send responses back to the Normal World.
+       The physical addresses of these pages are communicated to the Secure OS during boot (e.g., via device tree) and are also known to the Linux driver.
+   2.  WorldGuard Configuration for Shared Pages: During its initialization, the Secure OS programs the WorldGuard controller(s) to enforce specific access permissions for these communication pages:
+      - Request Queue Page Permissions:
+          - The slot(s) in the WorldGuard controller corresponding to the request queue's physical address range are configured.
+          - The perm field for this slot will grant:
+              - Normal World (WID 1): Write access (and potentially Read access if the queue implementation on the NWd side requires it for its own metadata management, though primarily Write).
+              - Secure World (WID 0): Read access.
+          - Execute permissions are denied for both worlds.
+      - Response Queue Page Permissions:
+          - The slot(s) corresponding to the response queue's physical address range are configured.
+          - The perm field for this slot will grant:
+              - Secure World (WID 0): Write access (and potentially Read access for its queue management).
+              - Normal World (WID 1): Read access.
+          - Execute permissions are denied for both worlds.
+   3.  Layout and Alignment:
+      - The shared regions are physically contiguous and aligned to page boundaries (e.g., 4KiB) to match memory management granularity and simplify WorldGuard rule configuration (e.g., using NA4 or NAPOT encoding if a single slot covers the region).
+      - To prevent accidental overflows from corrupting adjacent memory, canary pages (non-accessible guard pages) can be configured around these shared communication pages by the Secure OS using additional WorldGuard rules, if deemed necessary and supported by the number of available slots.
+   4.  Enforcement and Locking:
+      - WorldGuard hardware continuously monitors all memory accesses. Any attempt by either world to access a communication page in a manner violating the configured perm bits (e.g., SWd trying to write to the request queue, or NWd trying to write to the response queue) results in a WorldGuard fault, as described in the Error Reporting section.
+      - After the Secure OS configures the WorldGuard slots for these communication pages (and all other critical memory regions), it sets the L (lock) bit in the cfg register of each relevant slot. This makes the rule immutable until the next system hardware reset, preventing any runtime modification, whether malicious or accidental, by any software component (including the Secure OS M-mode if it were to be compromised post-boot and OpenSBI restricted M-mode access to WG configuration CSRs or memory-mapped regions).
 
  ## Secure Boot Process and Initialization
  - This section describes how the Secure OS is bootstrapped, transitioning from platform firmware (OpenSBI) to a fully initialized secure environment.

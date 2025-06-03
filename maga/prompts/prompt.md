@@ -204,25 +204,25 @@ I have a draft of chapter 3:
    #### Opportunities for Improvement
 
 
-Starting with chapter 3.3.1. WorldGuard Configuration
+Starting with chapter 3.3.2. Integration with the Secure OS
 I have a draft of chapter sections:
 
-  ### WorldGuard Configuration
-   #### World Configuration (Two-World Model)
-   - Overview of how the system hardware and memory are split between Secure World and Normal World.
-   - Explanation of the two-world design rationale
-   - Definition of the roles of each world (e.g., Secure OS vs. Linux).
-   - Description of how World IDs are assigned and managed.
-   #### WorldGuard Checker Configuration for Secure Isolation
-   - Configuration of Secure RAM with WG slots:
-     - Secure memory partitioning approach.
-     - Locking down memory regions to the Secure World
-   - Setting up enclave/partition boundaries:
-     - Handling enclaves within the Secure World.
-     - Policy for controlling access across enclaves or from Normal World.
-   - Integration of memory attributes (e.g., read/write/exec permissions) with WorldGuard checks.
+#### Error Reporting
+- Mechanisms to detect and report WorldGuard-related violations (e.g., unauthorized access attempts).
+- Logging and reporting structure within the Secure OS for debugging and auditing.
+- strategies for halting offending tasks in case of critical errors.
+#### Managing World Transitions
+- Description of the control flow when switching between Normal World and Secure World.
+- Handling interrupt-driven transitions across worlds.
+- Use of specific CPU instructions or registers to invoke transitions (if applicable).
+- Ensuring minimal overhead while maintaining security guarantees.
+#### Communication Pages
+- Shared memory pages allocated with permissions for both worlds:
+  - Shared memory region layout and alignment considerations.
+  - Ensuring read/write restrictions are enforced by WorldGuard.
+
 
 write contents of these sections based on draft.
 If needed - maybe add some points if there is anything else to say by topic.
 full structure of whole paper is in the attached file
-Do not repeat yourself! Keep it concise! Do not include statements from other chapters! Write only section contents, no summary or reasoning.
+Do not repeat yourself! Do not repeat points from other chapters! Keep it concise! Write only section contents, no summary or reasoning.
