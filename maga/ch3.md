@@ -329,53 +329,70 @@ Here is the content for Chapter 3, Section 3.3.1 "WorldGuard Configuration":
    2.  The address translation mode (Sv39 for 64-bit RISC-V systems, indicated by MODE=8 in the SATP value).
    Upon writing to SATP, address translation becomes active for all supervisor-mode memory accesses on the core. The pre-established dual mappings ensure operational continuity for the currently executing code. The kernel then performs a jump from its current physical program counter to the corresponding offset within the KERNEL_VIRTUAL_BASE address range (specifically, to the virtual address of the early_boot C function). This action transfers execution fully into the kernel's designated virtual address space, enabling correct C runtime operation and access to global symbols via their linked virtual addresses.
 
-  ### Secure OS Initialization
-  - Once the minimal MMU and basic mapping are established, the Secure OS transitions to its primary C environment for final setup.
-   #### Register Console
-   - Initializing and registering the console driver (e.g., SBI console) as the primary I/O channel.
-   - Setting up early debug/log printing to assist with error reporting.
-   #### Initialize Page Tables
-   - Creation and configuration of more granular page tables beyond the initial large block mappings.
-   - Structures for dynamic region registration and page-level protections.
-   #### Second Kernel Relocation (If Needed)
-   - Further re-mapping kernel virtual addresses after early-boot.
-   - Cleanup of temporary mappings used during the first relocation phase.
-   #### Initialize Trap Handler
-   - Setting up the vector table or exception table to handle synchronous exceptions and interrupts.
-   - Registering fault handlers, system call handlers, and other critical exception vectors.
-   #### Initialize Timers
-   - Configuring RISC-V timer CSRs or platform-specific timer hardware.
-   - Setting up the early tick or scheduling timers.
-   #### Initialize Page Allocator
-   - Creation of a physical page allocator (pmm_init()) to manage secure RAM.
-   - Data structures (e.g., contiguous free-lists, bitmaps) for tracking page usage.
-   #### Initialize Slab Allocator
-   - A higher-level memory allocator (kmalloc or slab-based).
-   - Allocation of kernel objects (e.g., tasks, threads, pipes) efficiently.
-   #### Initialize Scheduler
-   - Setup of the scheduler data structures to manage secure OS threads or tasks.
-   - Timer-driven scheduler hooks using the timer subsystem.
-   #### Initialize Root Task
-   - Creation of the root task (or initial user-mode process in the Secure World).
-   - Loading or spawning any essential system services.
-   #### Initialize Normal World Communication Channel
-   - Setting up shared memory regions or queues for Normal World <-> Secure World communication.
-   - Configuring interrupt mechanisms or other signaling channels (e.g., IPI).
-   #### Initialize Trusted Applications
-   - Loading and initializing built-in or pre-installed Trusted Applications (TAs).
-   - Setting up an environment for TAs, including memory isolation, scheduling, and system call interfaces.
- ### Rich OS Initialization
-  #### Initialization by OpenSBI
-   - Handing control back to OpenSBI to continue its normal boot flow for a Linux or other rich OS.
-   - TEEOS setups itself and does special ecall that indicates that it has finished
-   - SBI boots NWD_FW_PAYLOAD_PATH (REEOS futher) on other cpus
-  #### Core Startup
-   - after returing to sbi on secure core - sbi will start second non secure core
-   - second core will start Linux Kernel, and Linux will hotplug other cores by itself
-   - Linux will not try to run on first secure core, because it was marked "secure" at the begining of OpenSBI startup
+  ### 3.4.2 Secure OS Initialization
+  Upon transitioning to the C environment after the initial assembly-level setup and MMU activation, the Secure OS undertakes a comprehensive initialization sequence to bring its core components online. This phase is orchestrated primarily within the early_boot and subsequent main C functions.
 
- ## OpenSBI modifications
-  ### ...
+   #### 3.4.2.1 Register Console
+   The first step in the C environment is to establish a means for outputting diagnostic information and logs.
+  - The console driver, utilizing the SBI (Supervisor Binary Interface) console services, is initialized and registered as the primary I/O channel via sbi_register_console().
+  - This enables early S-mode print functions (e.g., LOG() macro used in main.c), crucial for debugging and reporting the progress or errors during the subsequent initialization stages.
+
+   #### 3.4.2.2 Initialize Page Tables
+   While basic MMU mappings are active, the Secure OS now refines its memory layout with more detailed page table configurations.
+  - The kernel's primary page table structures are initialized further by mmu_init_kernel_page_table(), moving beyond the initial large, coarse-grained mappings established in head.S.
+  - The virtual memory manager (VMM) then defines and maps various memory regions:
+      - Known memory regions are collected via vmm_collect_regions().
+      - Specific regions, such as the Flattened Device Tree (FDT) and a linear mapping of all secure RAM, are registered as dynamic regions using vmm_register_dynamic_region().
+      - Kernel code and data sections are subsequently mapped to their final virtual addresses within these refined page tables by vmm_map_kernel_regions().
+  - This process establishes the definitive virtual memory layout for the kernel, enabling page-level protections and dynamic allocation capabilities.
+
+   #### 3.4.2.3 Second Kernel Relocation (If Needed)
+   With more sophisticated page table management available, the kernel ensures all its components reside at their link-time virtual addresses.
+  - The vmm_relocate_kernel_regions() function handles the re-mapping of kernel sections if they were loaded at a physical address different from their final virtual address minus the kernel virtual offset.
+  - Any temporary mappings established during the initial MMU activation, such as the 1:1 identity map in head.S for early code execution, are implicitly superseded or cleaned up as vmm_map_kernel_regions() establishes the final, more granular mappings for all kernel segments based on their VMA (Virtual Memory Area) definitions.
+
+   #### 3.4.2.4 Initialize Trap Handler
+   To manage exceptions, interrupts, and system calls, the Secure OS sets up its trap handling mechanisms.
+  - The vector_table_init() function is called to configure the S-mode trap vector, directing CPU exceptions and interrupts to the Secure OS's central trap dispatcher.
+  - This includes setting up handlers for synchronous exceptions (like environment calls from Trusted Applications), asynchronous interrupts (e.g., timer, IPIs), and fault conditions.
+
+   #### 3.4.2.5 Initialize Timers
+   Timers are essential for scheduling and timekeeping within the Secure OS.
+  - Platform-specific timer hardware is initialized first, typically using information from the FDT, via arch_timer_init(fdt). This configures the underlying hardware timer for generating periodic interrupts.
+  - Subsequently, the kernel's timer subsystem is initialized by timer_init(). This sets up software timer structures and prepares the system to use the hardware timer for scheduling ticks and managing timed events.
+
+   #### 3.4.2.6 Initialize Page Allocator
+   To manage the physical memory available to the Secure World, a physical page allocator is crucial.
+  - The Secure OS's memory layout, including available RAM regions, is determined by arch_mem_initilize(fdt).
+  - The physical memory manager (PMM) is then initialized via pmm_init(). This function creates data structures (e.g., free lists or bitmaps) to track the status of all physical memory pages designated for secure use, enabling dynamic allocation and deallocation of page frames.
+
+   #### 3.4.2.7 Initialize Slab Allocator
+   For efficient management of smaller, frequently allocated kernel objects, a slab allocator is established on top of the page allocator.
+  - The kernel_slabs_init() function initializes the slab allocator. This sets up caches for various common object sizes, reducing fragmentation and improving the performance of allocating and freeing kernel data structures (e.g., task control blocks, thread structures, IPC message Suffer).
+
+   #### 3.4.2.8 Initialize Scheduler
+   The scheduler is responsible for managing the execution of threads within the Secure OS.
+  - The foundational tasking structures are prepared by init_system_task(), which may set up initial kernel task contexts or the idle thread.
+  - The scheduler's data structures (e.g., run queues) are set up, and it's integrated with the timer subsystem (initialized via timer_init()) to enable preemptive, time-sliced scheduling based on the Round-Robin policy.
+
+   #### 3.4.2.9 Initialize Root Task
+   The Root Task is a critical component, acting as the first privileged process in the Secure World, responsible for managing Trusted Applications and inter-world communication requests.
+  - Following scheduler initialization, spawn_root_task() is called (unless specific test configurations like BLOWFISH_TEST are active).
+  - This involves loading the Root Task's ELF binary, setting up its dedicated address space, allocating its initial resources (including handles specified in its manifest), and creating its main thread, making it ready to process requests.
+
+   #### 3.4.2.10 Initialize Normal World Communication Channel
+   To enable interaction with the Normal World (Linux), the dedicated communication infrastructure is initialized.
+  - The nwd_channel_init(fdt) function sets up the shared memory queues. This involves:
+      - Identifying the physical memory regions for the request and response queues from the FDT.
+      - Mapping these shared pages into the Secure OS's address space.
+      - Initializing the MPMC (Multi-Producer Multi-Consumer) lock-free queue data structures for both request and response paths.
+  - Mechanisms for IPI (Inter-Processor Interrupt) signaling, particularly for Normal World to Secure World notifications, are also readied, relying on the already initialized trap handler.
+
+   #### 3.4.2.11 Initialize Trusted Applications
+   While most Trusted Applications (TAs) are spawned dynamically by the Root Task upon request from the Normal World via TEEC_OpenSession, this stage ensures the foundational environment for TA execution is in place.
+  - The primary action is the initialization and spawning of the Root Task itself (as covered in 3.4.2.9), which is the main entity responsible for loading, managing, and interfacing with all other TAs.
+  - The underlying Secure OS services that TAs rely on are now active: an initialized memory management system capable of creating isolated TA address spaces, a scheduler to run TA threads, and a system call interface for TAs to request kernel services.
+  - Any pre-installed or built-in system-level TAs, if designed to start alongside the Root Task, would be loaded and initialized by the Root Task as part of its own startup sequence, often by parsing their respective manifests from the system's simple file system (e.g., linear RAM FS).
 
  ## Cross-World Communication
  - This chapter describes the mechanisms enabling data exchange and signaling between the Secure OS running on the primary CPU core(s) and the Normal World (e.g., Linux). It focuses on the shared memory queues, the message structure used for TEE commands, and the IPI mechanism for sending interrupts across RISC-V cores.

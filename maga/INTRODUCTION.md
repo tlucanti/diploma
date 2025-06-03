@@ -229,6 +229,8 @@
   - PTE - Page Table Entry (Запись в Таблице Страниц)
   - UART - Universal Asynchronous Receiver-Transmitter (Универсальный Асинхронный Приёмопередатчик)
   - FDT - Flattened Device Tree (Дерево Устройств)
+  - VMM - Virtual Memory Manager (Менеджер Виртуальной Памяти)
+  - PMM - Physical Memory Manager (Менеджер Физической Памяти)
 
 
 <div style="page-break-after: always;"></div>
