@@ -204,22 +204,61 @@ I have a draft of chapter 3:
    #### Opportunities for Improvement
 
 
-Starting with chapter 3.5.3. Shared Memory Regions
+Starting with chapter 3.5.4. Message Structure
 I have a draft of chapter sections:
 
-- Aside from the primary queues, certain larger buffers or data structures may be shared.
-#### Memory Region Allocation
-- allocation is done by calling secure operation TEE_CMD_ID_MAP_SHARED_MEM
-- allocation is done in Secure World, it will allocate pages and set access to Secure world and normal world
-- then Secure OS will map pages to Secure Kernel address space to be able to access them
-- them Linux should map these pages to Linux Kernel address space
-#### Memory Region Deallocation
-- deallocation is done by calling secure operation TEE_CMD_ID_UNMAP_SHARED_MEM
-- Secure World will deallocate pages, and remove access from both Secure world and Normal world
-- them Secure os will unmap pages from Secure Kernel address space
-- then Linux should unmap pages from Linux Kernel address space
-#### Data transfer
-- since memory is mapped to Linux Kernel and Secure OS, Operating Systems can transfer data just by regular memory reads and writes
+#### struct wg_tee_cmd
+- All commands passed through the request/response queues adhere to a consistent message format. This section details the wg_tee_cmd structure, which encapsulates TEE operation parameters and results.
+- This structure holds command identifiers, session tracking, error codes, and additional parameters.
+#### field id
+- uint32_t id
+- Identifies the type of TEE operation.
+- Possible values include:
+  - TEE_CMD_ID_OPEN_SESSION
+  - TEE_CMD_ID_CLOSE_SESSION
+  - TEE_CMD_ID_INVOKE_CMD
+  - TEE_CMD_ID_MAP_SHARED_MEM
+  - TEE_CMD_ID_UNMAP_SHARED_MEM
+#### field seq
+- uint32_t seq
+- filed seq is a unique identifier of command
+- it's value is generated just by atomically incremented sequence counter
+#### field session_id
+- uint32_t session_id
+- Identifies which session within a TA this command belongs to.
+- Allows a single TA to manage multiple open sessions simultaneously.
+#### field func_i
+- uint32_t func_id
+- each Trusted Application implements it's own functionality, and TA can do multiple actions
+- field func_id describes what action to do inside TA
+#### field err
+- uint32_t err
+- Used by the Secure World to return error codes or status results.
+- possible results include indicating success, permission failures, or other errors.
+#### field uuid
+- uint8_t uuid[16]
+- A unique identifier for the Trusted Application.
+- Used during TEE_CMD_ID_OPEN_SESSION to select the correct TA.
+#### field paddr
+- uint64_t paddr
+- A physical address relevant to TEE_CMD_ID_MAP_SHARED_MEM; indicates the start page to map as shared.
+- field remain unused for other command IDs.
+#### field num_pages
+- uint32_t num_pages
+- The number of contiguous pages to map starting at paddr, for TEE_CMD_ID_MAP_SHARED_MEM.
+- field remain unused for other command IDs.
+#### field shmem_id
+- uint32_t shmem_id
+- A handle returned by the Secure OS to reference a mapped shared memory region.
+- Allows subsequent TEE_CMD_ID_UNMAP_SHARED_MEM to unmap region
+#### struct wg_param params
+- Holds 4 arguments (each is 24 bytes).
+- Simple arguments are stored directly
+- memory references are stored as three 64-bit values (size, offset, world_id).
+#### padding
+- field padding has size of 96 bytes
+- Reserved space to align the structure to 256 bytes overall.
+- Prevents unwanted compiler padding from interfering with the queue alignment.
 
 write contents of these sections based on draft.
 If needed - maybe add some points if there is anything else to say by topic.

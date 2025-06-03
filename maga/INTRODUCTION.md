@@ -234,6 +234,9 @@
   - MPMC - Multi-Producer Multi-Consumer (Множество Производителей - Множество Потребителей)
   - CAS - Compare And Swap (Сравнение с обменом)
   - LL/SC - Load-Linked/Store-Conditional (Связанная загрузка/Условное сохранение)
+  - UUID - Universally Unique Identifier (Универсальный Уникальный Идентификатор)
+  - SSIP - Supervisor Software Interrupt Pending
+  - CLINT - Core Local Interruptor
 
 
 <div style="page-break-after: always;"></div>

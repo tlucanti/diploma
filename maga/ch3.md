@@ -553,58 +553,83 @@ Here is the content for Chapter 3, Section 3.3.1 "WorldGuard Configuration":
    *   No specialized communication primitives or inter-world calls are required for the actual data movement within an established shared_memory region, beyond ensuring appropriate synchronization between the producer and consumer of the data if concurrent access is involved. The efficiency of this transfer is only limited by memory bandwidth and cache coherency mechanisms.
 
   ### Message Structure
-  - All commands passed through the request/response queues typically adhere to a consistent message format. This section details the wg_tee_cmd structure, which encapsulates TEE operation parameters and results.
-   #### struct wg_tee_cmd
-   This structure holds command identifiers, session tracking, error codes, and additional parameters.
-   #### field id
-   - uint32_t id
-   - Identifies the type of TEE operation.
-   - Possible values include:
-     - TEE_CMD_ID_OPEN_SESSION
-     - TEE_CMD_ID_CLOSE_SESSION
-     - TEE_CMD_ID_INVOKE_CMD
-     - TEE_CMD_ID_MAP_SHARED_MEM
-     - TEE_CMD_ID_UNMAP_SHARED_MEM
-   #### field seq
-   - uint32_t seq
-   - filed seq is a unique identifier of command
-   - it's value is generated just by atomically incremented sequence counter
-   #### field session_id
-   - uint32_t session_id
-   - Identifies which session within a TA this command belongs to.
-   - Allows a single TA to manage multiple open sessions simultaneously.
-   #### field func_i
-   - uint32_t func_id
-   - each Trusted Application implements it's own functionality, and TA can do multiple actions
-   - field func_id describes what action to do inside TA
-   #### field err
-   - uint32_t err
-   - Used by the Secure World to return error codes or status results.
-   - possible results include indicating success, permission failures, or other errors.
-   #### field uuid
-   - uint8_t uuid[16]
-   - A unique identifier for the Trusted Application.
-   - Used during TEE_CMD_ID_OPEN_SESSION to select the correct TA.
-   #### field paddr
-   - uint64_t paddr
-   - A physical address relevant to TEE_CMD_ID_MAP_SHARED_MEM; indicates the start page to map as shared.
-   - field remain unused for other command IDs.
-   #### field num_pages
-   - uint32_t num_pages
-   - The number of contiguous pages to map starting at paddr, for TEE_CMD_ID_MAP_SHARED_MEM.
-   - field remain unused for other command IDs.
-   #### field shmem_id
-   - uint32_t shmem_id
-   - A handle returned by the Secure OS to reference a mapped shared memory region.
-   - Allows subsequent TEE_CMD_ID_UNMAP_SHARED_MEM to unmap region
-   #### struct wg_param params
-   - Holds 4 arguments (each is 24 bytes).
-   - Simple arguments are stored directly
-   - memory references are stored as three 64-bit values (size, offset, world_id).
-   #### padding
-   - field padding has size of 96 bytes
-   - Reserved space to align the structure to 256 bytes overall.
-   - Prevents unwanted compiler padding from interfering with the queue alignment.
+  All commands passed through the request and response queues adhere to a consistent message format. This subsection details the `wg_tee_cmd` structure, which is designed to encapsulate TEE operation parameters and results. The structure serves as the fundamental unit of communication, holding command identifiers, session tracking information, error codes, and payload parameters for TEE operations. Adherence to this fixed structure simplifies parsing and processing logic in both the Normal and Secure Worlds.
+
+   #### 3.5.4.1 struct wg_tee_cmd
+   The `wg_tee_cmd` structure is the primary data packet for inter-world communication via shared memory queues. It standardizes the format for all TEE command requests originating from the Normal World and responses from the Secure OS. Key components include a command identifier, a sequence number for tracking, session and Trusted Application identifiers, operational parameters or memory mapping details, and a field for return codes. The structure is padded to a fixed size (256 bytes) to ensure predictable alignment within the shared memory queues.
+
+   #### 3.5.4.2 field id
+   The `uint32_t id` field specifies the type of TEE operation being requested or responded to. It allows the receiving world to dispatch the command to the appropriate handler. Defined command identifiers include:
+   *   `TEE_CMD_ID_OPEN_SESSION`: Initiates a new session with a Trusted Application.
+   *   `TEE_CMD_ID_CLOSE_SESSION`: Terminates an existing session with a Trusted Application.
+   *   `TEE_CMD_ID_INVOKE_CMD`: Calls a specific function within an active Trusted Application session.
+   *   `TEE_CMD_ID_MAP_SHARED_MEM`: Requests the Secure OS to map a region of physical memory as shared between the Normal and Secure Worlds.
+   *   `TEE_CMD_ID_UNMAP_SHARED_MEM`: Requests the Secure OS to unmap a previously shared memory region.
+
+   #### 3.5.4.3 field seq
+   The `uint32_t seq` field provides a unique identifier for each command instance. This sequence number is generated by the Normal World by atomically incrementing a counter for each new request. The Secure OS includes this `seq` number in its response, enabling the Normal World client to correlate responses with their original requests, especially in asynchronous communication models.
+
+   #### 3.5.4.4 field session_id
+   The `uint32_t session_id` field identifies the specific session to which a command pertains. Upon successful execution of a `TEE_CMD_ID_OPEN_SESSION` command, the Secure OS returns a `session_id` to the Normal World. Subsequent `TEE_CMD_ID_INVOKE_CMD` and `TEE_CMD_ID_CLOSE_SESSION` commands must include this `session_id` to target the correct TA instance and its associated context. This allows a single Client Application in the Normal World to manage multiple concurrent sessions with one or more TAs.
+
+   #### 3.5.4.5 field func_id
+   The `uint32_t func_id` field is utilized specifically with the `TEE_CMD_ID_INVOKE_CMD` command. Each Trusted Application may expose multiple functions or commands. This field allows the Normal World client to stipulate which specific action or function, identified by `func_id`, should be executed by the TA during an `InvokeCommand` operation.
+
+   #### 3.5.4.6 field err
+   The `uint32_t err` field is predominantly used in responses from the Secure OS to the Normal World. It conveys the outcome of the requested TEE operation. A value of `TEEC_SUCCESS` (typically 0) indicates successful completion, while other values signify various error conditions, such as `TEEC_ERROR_BAD_PARAMETERS`, `TEEC_ERROR_ACCESS_DENIED`, or TA-specific errors.
+
+   #### 3.5.4.7 field uuid
+   The `uint8_t uuid[16]` field contains a 128-bit Universally Unique Identifier that uniquely identifies a Trusted Application. This field is primarily used during the `TEE_CMD_ID_OPEN_SESSION` operation, where the Normal World client provides the UUID of the TA it wishes to connect to. The Secure OS uses this UUID to locate and instantiate the correct TA.
+
+   #### 3.5.4.8 field paddr
+   The `uint64_t paddr` field is relevant for shared memory operations, specifically for command `TEE_CMD_ID_MAP_SHARED_MEM`. It specifies the starting physical address of the memory region in the Normal World that is to be mapped into the Secure World as shared memory. For other command IDs, this field typically remains unused.
+
+   #### 3.5.4.9 field num_pages
+   The `uint32_t num_pages` field complements the `paddr` field for `TEE_CMD_ID_MAP_SHARED_MEM` operations. It specifies the number of contiguous physical memory pages, starting from `paddr`, that should be included in the shared memory mapping. This field is unused for other command IDs.
+
+   #### 3.5.4.10 field shmem_id
+   The `uint32_t shmem_id` field serves as a handle or identifier for a successfully mapped shared memory region. When the Secure OS processes a `TEE_CMD_ID_MAP_SHARED_MEM` request, it returns a `shmem_id` in the response. This identifier must then be provided by the Normal World client in subsequent `TEE_CMD_ID_UNMAP_SHARED_MEM` requests to specify which shared memory region to deallocate and unmap.
+
+   #### 3.5.4.11 struct wg_param params
+   The `struct wg_param params[4]` field is an array of four structures, each of 24 bytes, designed to pass parameters to and from a Trusted Application during a `TEE_CMD_ID_INVOKE_CMD` operation. This mirrors the GlobalPlatform TEE Client API's `TEEC_Operation` structure, which allows up to four parameters.
+
+   Each `wg_param` can represent either a small value passed directly or a reference to a memory region. Specifically:
+   *   **Simple arguments (values):** Small data values can be stored directly within the 24-byte space of a `wg_param`. The interpretation of these values is TA-specific.
+   *   **Memory references:** For larger data buffers, a `wg_param` can represent a memory reference. In this implementation, a memory reference is structured as three 64-bit values: `size` (the size of the referenced memory region), `offset` (the offset within a shared memory region identified by `shmem_id`, or an absolute physical address if contextually appropriate), and `world_id` (identifying whether the memory resides in the Normal or Secure World, or if it is shared memory).
+
+   The type of each parameter (value or memory reference direction: input, output, inout) is typically communicated through a separate `paramTypes` field, implicitly handled by the TEE API implementation or associated context not detailed in this `wg_tee_cmd` specific overview, but crucial for interpreting `params`.
+
+   #### 3.5.4.12 padding
+   The `uint8_t padding[108]` field consists of reserved space used to align the total size of the `wg_tee_cmd` structure to 256 bytes. This fixed overall size simplifies queue management by ensuring that each message occupies a predictable number of cache lines and facilitates easier calculation of slot offsets within the shared memory ring buffers. Explicit padding prevents variations due to compiler-specific alignment behaviors across different toolchains or platforms.
+
+   ### 3.5.5 IPI Based Signaling
+   While shared memory queues provide the data structures for exchanging command and response messages between the Normal and Secure Worlds, an Inter-Processor Interrupt (IPI) mechanism is employed to trigger real-time notifications about new messages. This ensures that the recipient world can process incoming messages promptly without resorting to continuous, high-frequency polling of the queues, thereby reducing CPU overhead.
+
+   #### 3.5.5.1 RISC-V IPI Mechanism
+   The RISC-V architecture provides mechanisms for sending IPIs between harts (hardware threads or cores). Software running on one hart can trigger an interrupt on another target hart. This is typically achieved by writing to a memory-mapped register associated with the target hart's interrupt controller, such as the Supervisor Software Interrupt Pending (SSIP) bit in the `sip` CSR, or by using platform-level interrupt controllers like the Core Local Interruptor (CLINT) through its memory-mapped software interrupt registers (`msip`).
+
+   Alternatively, and more commonly in systems utilizing a Supervisor Binary Interface (SBI) implementation like OpenSBI, IPIs are sent via an SBI call (e.g., `sbi_send_ipi`). The SBI call abstracts the underlying hardware details, allowing privileged software (like the Linux kernel or the Secure OS) to request an IPI to be sent to a specified set of harts. The OpenSBI implementation running in M-mode then handles the hardware-specific actions to deliver the IPI.
+
+   #### 3.5.5.2 Normal to Secure World Signaling
+   When the Linux driver in the Normal World needs to send a command to the Secure OS, it follows this procedure:
+   1.  The driver populates a `wg_tee_cmd` structure with the command details and parameters.
+   2.  This structure is then pushed onto the shared request queue using the lock-free MPMC queue algorithm.
+   3.  After successfully enqueuing the command, the driver triggers an IPI specifically targeting the hart on which the Secure OS is executing (core 0 in this project). This IPI is typically sent via an `sbi_send_ipi` call provided by OpenSBI.
+   4.  The IPI serves as a signal to the Secure OS, prompting it to check the request queue for new messages. The requesting thread in the Linux driver then typically waits (e.g., blocks on a completion variable) for the response to appear in the response queue.
+
+   This IPI-based notification minimizes the latency between a command being sent and the Secure OS beginning its processing.
+
+   #### 3.5.5.3 Secure to Normal World Signaling
+   In the reverse direction, when the Secure OS has processed a command and placed a response into the shared response queue, the signaling mechanism is different. Due to architectural considerations and the desire to simplify interrupt handling in the Normal World Linux kernel, the Secure OS does not send an IPI back to the Normal World cores.
+
+   A primary reason for this design choice is the potential difficulty in the Linux kernel reliably distinguishing an IPI specifically originating from the Secure OS for TEE communication from other types of IPIs it might receive (e.g., for scheduler KSM, TLB shootdowns, or other kernel subsystems). Incorrectly handling or misinterpreting such IPIs could lead to instability.
+
+   Consequently, the communication flow for responses is as follows:
+   1.  The Secure OS processes the request and places the `wg_tee_cmd` response structure into the shared response queue.
+   2.  The Linux driver in the Normal World employs a polling mechanism. A dedicated kernel thread or a periodic timer checks the response queue for completed commands.
+   3.  When the polling mechanism finds a response corresponding to a pending request (matched via the `seq` field), it retrieves the response and wakes up the original requesting thread, delivering the result.
+
+   While polling can introduce some latency compared to a direct interrupt, it simplifies the interrupt management on the Linux side and avoids the complexities of a bidirectional IPI signaling protocol for this specific TEE interaction. The polling frequency can be tuned to balance responsiveness and CPU overhead.
 
   ### IPI Based Signaling
   - While the shared queues provide a data structure for messages, an Inter-Processor Interrupt (IPI) mechanism triggers real-time notifications.
