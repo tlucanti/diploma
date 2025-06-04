@@ -204,43 +204,40 @@ I have a draft of chapter 3:
    #### Opportunities for Improvement
 
 
-Starting with chapter 3.6.2. TEE API Specification
+Starting with chapter 3.7.1. Kernel Objects and Handles
 I have a draft of chapter sections:
 
-#### TEEC_UUID
-- describe ...
-#### TEEC_Result
-- describe ...
-#### TEEC_Context;
-- describe ...
-#### TEEC_Session;
-- describe ...
-#### TEEC_Value;
-- describe ...
-#### TEEC_RegisteredMemoryReference;
-- describe ...
-#### TEEC_Parameter;
-- describe ...
-#### TEEC_Operation;
-- describe ...
-#### TEEC_SharedMemory;
-- describe ...
-#### TEEC_InitializeContext
-- describe ...
-#### TEEC_FinalizeContext
-- describe ...
-#### TEEC_OpenSession
-- describe ...
-#### TEEC_CloseSession
-- describe ...
-#### TEEC_InvokeCommand
-- describe ...
-#### TEEC_AllocateSharedMemory
-- describe ...
-#### TEEC_ReleaseSharedMemory
-- describe ...
+- Взаимодействие с ресурсами внутри ядра построено вокруг объектной модели. Каждый объект в системе (например, задача, поток, виртуальный объект памяти, канал связи и т.д.) имеет свой уникальный дескриптор (handle). Доступ к функциональным методам объекта и внутреннему состоянию определяется набором capability-флагов (прав доступа).
+#### Tasks (Processes)
+- Задачи (tasks) являются основными изолированными сущностями в Secure OS.
+- Они содержат собственное адресное пространство (vm_space) и набор потоков (threads).
+- Кодовая составляющая задачи находится в пользовательском адресном пространстве безопасной среды (для Trusted Applications).
+- Каждая задача имеет таблицу объектов (object_table), где регистрируются все ресурсы (включая каналы, объекты памяти и др.), предназначенные для её использования.
+- создание задачи состоит из следующих этапов:
+1. Создание пустой пользовательской задачи (task_create_empty) – формирование объектов структуры task, включая инициализацию отдельных полей (handle_page, object_table и т.д.).
+2. Запуск задачи (task_run) – настройка защиты памяти для страницы дескрипторов (handle_page), установка состояния (TASK_SPAWNED) и добавление главного потока задачи в планировщик (sched_insert).
+3. Уничтожение задачи (task_destroy) – освобождение адресного пространства (vm_space_destroy) и освобождение динамически выделенной памяти.
+- Пример создания задачи на основе системного вызова task_spawn показывает, как пользователь может передать в ядро указатель на точку входа (ep) и handle задачи, а ядро создаёт в ней начальный поток и переводит задачу в состояние выполнения.
+- *пример*
+#### Threads
+- Каждая задача содержит по крайней мере один поток (thread).
+- Потоки отвечают за выполнение кода внутри адресного пространства задачи.
+- При создании пользовательского потока ядро настраивает контекст выполнения (регистры, стек, текущее окружение и т.д.).
+- При создании процесса (task), ядро создаёт «главный поток» задачи, устанавливая ему точку входа (ep). После этого поток регистрируется в списке потоков (list_head_add_tail) и может быть запланирован планировщиком.
+#### Pipes (или Channels)
+- Вместо классических «каналов» (pipes) в ядре используются объекты «channel» (двухсторонние каналы связи). Они создаются фабрикой (см. factory.c, syscall channel_create) и позволяют процессам или компонентам ядра обмениваться сообщениями по дескрипторам с установленными привилегиями.
+- Канал представлен двумя концами (rx/tx), которые могут принадлежать одной или разным задачам.
+#### Virtual Memory Objects
+- Объекты виртуальной памяти (VM Object) отображают некоторый участок памяти (обычно физической) в адресное пространство задачи.
+- В ОС реализован системный вызов vmo_create, который позволяет создавать vm_object через фабрику (factory_object).
+- После создания объект регистрируется в таблице дескрипторов c соответствующими правами (OBJECT_CAP_TRANSFER, VMO_CAP_FULL и пр.), что позволяет разграничивать операции чтения, записи и копирования.
+#### Synchronization Primitives
+- В ядре имеется набор примитивов синхронизации
+- spin_lock
+- mutex
+- semaphore
+- Очереди ожидания (wait_queue_init, wait_object_many) – абстракция, позволяющая потокам ждать появление событий (например, данных в канале).
 
 write contents of these sections based on draft.
 If needed - maybe add some points if there is anything else to say by topic.
-implementation of API is in attached file for context.
-Do not repeat yourself! Do not repeat points from other chapters! Keep it concise! Write only section contents, no summary or reasoning.
+full structure of whole paper and some of secure kernel boot code is in the attached file.Do not repeat yourself! Do not repeat points from other chapters! Keep it concise! Write only section contents, no summary or reasoning.
