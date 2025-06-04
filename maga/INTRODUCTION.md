@@ -237,7 +237,9 @@
   - UUID - Universally Unique Identifier (Универсальный Уникальный Идентификатор)
   - SSIP - Supervisor Software Interrupt Pending
   - CLINT - Core Local Interruptor
-
+  - MMS - Memory Management Subsistem (Подсистема Управления Памятью)
+  - ELF - Executable and Linkable Format (Формат Исполнимых и Компонуемых Файлов)
+  - FS - File System (Файловая Система)
 
 <div style="page-break-after: always;"></div>
 ---

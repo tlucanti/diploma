@@ -712,16 +712,15 @@ Here is the content for Chapter 3, Section 3.3.1 "WorldGuard Configuration":
    - mutex
    - semaphore
    - Очереди ожидания (wait_queue_init, wait_object_many) – абстракция, позволяющая потокам ждать появление событий (например, данных в канале).
+
   ### Task Management
-  - Механизм управления задачами (Task Management) в Secure OS определяет систему, в рамках которой задачи создаются, запускаются и завершаются.
-   - В коде ядра представлены несколько ключевых подсистем, реализующих данный функционал.
+  - Механизм управления задачами (Task Management) в Secure OS определяет подсистему, в рамках которой задачи создаются, запускаются и завершаются.
    #### Process Model
-   - Процессная (task) модель предполагает, что каждая задача имеет собственное адресное пространство и набор ресурсов, зарегистрированных в ядре.
-   - Создание задачи обычно происходит по запросу пользовательского процесса либо при создании сессии для новой TA, через системный вызов (task_create). Перед запуском задачи ядро выделяет нужные структуры данных, инициализирует объект задачи и подключает его к планировщику. При этом задача находится в состоянии TASK_CREATED, пока не будет вызвана функция task_spawn, переводящая её в состояние TASK_SPAWNED.
+   - Процессная модель предполагает, что каждая задача имеет собственное адресное пространство и набор ресурсов, зарегистрированных в ядре.
+   - Создание задачи происходит по запросу пользовательского процесса либо при создании сессии для новой TA, через системный вызов (task_create). Перед запуском задачи ядро выделяет нужные структуры данных, инициализирует объект задачи и подключает его к планировщику. При этом задача находится в состоянии TASK_CREATED, пока не будет вызвана функция task_spawn, переводящая её в состояние TASK_SPAWNED.
    #### IPC Service
    - В системе используется механизм IPC на основе каналов (channels). Каждая задача может получить дескрипторы двух сторон канала, позволящие выполнять операции чтения/записи (channel_read()/channel_send()).
    - Кроме того, для организации группового ожидания сообщений служит вызов wait_object_many, позволяющий одним системным вызовом ожидать события от нескольких объектов.
-   - Пример кода root_task демонстрирует задачу, которая ожидает сообщения в канале kernel_channel. При появлении нового сообщения конструкция wait_object_many(...) возвращает события от одного или нескольких объектов.
    - Затем сообщение извлекается (channel_read) и, результат работы, отправляется обратно (channel_send).
    #### Root Task
    - Root Task (root_task.c) является важной задачей, поддерживающей цикл обработки входящих запросов и сообщений от других процессов и ядровых сервисов. Здесь можно заметить:
@@ -729,6 +728,7 @@ Here is the content for Chapter 3, Section 3.3.1 "WorldGuard Configuration":
    - Циклическую обработку arriving-сообщений.
    - Вызов nwd_proccess_message для обработки поступивших команд от Normal World
    - Таким образом, root task служит центральной точкой обмена сообщениями между Secure OS и Normal World.
+
   ### Scheduling
   - Планировщик отвечает за распределение ресурсов процессора между потоками, находящимися в состоянии готовности к выполнению. В ядре реализованы базовые механизмы планирования, ориентированные на простоту и расширяемость.
    #### Scheduling Service
@@ -740,6 +740,7 @@ Here is the content for Chapter 3, Section 3.3.1 "WorldGuard Configuration":
     - Приоритетного планирования (приоритеты на основе критичности задачи).
     - Планирования на основе квантования времени (time-slices).
     - Специальных политик для реального времени (real-time scheduling).
+
   ### Memory Management Subsystem
   - Подсистема управления памятью (Memory Management Subsystem) обеспечивает надежную изоляцию памяти между задачами, а также предоставляет безопасный интерфейс распределения памяти в пространстве ядра и пользовательских задач.
    #### Secure Memory Allocator
@@ -760,12 +761,30 @@ Here is the content for Chapter 3, Section 3.3.1 "WorldGuard Configuration":
  ## Capability-Based Security Model
  - This chapter focuses on the design and implementation of the capability-based security model within the Secure OS.
  - It explains how the system uses handles to encapsulate capabilities, how these handles are created and managed, and how capability-based access control is enforced through task manifests and the root task.
+
+  ### MAC and DAC
+   #### MAC
+   - introduction to MAC
+   - advantages
+   - disadvantages
+   - ...
+   #### DAC
+   - introduction to DAC
+   - advantages
+   - disadvantages
+   - ...
+   #### Cooperative MAC and DAC Security Model
+   - Capability-Based access control has granularity of DAC and security of MAC
+   - it serves least privilege principle
+   - lightweight
+   - *other advantages*
+
   ### Handles as Encapsulated Capabilities
   - Handles in the Secure OS function as references to system resources (objects). Each handle has associated permissions and metadata defining how it may be accessed or manipulated. Internally, handles map to kernel-managed descriptors that maintain the state, permission bits, and relevant object pointers.
    #### Design Rationale
    - Least Privilege Principle: Capabilities ensure that tasks and trusted applications only have the minimum set of privileges needed.
    - Fine-Grained Access Control: Provides precise control over which resources can be accessed and how they are used.
-   - Composability: The handle-based model allows different system components (tasks, services, etc.) to dynamically create and share capabilities in a structured manner.
+   - Lightweight: MAC is very heavy system that includes database in kernel and control list parsers, and it inflates TCB size
    #### Objects
    - Definition: Objects represent protected resources (e.g., memory regions, tasks, communication channels).
    - Creation: created by a specialized factory object or created initally by kernel
