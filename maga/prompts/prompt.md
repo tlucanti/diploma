@@ -204,15 +204,22 @@ I have a draft of chapter 3:
    #### Opportunities for Improvement
 
 
-Starting with chapter 3.9.2. Syscall Specification
+Starting with chapter 3.10.1. Standard Library for Trusted Applications
 I have a draft of chapter sections:
 
-- Each system call operates on one or more kernel object handles. Object types include tasks, threads, virtual memory objects (VMOs), factory object, and channels. Below is an overview of the currently defined syscalls.
- #### SYS_LOG
- - Logging interface for debugging output from the secure world.
- #### ...
+  ### Standard Library for Trusted Applications
+   #### Standard Library Overview
+   - The standard library is a minimal libc equivalent tailored to the Secure OS TEE context. It provides essential functionality typically found in a standard C runtime, excluding non-secure system calls. Implemented entirely in secure world userspace, the library avoids dynamic linking or unnecessary runtime overhead. It includes:
+    - Memory functions (e.g., memcpy, memset)
+    - Formatting and I/O (e.g., printf)
+    - Math functions (including support for hardware-accelerated routines if available)
+    - Cryptographic primitives
+    - Concurrent synchronization mechanisms
+    - Container utilities (e.g., lists, maps)
+    - Typed object and handle access abstraction
 
-write contents of these sections based on draft.
+write contents of these section (only 3.10.1, so other sections) based on draft.
 If needed - maybe add some points if there is anything else to say by topic.
-full structure of whole paper and syscall implementation code is in the attached file.
+full structure of whole paper is in the attached file.
+Do not write very much, only a few sentencies
 Do not repeat yourself! Do not repeat points from other chapters! Keep it concise! Write only section contents, no summary or reasoning.
