@@ -9,287 +9,117 @@ Paper should have 4 chapters:
 # Chapter 3: Design and Implementation of the Secure Operating System
 # Chapter 4: Evaluation and Security Analysis
 
-So, 3rd chapter is about Design and Implementation of the Secure Operating System
-I have a draft of chapter 3:
+So, 4th chapter is about Evaluation and Security Analysis
+I have a draft of chapter 4:
 
-# Chapter 3: Design and Implementation of the Secure Operating System
- ## Interface Considerations
-  ### TEE Client API: Inter-World Communication Interface
-   #### OP-TEE on RISC-V
-   #### Develop own minimal GlobalPlatform TEE interface
-   #### Experemental of Research Prototypes
-   #### Rationale for Adopting a Global Platform-based API Subset
- ## System Architecture Overview
-  ### High-Level Architecture
-   #### Architectural Layers
-   #### Secure vs. Normal World Overview
-  ### Core System Components
-   #### Kernel, Resource Managers, and TEE Services
-   #### Shared Memory and IPI-Based Communication
-  ### Memory Layout and Addressing
-   #### Physical and Virtual Addressing
-   #### Isolation Mechanisms
-   #### Shared Memory Queues
-  ### Secure OS Execution Flow
-   #### Boot Process Overview
-   #### Inter-World Transitions
-   #### Scheduling in Secure OS
-  ### Security and Policy Enforcement
-   #### Capability-Based Security Model
-   #### World Guard Integration
-  ### TA Lifecycle
-   #### Creation
-   #### Compute
-   #### Teardown
- ## WorldGuard Integration
-  ### WorldGuard Configuration
-   #### World Configuration (Two-World Model)
-   #### WorldGuard Checker Configuration for Secure Isolation
-  ### Integration with the Secure OS
-   #### Error Reporting
-   #### Managing World Transitions
-   #### Communication Pages
- ## Secure Boot Process and Initialization
-  ### Secure OS Early Initialization
-   #### OpenSBI Handover
-   #### Setting Up the Stack and Basic Memory Layout
-   #### First Kernel Relocation
-   #### Enabling the MMU
-  ### Secure OS Initialization
-   #### Register Console
-   #### Initialize Page Tables
-   #### Second Kernel Relocation (If Needed)
-   #### Initialize Trap Handler
-   #### Initialize Timers
-   #### Initialize Page Allocator
-   #### Initialize Slab Allocator
-   #### Initialize Scheduler
-   #### Initialize Root Task
-   #### Initialize Normal World Communication Channel
-   #### Initialize Trusted Applications
- ### Rich OS Initialization
-  #### Initialization by OpenSBI
-  #### Core Startup
- ## OpenSBI modifications
-  ### ...
- ## Cross-World Communication
-  ### Shared Memory Queues
-   #### Lock-Free Queue Algorithm
-   #### Shared Memory Ring Buffers
-   #### Requests Queue
-   #### Responses Queue
-   #### Canary Around Shared Pages
-  ### Shared Memory Regions
-   #### Memory Region Allocation
-   #### Memory Region Deallocation
-   #### Data transfer
-  ### Message Structure
-  ### IPI Based Signaling
-   #### RISC-V IPI Mechanism
-   #### Normal to Secure World Signaling
-   #### Secure to Normal World Signaling
- ## TEE API
-  ### Global Platform API
-   #### Introduction to Global Platform API
-  ### TEE Client API
-   #### TEE Contexts
-   #### TEE Sessions
-   #### TEE Shared Memory
-  ### TEE API Specification
-   #### TEEC_UUID
-   #### TEEC_Result
-   #### TEEC_Context;
-   #### TEEC_Session;
-   #### TEEC_Value;
-   #### TEEC_RegisteredMemoryReference;
-   #### TEEC_Parameter;
-   #### TEEC_Operation;
-   #### TEEC_SharedMemory;
-   #### TEEC_InitializeContext
-   #### TEEC_FinalizeContext
-   #### TEEC_OpenSession
-   #### TEEC_CloseSession
-   #### TEEC_InvokeCommand
-   #### TEEC_AllocateSharedMemory
-   #### TEEC_ReleaseSharedMemory
- ## Linux Driver Implementation
-  ### Driver Overview and Registration
-   #### Linux Driver Initialization
-   #### Linux Driver Interface
-  ### Shared Queues from the Linux Side
-   #### Requests Queue
-   #### Responses Queue
-   ### Linux Communication Interface
-   #### Communication Initialization
-   #### Queue Initialization
-   #### Communication Polling kthread
-   #### Message Sending
-   #### Getting the Result
-   #### Communication Finalization
- ## Дизайн и реализация ядра Secure OS
-  ### Kernel Objects and Handles
-   #### Tasks (Processes)
-   #### Threads
-   #### Pipes (или Channels)
-   #### Virtual Memory Objects
-   #### Synchronization Primitives
-  ### Task Management
-   #### Process Model
-   #### IPC Service
-   #### Root Task
-  ### Scheduling
-   #### Scheduling Service
-   #### Scheduling Policies
-  ### Memory Management Subsystem
-   #### Secure Memory Allocator
-   #### Memory Isolation
-  ### File System
-   #### linear RAM fs
-   #### elf files
- ## Capability-Based Security Model
-  ### Handles as Encapsulated Capabilities
-   #### Design Rationale
-   #### Objects
-   #### Object Handles
-   #### Factory Objects
-   #### Object Methods
-  ### Capability-Based Access Control
-   #### Permissions
-   #### Task Manifests
-   #### Root Task
-   #### Method Invocation
-   #### Performance Implications
- ## Secure Syscalls
-  ### Secure Entry Points
-   #### Background on OS System Calls
-   #### Secure Syscall Lifecycle
-   #### Argument Passing Format
-   #### Validation of Handle Permissions
-  ### Syscall Specification
- ## Trusted Application Framework
-  ### Standard Library for Trusted Applications
-  ### Handle Operations Specification
-  ### I/O Standard Library Specification
-  ### Strings Standard Library Specification
-  ### Math Standard Library Specification
-  ### Crypto Standard Library Specification
-  ### Container Standard Library Specification
-  ### Concurrency Standard Library Specification
-  ### Misc Library Functions Specification
- ## Implementation Challenges and Optimizations
-  ### Performance vs. Security Trade-Offs
-   #### Balancing Isolation with Speed
-   #### Inter-World Communication Overhead
-   #### Scalability Limits on a Single-Core Secure OS
-  ### Memory Footprint Optimizations
-   #### Static Allocation vs. Dynamic Allocation
-   #### Slab Allocator and Page Pool Efficiency
-   #### Minimal Kernel Subsystem Design
-  ### Debugging Considerations
-   #### Logging from Secure OS
-   #### Debugging TAs in Isolation
-   #### Instrumentation Techniques
-   #### Fault Isolation and Crash Analysis
-  ### Build System and Packaging for TAs
-   #### Trusted Application Build Flow
-   #### Kernel Build System
-   #### Development Tooling Support
-  ### Testing and Validation
-   #### Unit Testing Secure OS Components
-   #### Integration Testing with Linux
-   #### Security-Oriented Tests
-  ### Summary of Implementation
-   #### Overview
-   #### Codebase Structure Summary
-   #### Opportunities for Improvement
-
+# Chapter 4: Evaluation and Security Analysis
+ ## Software Stack Setup
+  ### Toolchains
+   #### Development Environment
+  ### Emulation Environment
+   #### QEMU with WorldGuard Support
+   #### QEMU Configuration
+  ### Linux
+   #### Linux with WorldGuard Support
+   #### Linux Configuration
+   #### Linux Image
+  ### Build System
+   #### CMake Configuration
+   #### CMake Build System Design
+   #### Trusted Application (TA) Build Flow
+  ### CI Integration
+   #### Continuous Integration Setup
+   #### Automated Testing Scripts
+ ## Demonstration of Secure OS Functionality
+  ### Building the Software Stack
+   #### Cloning Project Repositories
+   #### Building the Cross Toolchain
+   #### Building the WorldGuard-Enabled QEMU
+   #### Building the Patched OpenSBI
+   #### Building a WorldGuard-Aware Linux Image
+   #### Building Secure OS
+   #### Assembling Bootable Image
+  ### Example Trusted Application: Simple Arithmetic TA
+   #### Writing a Simple Trusted Application
+   #### Defining TA Manifest for Capability Model
+   #### Building the Trusted Application
+  ### Demonstration and Execution
+   #### Booting the System
+   #### Initializing the Linux Driver for Secure OS Communication
+   #### Opening a Session to Trusted Application
+   #### Invoking the TA Function and Receiving Response
+   #### Visualizing Capability Enforcement (Optional)
+   #### Debugging and Logging Support
+ ## Security Analysis
+  ### Resilience against Normal World Attacks
+   #### Unauthorized Access to Secure Memory
+   #### Unauthorized Access to Secure OS/TA Code
+   #### Attempts to Corrupt Shared Memory Queues
+   #### Exploiting CWC Protocol (Cross World Communication)
+  ### Resilience against Buggy Trusted Applications
+   #### Inter-TA Isolation
+   #### Capability Enforcement Engine
+   #### TA Resource Misuse Protection
+   #### Side-Channel Attacks
+  ### Additional Attack Scenarios and Limitations
+   #### Physical Attacks
+   #### Complexity of Trusted Computing Base (TCB)
+   #### Chain of Trust Attacks
+ ## Performance Evaluation
+  ### Latency of Secure OS Operations
+   #### Session Open Latency
+   #### Command Invocation Latency
+   #### Session Close Latency
+  ### Communication Performance
+   #### Throughput of CWC Channel
+   #### IPI Signaling Overhead
+   #### TA Context Switch Overhead
+   #### Kernel Entry/Exit Transition Overhead
+  ### Memory and Resource Footprint
+   #### Memory Footprint of Secure OS
+   #### Per-TA Resource Consumption
+   #### Shared Queue Overhead
+   #### Scalability Limits and Bottlenecks
 
 Starting with following chapters:
 I have a draft of section:
 
-### Strings Standard Library Specification
-#### String Utility Functions
-- memset
-- memcmp
-- memcpy
-- memmove
-- memchr
-- strlen
-- strchr
-- strcmp
-- strtol
-- These are implemented using size-optimized and alignment-aware techniques for low-overhead TA memory environments.
-### Math Standard Library Specification
-#### Algebraic Functions
-- sqrt, pow, log, exp, abs, floor, ceil
-#### Trigonometric Functions
-- sin, cos, tan, asin, acos, atan
-#### Mathematical Constants
-- pi, e, inf, nan
-#### Complex Math Functions
-- Complex number support is syntactically mirrored from real-number APIs.
-### Crypto Standard Library Specification
-#### Hashing Functions
-- sha256(data, len)
-- sha512(data, len)
-- md5(data, len)
-#### Encryption/Decryption Functions
-- in future work support for functionality like:
-- aes_encrypt, aes_decrypt - Support for AES-GCM/CTR if hardware-accelerated
-- chacha20_encrypt, chacha20_decrypt
-#### Key Management and Derivation
-- in future work support for functionality like:
-- hkdf implementation
-- Insecure vs. hardware-sealed key storage distinction
-#### Random Number Generation
-- in future work support for functionality like:
-- crypto_rng - Hardware-backed RNG where available
-- crypto_rng_init_seed - Optional API for seed injection
-### Container Standard Library Specification
-- Note: Trees are all reentrant and zero-alloc in TA context
-#### List Functions
-- Singly Linked List: Init, Push, Pop, Find, Remove
-- Doubly Linked List: Bidirectional traversal APIs with embedded nodes
-#### Radix Tree Functions
-- Insertion, deletion, lookup optimized for dense ID spaces
-#### WAVL Tree Functions
-- Self-balancing tree, relaxed AVL variant, with logarithmic insert/remove
-#### Red-Black Tree Functions
-- Balanced binary tree implemented using node-color rules
-### Concurrency Standard Library Specification
-#### Atomic Operations
-- atomic_add_fetch
-- atomic_sub_fetch
-- atomic_or_fetch, atomic_and_fetch
-- atomic_read, atomic_write
-- Memory barrier primitives: smp_rb() (read barrier), smp_wb() (write barrier)
-#### Mutex API
-- mutex_init(), mutex_lock(), mutex_unlock(), mutex_destroy()
-#### Spinlock API
-- spinlock_init(), spin_lock(), spin_unlock(), spin_trylock()
-#### Semaphore API
-- sem_init(), sem_wait(), sem_post(), sem_destroy()
-#### Conditional Variables
-- cond_init(), cond_wait(), cond_signal(), cond_broadcast()
-### Misc Library Functions Specification
-#### Align Macros
-- align_up(x, a)
-- align_up_ptr(p, a)
-- align_down(x, a)
-- align_down_ptr(p, a)
-- is_aligned(x, a)
-- is_aligned_ptr(p, a)
-#### Bit Manipulation
-- bit32(n), bit64(n)
-- is_power_of_two(x)
-- clz32(x) - Count Leading Zeros (32-bit)
-- clz64(x) - Count Leading Zeros (64-bit)
-- log2(x)
-#### Compiler and Intrinsic Macros
-- barrier() - Compiler-level memory fence
-- container_of(ptr, type, member) - Offset-based typed accessor
-- Standardized __attribute__ usage for alignment/enforced inlining.
-- same_type() - Static type matching check (debug-mode only)
+ ## Software Stack Setup
+ - This section provides a detailed description of the full software environment used to support and validate the Secure OS, focusing on emulation, build infrastructure, and integration with toolchains.
+ - This chapter is essential to reproduce the development setup and benchmark context.
+  ### Toolchains
+  - Description of RISC-V GCC or LLVM toolchain versions, secure OS and TA compilation flags, linker scripts used, and build script wrappers.
+   #### Development Environment
+   - Recommended dev environment setup: OS dependencies, Make/CMake/gcc versions, scripting helpers, debugging support (e.g., GDB hooks to Secure OS), and virtual machine setup, if applicable.
+  ### Emulation Environment
+  - A robust emulation setup using QEMU provides a virtual platform to simulate the RISC-V World Guard hardware and enables rapid development and testing.
+   #### QEMU with WorldGuard Support
+   - Explanation of QEMU version used and modifications or forks maintained to support the World Guard extension.
+   #### QEMU Configuration
+   - QEMU settings used during emulation: memory map, number of harts, device tree blob (DTB) settings, and boot arguments necessary to launch both Secure OS and Linux.
+   - Also covers usage of debugging options and UART output customization.
+  ### Linux
+  - A Secure World-aware Linux kernel build is a key part of the integration testing, providing the userland-controlled "Normal World" for Secure OS interaction.
+   #### Linux with WorldGuard Support
+   - Brief explanation of the version/fork of the Linux kernel used, including any upstream or out-of-tree patches to support Secure OS interaction and WorldGuard.
+   #### Linux Configuration
+   - Kernel config menu options (e.g., minimal init system, character device support, TEE driver integration) and explanation of chosen configurations.
+   #### Linux Image
+   - Process of creating the kernel image and initial RAM filesystem (initramfs); integration into QEMU boot flow and linkage with rootfs/init and Secure OS debug output collection.
+  ### Build System
+  - The build system is centralized and modular to build various components including the kernel, trusted applications, OpenSBI, and Linux.
+   #### CMake Configuration
+   - How the overall build system is managed using CMake files: compiler toolchains, cross-compilation targets, component path registration, and reusability across Secure OS kernel and TA build systems.
+   #### CMake Build System Design
+   - Code organization and dependency separation. Build phases: TA compilation, kernel linking, staging and image generation. Covers options or build presets (e.g., debug vs release), and the way it cooperates with toolchains and QEMU images.
+   #### Trusted Application (TA) Build Flow
+   - Explains how a TA is built, manifests are generated, linking to standard libraries, and embedding into final system images.
+  ### CI Integration
+  - Automated testing ensures regression-free development and reliable build stability.
+   #### Continuous Integration Setup
+   - Framework used for testing (e.g., GitHub Actions, GitLab CI, Jenkins), pipeline stages—such as QEMU boot test, TA invocation test—and artifacts generation.
+   #### Automated Testing Scripts
+   - Details on scripts and system outputs validated within CI. Boot success, basic syscall availability and secure/normal world boundary integrity.
 
 write contents of these section based on draft.
 If needed - maybe add some points if there is anything else to say by topic.

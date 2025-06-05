@@ -244,6 +244,10 @@
   - DAC - Discretionary Access Control (Дискреционное Управление Доступом)
   - HKDF - HMAC-based Key Derivation Function (Функция Генерации Ключей на основе HMAC)
   - HMAC - Hash-based Message Authentication Code
+  - GDB - GNU Debugger
+  - DTB - Device Tree Blob (Двоичное Дерево Устройств)
+  - CI - Continuous Integration (Непрерывная Интеграция)
+
 
 <div style="page-break-after: always;"></div>
 ---
