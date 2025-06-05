@@ -8,8 +8,8 @@ for fname in [
     # "INTRODUCTION.md",
     # "CHAPTER-1.md",
     # "CHAPTER-2.md",
-    "CHAPTER-3.md",
-    "ch4.md",
+    # "CHAPTER-3.md",
+    "CHAPTER-4.md",
     "conclusion.md",
 ]:
     with open(fname) as f:
