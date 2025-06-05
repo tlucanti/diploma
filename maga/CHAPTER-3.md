@@ -4488,3 +4488,6 @@
    выравнивания памяти (align_up, is_aligned),
    побитовых операций (bit32, clz64, is_power_of_two, log2)
    и работы с внутренними интринсиками компилятора.
+
+<div style="page-break-after: always;"></div>
+---
