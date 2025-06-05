@@ -145,11 +145,11 @@
   - This subsection presents a detailed breakdown of the latency involved in interaction between the Normal World (Linux) and the Secure World (Secure OS), following the GlobalPlatform API lifecycle: session open, command invocation, session close.
   - Note: All latency measurements should include mean, standard deviation, and max/min values with multiple runs.
    #### Session Open Latency
-   - Time required to open a session to a TA via `TEEC_OpenSession()`
+   - Time required to open a session to a TA via TEEC_OpenSession()
    - Includes context switch, message construction, capability validation, and TA instantiation
    - Factors influencing latency (TA manifest size, cold start vs. warm start)
    #### Command Invocation Latency
-   - Latency of `TEEC_InvokeCommand()` to a previously opened TA Session
+   - Latency of TEEC_InvokeCommand() to a previously opened TA Session
    - Breakdown of fixed syscall overhead, scheduling delay, and parameter marshalling
    - Synchronous vs. asynchronous (if supported)
    #### Session Close Latency
@@ -228,4 +228,3 @@
    - System defenses against speculative execution and timing inference
 
 ---
-

@@ -424,13 +424,13 @@ Here is the content for Chapter 3, Section 3.3.1 "WorldGuard Configuration":
    The chosen MPMC queue is a bounded, array-based (ring buffer) queue designed for high performance by leveraging atomic operations and careful management of sequence numbers to coordinate producers and consumers. This algorithm is similar in principle to designs like Dmitry Vyukov's bounded MPMC queue.
 
    ##### 3.5.1.2.1 Core Idea
-   Each slot in the queue's ring buffer is associated with a sequence number (`seq`). Producers and consumers use global atomic counters (`enqueue` and `dequeue` respectively) to obtain "tickets" for accessing specific logical slots. A producer attempting to write to logical slot `pos` can only do so if the target physical cell's `seq` matches `pos`. After writing, the producer updates the cell's `seq` to `pos + 1`. A consumer attempting to read from logical slot `pos` can only do so if the target physical cell's `seq` matches `pos + 1`. After reading, the consumer updates the cell's `seq` to `pos + N` (where N is the queue capacity), marking it available for a future enqueue operation at `pos + N`. This scheme ensures that cells are processed in order and correctly handed off between producers and consumers.
+   Each slot in the queue's ring buffer is associated with a sequence number (seq). Producers and consumers use global atomic counters (enqueue and dequeue respectively) to obtain "tickets" for accessing specific logical slots. A producer attempting to write to logical slot pos can only do so if the target physical cell's seq matches pos. After writing, the producer updates the cell's seq to pos + 1. A consumer attempting to read from logical slot pos can only do so if the target physical cell's seq matches pos + 1. After reading, the consumer updates the cell's seq to pos + N (where N is the queue capacity), marking it available for a future enqueue operation at pos + N. This scheme ensures that cells are processed in order and correctly handed off between producers and consumers.
 
    ##### 3.5.1.2.2 Data Structures
    The queue implementation relies on two main structures:
 
-   *   **`mpmc_queue`**: Represents the shared queue.
-       ```c
+   *   **mpmc_queue**: Represents the shared queue.
+       c
        typedef struct {
            void *data;             // Pointer to the backing circular buffer of queue_cell
            size_t size_mask;       // Mask for calculating index in circular buffer (capacity - 1)
@@ -439,61 +439,61 @@ Here is the content for Chapter 3, Section 3.3.1 "WorldGuard Configuration":
            _Atomic size_t enqueue cacheline_aligned; // Global counter for next enqueue ticket
            _Atomic size_t dequeue cacheline_aligned; // Global counter for next dequeue ticket
        } mpmc_queue;
-       ```
-       The `enqueue` and `dequeue` counters are aligned to cache lines to prevent false sharing between cores that might be simultaneously trying to produce and consume. The queue capacity must be a power of 2 allowing for efficient index calculation using `size_mask`.
 
-   *   **`queue_cell`**: Represents an individual slot in the queue.
-       ```c
+       The enqueue and dequeue counters are aligned to cache lines to prevent false sharing between cores that might be simultaneously trying to produce and consume. The queue capacity must be a power of 2 allowing for efficient index calculation using size_mask.
+
+   *   **queue_cell**: Represents an individual slot in the queue.
+       c
        typedef struct {
            _Atomic int seq;        // Sequence number for this cell
            unsigned char data[];   // Flexible array member for storing the actual data
        } queue_cell;
-       ```
-       The `seq` field is atomic, as it's the primary mechanism for synchronization between producers and consumers for a given cell.
+
+       The seq field is atomic, as it's the primary mechanism for synchronization between producers and consumers for a given cell.
 
 
    ##### 3.5.1.2.3 Initialization
-   The `mpmc_queue_init` function initializes the queue:
+   The mpmc_queue_init function initializes the queue:
    1.  The backing memory buffer, its total size, the size of the data elements, and the calculated cell size are provided.
-   2.  The `enqueue` and `dequeue` atomic counters are initialized to 0 using `atomic_store_explicit` with `__ATOMIC_RELAXED` memory order.
-   3.  The `size_mask` is calculated as `capacity - 1`.
-   4.  Crucially, each `queue_cell` at index `i` in the buffer has its `seq` field initialized to `i` (`atomic_store_explicit(&cell->seq, i, __ATOMIC_RELAXED)`). This state (`cell[i].seq == i`) signifies that cell `i` is ready for the `i`-th enqueue operation (i.e., when the global `enqueue` counter equals `i`).
+   2.  The enqueue and dequeue atomic counters are initialized to 0 using atomic_store_explicit with __ATOMIC_RELAXED memory order.
+   3.  The size_mask is calculated as capacity - 1.
+   4.  Crucially, each queue_cell at index i in the buffer has its seq field initialized to i (atomic_store_explicit(&cell->seq, i, __ATOMIC_RELAXED)). This state (cell[i].seq == i) signifies that cell i is ready for the i-th enqueue operation (i.e., when the global enqueue counter equals i).
 
-   ##### 3.5.1.2.4 Enqueue Operation (`mpmc_queue_push`)
+   ##### 3.5.1.2.4 Enqueue Operation (mpmc_queue_push)
    A producer wishing to add an item to the queue performs the following steps:
-   1.  **Get Ticket**: Atomically load the current `enqueue` counter value, `pos` (`atomic_load_explicit(&queue->enqueue, __ATOMIC_RELAXED)`). This `pos` is the logical slot the producer aims to fill.
+   1.  **Get Ticket**: Atomically load the current enqueue counter value, pos (atomic_load_explicit(&queue->enqueue, __ATOMIC_RELAXED)). This pos is the logical slot the producer aims to fill.
    2.  **Attempt to Claim Slot**:
-       a.  Calculate the physical cell index: `idx = pos & queue->size_mask`.
-       b.  Atomically load the `seq` from `cell[idx]` with `__ATOMIC_ACQUIRE` memory order. This ensures any previous writes to this cell (e.g., by a consumer freeing it) are visible.
-       c.  **Verify Slot State**: Check if `cell[idx].seq == pos`.
-           *   If `true`, a consumer has prepared this cell for the `pos`-th enqueue operation. The producer can try to claim this ticket. It attempts to atomically increment `queue->enqueue` from `pos` to `pos + 1` using `atomic_compare_exchange_weak_explicit` with `__ATOMIC_RELAXED` for both success and failure.
-               *   If CAS succeeds, the producer has successfully claimed the ticket `pos`. It breaks a retry loop.
-               *   If CAS fails, another producer claimed ticket `pos`. The current producer's `pos` is updated by CAS to the current `queue->enqueue` value and it re-evaluates its claim in the loop.
-           *   If `cell[idx].seq < pos`, the queue is full at this cell. The cell is from a previous lap and still holds data that hasn't been dequeued, or it's concurrently being dequeued. The push operation returns `false` (queue full).
-           *   If `cell[idx].seq > pos`, the current `pos` might be stale or based on an older view of `queue->enqueue`. The producer reloads `pos` from `queue->enqueue` (`atomic_load_explicit(&queue->enqueue, __ATOMIC_RELAXED)`) and retries the claim process.
-   3.  **Write Data**: Once a slot is successfully claimed, `memcpy` the user's data into `cell[idx].data`.
-   4.  **Signal Data Ready**: Atomically store `pos + 1` into `cell[idx].seq` using `atomic_store_explicit` with `__ATOMIC_RELEASE` memory order. This makes the data write visible to consumers and signals that the `pos`-th item is ready for dequeue. The `pos + 1` value is what a consumer will expect for this slot.
+       a.  Calculate the physical cell index: idx = pos & queue->size_mask.
+       b.  Atomically load the seq from cell[idx] with __ATOMIC_ACQUIRE memory order. This ensures any previous writes to this cell (e.g., by a consumer freeing it) are visible.
+       c.  **Verify Slot State**: Check if cell[idx].seq == pos.
+           *   If true, a consumer has prepared this cell for the pos-th enqueue operation. The producer can try to claim this ticket. It attempts to atomically increment queue->enqueue from pos to pos + 1 using atomic_compare_exchange_weak_explicit with __ATOMIC_RELAXED for both success and failure.
+               *   If CAS succeeds, the producer has successfully claimed the ticket pos. It breaks a retry loop.
+               *   If CAS fails, another producer claimed ticket pos. The current producer's pos is updated by CAS to the current queue->enqueue value and it re-evaluates its claim in the loop.
+           *   If cell[idx].seq < pos, the queue is full at this cell. The cell is from a previous lap and still holds data that hasn't been dequeued, or it's concurrently being dequeued. The push operation returns false (queue full).
+           *   If cell[idx].seq > pos, the current pos might be stale or based on an older view of queue->enqueue. The producer reloads pos from queue->enqueue (atomic_load_explicit(&queue->enqueue, __ATOMIC_RELAXED)) and retries the claim process.
+   3.  **Write Data**: Once a slot is successfully claimed, memcpy the user's data into cell[idx].data.
+   4.  **Signal Data Ready**: Atomically store pos + 1 into cell[idx].seq using atomic_store_explicit with __ATOMIC_RELEASE memory order. This makes the data write visible to consumers and signals that the pos-th item is ready for dequeue. The pos + 1 value is what a consumer will expect for this slot.
 
-   ##### 3.5.1.2.5 Dequeue Operation (`mpmc_queue_pop`)
+   ##### 3.5.1.2.5 Dequeue Operation (mpmc_queue_pop)
    A consumer wishing to retrieve an item from the queue performs these steps:
-   1.  **Get Ticket**: Atomically load the current `dequeue` counter value, `pos` (`atomic_load_explicit(&queue->dequeue, __ATOMIC_RELAXED)`). This `pos` is the logical slot the consumer aims to read.
+   1.  **Get Ticket**: Atomically load the current dequeue counter value, pos (atomic_load_explicit(&queue->dequeue, __ATOMIC_RELAXED)). This pos is the logical slot the consumer aims to read.
    2.  **Attempt to Claim Item**:
-       a.  Calculate the physical cell index: `idx = pos & queue->size_mask`.
-       b.  Atomically load the `seq` from `cell[idx]` with `__ATOMIC_ACQUIRE` memory order. This ensures the data write from the producer and its `seq` update are visible.
-       c.  **Verify Slot State**: Check if `cell[idx].seq == pos + 1`.
-           *   If `true`, the `pos`-th enqueue operation has completed for this cell, and it contains data ready for dequeue. The consumer can try to claim this ticket. It attempts to atomically increment `queue->dequeue` from `pos` to `pos + 1` using `atomic_compare_exchange_weak_explicit` with `__ATOMIC_RELAXED` for success and failure.
-               *   If CAS succeeds, the consumer has successfully claimed the item at ticket `pos`. It breaks a retry loop.
-               *   If CAS fails, another consumer claimed this item. The current consumer's `pos` is updated by CAS and it re-evaluates its claim in the loop.
-           *   If `cell[idx].seq < pos + 1`, the queue is empty at this cell. The cell is either in its initial state (`seq == pos`) or has been freed by a previous dequeue from an earlier lap. The pop operation returns `false` (queue empty).
-           *   If `cell[idx].seq > pos + 1`, the current `pos` might be stale. The consumer reloads `pos` from `queue->dequeue` (`atomic_load_explicit(&queue->dequeue, __ATOMIC_RELAXED)`) and retries.
-   3.  **Read Data**: Once an item is successfully claimed, `memcpy` the data from `cell[idx].data` to the user's buffer.
-   4.  **Signal Slot Empty**: Atomically store `pos + queue->size_mask + 1` (which is `pos + capacity`) into `cell[idx].seq` using `atomic_store_explicit` with `__ATOMIC_RELEASE` memory order. This marks the cell as empty and available for a future enqueue operation, specifically the one identified by ticket `pos + capacity`.
+       a.  Calculate the physical cell index: idx = pos & queue->size_mask.
+       b.  Atomically load the seq from cell[idx] with __ATOMIC_ACQUIRE memory order. This ensures the data write from the producer and its seq update are visible.
+       c.  **Verify Slot State**: Check if cell[idx].seq == pos + 1.
+           *   If true, the pos-th enqueue operation has completed for this cell, and it contains data ready for dequeue. The consumer can try to claim this ticket. It attempts to atomically increment queue->dequeue from pos to pos + 1 using atomic_compare_exchange_weak_explicit with __ATOMIC_RELAXED for success and failure.
+               *   If CAS succeeds, the consumer has successfully claimed the item at ticket pos. It breaks a retry loop.
+               *   If CAS fails, another consumer claimed this item. The current consumer's pos is updated by CAS and it re-evaluates its claim in the loop.
+           *   If cell[idx].seq < pos + 1, the queue is empty at this cell. The cell is either in its initial state (seq == pos) or has been freed by a previous dequeue from an earlier lap. The pop operation returns false (queue empty).
+           *   If cell[idx].seq > pos + 1, the current pos might be stale. The consumer reloads pos from queue->dequeue (atomic_load_explicit(&queue->dequeue, __ATOMIC_RELAXED)) and retries.
+   3.  **Read Data**: Once an item is successfully claimed, memcpy the data from cell[idx].data to the user's buffer.
+   4.  **Signal Slot Empty**: Atomically store pos + queue->size_mask + 1 (which is pos + capacity) into cell[idx].seq using atomic_store_explicit with __ATOMIC_RELEASE memory order. This marks the cell as empty and available for a future enqueue operation, specifically the one identified by ticket pos + capacity.
 
    ##### 3.5.1.2.6 Correctness and Performance Considerations
-   *   **Atomicity and Ordering**: The use of atomic operations on `enqueue`, `dequeue`, and `seq` fields, along with appropriate memory ordering semantics (`__ATOMIC_ACQUIRE` on reads of `seq` that gate data access, `__ATOMIC_RELEASE` on writes to `seq` after data operations), ensures correct synchronization and visibility of data between producers and consumers.
-   *   **ABA Problem Avoidance**: The `seq` numbers and the global `enqueue`/`dequeue` ticket counters are monotonically increasing (modulo counter overflow for extremely long-lived queues). A cell's `seq` value cycles through `X`, `X+1`, `X+capacity`, `X+capacity+1`, etc. The specific checks (`cell->seq == pos` for enqueue, `cell->seq == pos + 1` for dequeue) target unique states in this progression relative to the global ticket `pos`, effectively avoiding the ABA problem for the control variables of the queue cell state.
-   *   **Lock-Freedom**: In case of contention on `enqueue` or `dequeue` counters (multiple producers or consumers), the CAS operation ensures that only one thread succeeds at a time, advancing the counter. If a thread's CAS fails, it implies another thread made progress. Thus, system-wide progress is guaranteed.
-   *   **False Sharing**: The `cacheline_aligned` attribute for `enqueue` and `dequeue` counters in the `mpmc_queue` struct is critical for performance. It prevents these frequently updated atomic variables, which are typically modified by different cores (producer core vs consumer core), from residing on the same cache line and causing excessive cache coherency traffic (false sharing).
+   *   **Atomicity and Ordering**: The use of atomic operations on enqueue, dequeue, and seq fields, along with appropriate memory ordering semantics (__ATOMIC_ACQUIRE on reads of seq that gate data access, __ATOMIC_RELEASE on writes to seq after data operations), ensures correct synchronization and visibility of data between producers and consumers.
+   *   **ABA Problem Avoidance**: The seq numbers and the global enqueue/dequeue ticket counters are monotonically increasing (modulo counter overflow for extremely long-lived queues). A cell's seq value cycles through X, X+1, X+capacity, X+capacity+1, etc. The specific checks (cell->seq == pos for enqueue, cell->seq == pos + 1 for dequeue) target unique states in this progression relative to the global ticket pos, effectively avoiding the ABA problem for the control variables of the queue cell state.
+   *   **Lock-Freedom**: In case of contention on enqueue or dequeue counters (multiple producers or consumers), the CAS operation ensures that only one thread succeeds at a time, advancing the counter. If a thread's CAS fails, it implies another thread made progress. Thus, system-wide progress is guaranteed.
+   *   **False Sharing**: The cacheline_aligned attribute for enqueue and dequeue counters in the mpmc_queue struct is critical for performance. It prevents these frequently updated atomic variables, which are typically modified by different cores (producer core vs consumer core), from residing on the same cache line and causing excessive cache coherency traffic (false sharing).
    *   **Suitability**: This type of queue is well-suited for inter-world communication via shared memory as it avoids kernel intervention (locks, semaphores) for synchronization, reducing overhead. It can operate efficiently even when producers and consumers are in different privilege levels or running on different types of OS environments, provided they map the shared memory and can perform atomic operations.
 
   ### Shared Memory Queues
@@ -502,24 +502,24 @@ Here is the content for Chapter 3, Section 3.3.1 "WorldGuard Configuration":
    #### 3.5.2.1 Shared Memory Ring Buffers
    The communication queues are implemented as ring buffers residing within two dedicated physical memory pages. These pages are configured by the Secure OS using WorldGuard to grant shared read/write access permissions to both the Secure World and the Normal World, specifically tailored for each queue's producer/consumer roles.
 
-   Each ring buffer is a circular array of fixed-size message slots, designed to hold `wg_tee_cmd` structures. The MPMC queue algorithm, as detailed in section 3.5.1, manages access to these slots using atomic `enqueue` (head) and `dequeue` (tail) counters rather than explicit head/tail pointers directly manipulated by the worlds. This mechanism obviates the need for locks.
+   Each ring buffer is a circular array of fixed-size message slots, designed to hold wg_tee_cmd structures. The MPMC queue algorithm, as detailed in section 3.5.1, manages access to these slots using atomic enqueue (head) and dequeue (tail) counters rather than explicit head/tail pointers directly manipulated by the worlds. This mechanism obviates the need for locks.
 
-   Memory alignment is critical. The `mpmc_queue` structure itself aligns its atomic `enqueue` and `dequeue` counters to cache line boundaries to mitigate false sharing between the CPU core executing the Secure OS and the core(s) executing Linux. Message slots within the ring buffer are also appropriately aligned to accommodate the `wg_tee_cmd` structure, preventing performance degradation due to unaligned accesses.
+   Memory alignment is critical. The mpmc_queue structure itself aligns its atomic enqueue and dequeue counters to cache line boundaries to mitigate false sharing between the CPU core executing the Secure OS and the core(s) executing Linux. Message slots within the ring buffer are also appropriately aligned to accommodate the wg_tee_cmd structure, preventing performance degradation due to unaligned accesses.
 
    #### 3.5.2.2 Requests Queue
    A dedicated ring buffer, hosted on one of the shared memory pages, serves as the Requests Queue. The Normal World (Linux driver) acts as the producer, placing requests for the Secure World to process. The Secure OS is the consumer of this queue.
 
    The process for the Normal World to enqueue a request involves:
-   1.  The Linux driver serializes the TEE command into a `wg_tee_cmd` structure.
-   2.  The driver attempts to push this structure into an available slot in the Requests Queue using the `mpmc_queue_push` operation. This function internally handles claiming a slot and atomically updating the queue's `enqueue` counter.
+   1.  The Linux driver serializes the TEE command into a wg_tee_cmd structure.
+   2.  The driver attempts to push this structure into an available slot in the Requests Queue using the mpmc_queue_push operation. This function internally handles claiming a slot and atomically updating the queue's enqueue counter.
    3.  Upon successful enqueueing, the Linux driver typically sends an Inter-Processor Interrupt (IPI) to the Secure OS core to notify it of the new request, as detailed in section 3.5.5.2.
 
    #### 3.5.2.3 Responses Queue
    A-separate ring buffer, utilizing the second shared memory page, functions as the Responses Queue. The Secure OS acts as the producer, placing results of processed TEE commands or event notifications into this queue. The Normal World (Linux driver) is the consumer.
 
    The Secure OS enqueues a response by:
-   1.  Populating a `wg_tee_cmd` structure with the result of an operation.
-   2.  Pushing this structure into the Responses Queue using its `mpmc_queue_push` (or equivalent internal) function. This atomically updates the `enqueue` counter for the Responses Queue.
+   1.  Populating a wg_tee_cmd structure with the result of an operation.
+   2.  Pushing this structure into the Responses Queue using its mpmc_queue_push (or equivalent internal) function. This atomically updates the enqueue counter for the Responses Queue.
    3.  The Normal World driver relies on a polling mechanism to check this queue for completed responses, as described in section 3.5.5.3.
 
    #### 3.5.2.4 Canary Around Shared Pages
@@ -531,15 +531,15 @@ Here is the content for Chapter 3, Section 3.3.1 "WorldGuard Configuration":
   Aside from the primary queues used for command and response signaling, the system supports the dynamic allocation and sharing of larger memory regions. These regions facilitate bulk data transfer between the Normal World and Trusted Applications running in the Secure World.
 
    #### 3.5.3.1 Memory Region Allocation
-   The allocation of a shared memory region is initiated by the Normal World (Linux) by invoking the `TEE_CMD_ID_MAP_SHARED_MEM` secure operation. This request is processed by the Secure OS as follows:
+   The allocation of a shared memory region is initiated by the Normal World (Linux) by invoking the TEE_CMD_ID_MAP_SHARED_MEM secure operation. This request is processed by the Secure OS as follows:
 
    1.  **Page Allocation in Secure World**: The Secure OS allocates the requested number of physical memory pages from its own managed pool.
    2.  **Access Configuration**: WorldGuard checker rules are configured for these allocated pages to grant simultaneous access permissions (e.g., read, write) to both the Secure World (acting on behalf of a Trusted Application) and the Normal World. The specific permissions granted can be tailored to the use case.
    3.  **Secure OS Mapping**: The Secure OS maps these physical pages into its own kernel address space. This allows the Secure OS itself, or subsequently the designated Trusted Application, to access the shared memory. The physical address and size of the region are prepared for return to the Normal World.
-   4.  **Normal World Mapping**: Upon successful allocation and configuration in the Secure World, the Linux driver receives the physical base address and size of the shared region. The driver is then responsible for mapping these physical pages into the Linux kernel's virtual address space, making the region accessible from the Normal World. An identifier for this shared memory region (`shmem_id`) is also returned to the Normal World for future reference.
+   4.  **Normal World Mapping**: Upon successful allocation and configuration in the Secure World, the Linux driver receives the physical base address and size of the shared region. The driver is then responsible for mapping these physical pages into the Linux kernel's virtual address space, making the region accessible from the Normal World. An identifier for this shared memory region (shmem_id) is also returned to the Normal World for future reference.
 
    #### 3.5.3.2 Memory Region Deallocation
-   Deallocation is initiated by the Normal World by invoking the `TEE_CMD_ID_UNMAP_SHARED_MEM` secure operation, typically referencing the `shmem_id` obtained during allocation. The Secure OS handles this request through the following steps:
+   Deallocation is initiated by the Normal World by invoking the TEE_CMD_ID_UNMAP_SHARED_MEM secure operation, typically referencing the shmem_id obtained during allocation. The Secure OS handles this request through the following steps:
 
    1.  **Secure World Revocation**: The Secure OS first ensures that the Trusted Application (if any) has ceased using the memory. It then reconfigures the WorldGuard checker rules associated with the physical pages of the shared region to revoke all access permissions for both the Secure World and the Normal World.
    2.  **Secure OS Unmapping**: The Secure OS unmaps the region from its kernel address space.
@@ -553,68 +553,68 @@ Here is the content for Chapter 3, Section 3.3.1 "WorldGuard Configuration":
    *   No specialized communication primitives or inter-world calls are required for the actual data movement within an established shared_memory region, beyond ensuring appropriate synchronization between the producer and consumer of the data if concurrent access is involved. The efficiency of this transfer is only limited by memory bandwidth and cache coherency mechanisms.
 
   ### Message Structure
-  All commands passed through the request and response queues adhere to a consistent message format. This subsection details the `wg_tee_cmd` structure, which is designed to encapsulate TEE operation parameters and results. The structure serves as the fundamental unit of communication, holding command identifiers, session tracking information, error codes, and payload parameters for TEE operations. Adherence to this fixed structure simplifies parsing and processing logic in both the Normal and Secure Worlds.
+  All commands passed through the request and response queues adhere to a consistent message format. This subsection details the wg_tee_cmd structure, which is designed to encapsulate TEE operation parameters and results. The structure serves as the fundamental unit of communication, holding command identifiers, session tracking information, error codes, and payload parameters for TEE operations. Adherence to this fixed structure simplifies parsing and processing logic in both the Normal and Secure Worlds.
 
    #### 3.5.4.1 struct wg_tee_cmd
-   The `wg_tee_cmd` structure is the primary data packet for inter-world communication via shared memory queues. It standardizes the format for all TEE command requests originating from the Normal World and responses from the Secure OS. Key components include a command identifier, a sequence number for tracking, session and Trusted Application identifiers, operational parameters or memory mapping details, and a field for return codes. The structure is padded to a fixed size (256 bytes) to ensure predictable alignment within the shared memory queues.
+   The wg_tee_cmd structure is the primary data packet for inter-world communication via shared memory queues. It standardizes the format for all TEE command requests originating from the Normal World and responses from the Secure OS. Key components include a command identifier, a sequence number for tracking, session and Trusted Application identifiers, operational parameters or memory mapping details, and a field for return codes. The structure is padded to a fixed size (256 bytes) to ensure predictable alignment within the shared memory queues.
 
    #### 3.5.4.2 field id
-   The `uint32_t id` field specifies the type of TEE operation being requested or responded to. It allows the receiving world to dispatch the command to the appropriate handler. Defined command identifiers include:
-   *   `TEE_CMD_ID_OPEN_SESSION`: Initiates a new session with a Trusted Application.
-   *   `TEE_CMD_ID_CLOSE_SESSION`: Terminates an existing session with a Trusted Application.
-   *   `TEE_CMD_ID_INVOKE_CMD`: Calls a specific function within an active Trusted Application session.
-   *   `TEE_CMD_ID_MAP_SHARED_MEM`: Requests the Secure OS to map a region of physical memory as shared between the Normal and Secure Worlds.
-   *   `TEE_CMD_ID_UNMAP_SHARED_MEM`: Requests the Secure OS to unmap a previously shared memory region.
+   The uint32_t id field specifies the type of TEE operation being requested or responded to. It allows the receiving world to dispatch the command to the appropriate handler. Defined command identifiers include:
+   *   TEE_CMD_ID_OPEN_SESSION: Initiates a new session with a Trusted Application.
+   *   TEE_CMD_ID_CLOSE_SESSION: Terminates an existing session with a Trusted Application.
+   *   TEE_CMD_ID_INVOKE_CMD: Calls a specific function within an active Trusted Application session.
+   *   TEE_CMD_ID_MAP_SHARED_MEM: Requests the Secure OS to map a region of physical memory as shared between the Normal and Secure Worlds.
+   *   TEE_CMD_ID_UNMAP_SHARED_MEM: Requests the Secure OS to unmap a previously shared memory region.
 
    #### 3.5.4.3 field seq
-   The `uint32_t seq` field provides a unique identifier for each command instance. This sequence number is generated by the Normal World by atomically incrementing a counter for each new request. The Secure OS includes this `seq` number in its response, enabling the Normal World client to correlate responses with their original requests, especially in asynchronous communication models.
+   The uint32_t seq field provides a unique identifier for each command instance. This sequence number is generated by the Normal World by atomically incrementing a counter for each new request. The Secure OS includes this seq number in its response, enabling the Normal World client to correlate responses with their original requests, especially in asynchronous communication models.
 
    #### 3.5.4.4 field session_id
-   The `uint32_t session_id` field identifies the specific session to which a command pertains. Upon successful execution of a `TEE_CMD_ID_OPEN_SESSION` command, the Secure OS returns a `session_id` to the Normal World. Subsequent `TEE_CMD_ID_INVOKE_CMD` and `TEE_CMD_ID_CLOSE_SESSION` commands must include this `session_id` to target the correct TA instance and its associated context. This allows a single Client Application in the Normal World to manage multiple concurrent sessions with one or more TAs.
+   The uint32_t session_id field identifies the specific session to which a command pertains. Upon successful execution of a TEE_CMD_ID_OPEN_SESSION command, the Secure OS returns a session_id to the Normal World. Subsequent TEE_CMD_ID_INVOKE_CMD and TEE_CMD_ID_CLOSE_SESSION commands must include this session_id to target the correct TA instance and its associated context. This allows a single Client Application in the Normal World to manage multiple concurrent sessions with one or more TAs.
 
    #### 3.5.4.5 field func_id
-   The `uint32_t func_id` field is utilized specifically with the `TEE_CMD_ID_INVOKE_CMD` command. Each Trusted Application may expose multiple functions or commands. This field allows the Normal World client to stipulate which specific action or function, identified by `func_id`, should be executed by the TA during an `InvokeCommand` operation.
+   The uint32_t func_id field is utilized specifically with the TEE_CMD_ID_INVOKE_CMD command. Each Trusted Application may expose multiple functions or commands. This field allows the Normal World client to stipulate which specific action or function, identified by func_id, should be executed by the TA during an InvokeCommand operation.
 
    #### 3.5.4.6 field err
-   The `uint32_t err` field is predominantly used in responses from the Secure OS to the Normal World. It conveys the outcome of the requested TEE operation. A value of `TEEC_SUCCESS` (typically 0) indicates successful completion, while other values signify various error conditions, such as `TEEC_ERROR_BAD_PARAMETERS`, `TEEC_ERROR_ACCESS_DENIED`, or TA-specific errors.
+   The uint32_t err field is predominantly used in responses from the Secure OS to the Normal World. It conveys the outcome of the requested TEE operation. A value of TEEC_SUCCESS (typically 0) indicates successful completion, while other values signify various error conditions, such as TEEC_ERROR_BAD_PARAMETERS, TEEC_ERROR_ACCESS_DENIED, or TA-specific errors.
 
    #### 3.5.4.7 field uuid
-   The `uint8_t uuid[16]` field contains a 128-bit Universally Unique Identifier that uniquely identifies a Trusted Application. This field is primarily used during the `TEE_CMD_ID_OPEN_SESSION` operation, where the Normal World client provides the UUID of the TA it wishes to connect to. The Secure OS uses this UUID to locate and instantiate the correct TA.
+   The uint8_t uuid[16] field contains a 128-bit Universally Unique Identifier that uniquely identifies a Trusted Application. This field is primarily used during the TEE_CMD_ID_OPEN_SESSION operation, where the Normal World client provides the UUID of the TA it wishes to connect to. The Secure OS uses this UUID to locate and instantiate the correct TA.
 
    #### 3.5.4.8 field paddr
-   The `uint64_t paddr` field is relevant for shared memory operations, specifically for command `TEE_CMD_ID_MAP_SHARED_MEM`. It specifies the starting physical address of the memory region in the Normal World that is to be mapped into the Secure World as shared memory. For other command IDs, this field typically remains unused.
+   The uint64_t paddr field is relevant for shared memory operations, specifically for command TEE_CMD_ID_MAP_SHARED_MEM. It specifies the starting physical address of the memory region in the Normal World that is to be mapped into the Secure World as shared memory. For other command IDs, this field typically remains unused.
 
    #### 3.5.4.9 field num_pages
-   The `uint32_t num_pages` field complements the `paddr` field for `TEE_CMD_ID_MAP_SHARED_MEM` operations. It specifies the number of contiguous physical memory pages, starting from `paddr`, that should be included in the shared memory mapping. This field is unused for other command IDs.
+   The uint32_t num_pages field complements the paddr field for TEE_CMD_ID_MAP_SHARED_MEM operations. It specifies the number of contiguous physical memory pages, starting from paddr, that should be included in the shared memory mapping. This field is unused for other command IDs.
 
    #### 3.5.4.10 field shmem_id
-   The `uint32_t shmem_id` field serves as a handle or identifier for a successfully mapped shared memory region. When the Secure OS processes a `TEE_CMD_ID_MAP_SHARED_MEM` request, it returns a `shmem_id` in the response. This identifier must then be provided by the Normal World client in subsequent `TEE_CMD_ID_UNMAP_SHARED_MEM` requests to specify which shared memory region to deallocate and unmap.
+   The uint32_t shmem_id field serves as a handle or identifier for a successfully mapped shared memory region. When the Secure OS processes a TEE_CMD_ID_MAP_SHARED_MEM request, it returns a shmem_id in the response. This identifier must then be provided by the Normal World client in subsequent TEE_CMD_ID_UNMAP_SHARED_MEM requests to specify which shared memory region to deallocate and unmap.
 
    #### 3.5.4.11 struct wg_param params
-   The `struct wg_param params[4]` field is an array of four structures, each of 24 bytes, designed to pass parameters to and from a Trusted Application during a `TEE_CMD_ID_INVOKE_CMD` operation. This mirrors the GlobalPlatform TEE Client API's `TEEC_Operation` structure, which allows up to four parameters.
+   The struct wg_param params[4] field is an array of four structures, each of 24 bytes, designed to pass parameters to and from a Trusted Application during a TEE_CMD_ID_INVOKE_CMD operation. This mirrors the GlobalPlatform TEE Client API's TEEC_Operation structure, which allows up to four parameters.
 
-   Each `wg_param` can represent either a small value passed directly or a reference to a memory region. Specifically:
-   *   **Simple arguments (values):** Small data values can be stored directly within the 24-byte space of a `wg_param`. The interpretation of these values is TA-specific.
-   *   **Memory references:** For larger data buffers, a `wg_param` can represent a memory reference. In this implementation, a memory reference is structured as three 64-bit values: `size` (the size of the referenced memory region), `offset` (the offset within a shared memory region identified by `shmem_id`, or an absolute physical address if contextually appropriate), and `world_id` (identifying whether the memory resides in the Normal or Secure World, or if it is shared memory).
+   Each wg_param can represent either a small value passed directly or a reference to a memory region. Specifically:
+   *   **Simple arguments (values):** Small data values can be stored directly within the 24-byte space of a wg_param. The interpretation of these values is TA-specific.
+   *   **Memory references:** For larger data buffers, a wg_param can represent a memory reference. In this implementation, a memory reference is structured as three 64-bit values: size (the size of the referenced memory region), offset (the offset within a shared memory region identified by shmem_id, or an absolute physical address if contextually appropriate), and world_id (identifying whether the memory resides in the Normal or Secure World, or if it is shared memory).
 
-   The type of each parameter (value or memory reference direction: input, output, inout) is typically communicated through a separate `paramTypes` field, implicitly handled by the TEE API implementation or associated context not detailed in this `wg_tee_cmd` specific overview, but crucial for interpreting `params`.
+   The type of each parameter (value or memory reference direction: input, output, inout) is typically communicated through a separate paramTypes field, implicitly handled by the TEE API implementation or associated context not detailed in this wg_tee_cmd specific overview, but crucial for interpreting params.
 
    #### 3.5.4.12 padding
-   The `uint8_t padding[108]` field consists of reserved space used to align the total size of the `wg_tee_cmd` structure to 256 bytes. This fixed overall size simplifies queue management by ensuring that each message occupies a predictable number of cache lines and facilitates easier calculation of slot offsets within the shared memory ring buffers. Explicit padding prevents variations due to compiler-specific alignment behaviors across different toolchains or platforms.
+   The uint8_t padding[108] field consists of reserved space used to align the total size of the wg_tee_cmd structure to 256 bytes. This fixed overall size simplifies queue management by ensuring that each message occupies a predictable number of cache lines and facilitates easier calculation of slot offsets within the shared memory ring buffers. Explicit padding prevents variations due to compiler-specific alignment behaviors across different toolchains or platforms.
 
    ### 3.5.5 IPI Based Signaling
    While shared memory queues provide the data structures for exchanging command and response messages between the Normal and Secure Worlds, an Inter-Processor Interrupt (IPI) mechanism is employed to trigger real-time notifications about new messages. This ensures that the recipient world can process incoming messages promptly without resorting to continuous, high-frequency polling of the queues, thereby reducing CPU overhead.
 
    #### 3.5.5.1 RISC-V IPI Mechanism
-   The RISC-V architecture provides mechanisms for sending IPIs between harts (hardware threads or cores). Software running on one hart can trigger an interrupt on another target hart. This is typically achieved by writing to a memory-mapped register associated with the target hart's interrupt controller, such as the Supervisor Software Interrupt Pending (SSIP) bit in the `sip` CSR, or by using platform-level interrupt controllers like the Core Local Interruptor (CLINT) through its memory-mapped software interrupt registers (`msip`).
+   The RISC-V architecture provides mechanisms for sending IPIs between harts (hardware threads or cores). Software running on one hart can trigger an interrupt on another target hart. This is typically achieved by writing to a memory-mapped register associated with the target hart's interrupt controller, such as the Supervisor Software Interrupt Pending (SSIP) bit in the sip CSR, or by using platform-level interrupt controllers like the Core Local Interruptor (CLINT) through its memory-mapped software interrupt registers (msip).
 
-   Alternatively, and more commonly in systems utilizing a Supervisor Binary Interface (SBI) implementation like OpenSBI, IPIs are sent via an SBI call (e.g., `sbi_send_ipi`). The SBI call abstracts the underlying hardware details, allowing privileged software (like the Linux kernel or the Secure OS) to request an IPI to be sent to a specified set of harts. The OpenSBI implementation running in M-mode then handles the hardware-specific actions to deliver the IPI.
+   Alternatively, and more commonly in systems utilizing a Supervisor Binary Interface (SBI) implementation like OpenSBI, IPIs are sent via an SBI call (e.g., sbi_send_ipi). The SBI call abstracts the underlying hardware details, allowing privileged software (like the Linux kernel or the Secure OS) to request an IPI to be sent to a specified set of harts. The OpenSBI implementation running in M-mode then handles the hardware-specific actions to deliver the IPI.
 
    #### 3.5.5.2 Normal to Secure World Signaling
    When the Linux driver in the Normal World needs to send a command to the Secure OS, it follows this procedure:
-   1.  The driver populates a `wg_tee_cmd` structure with the command details and parameters.
+   1.  The driver populates a wg_tee_cmd structure with the command details and parameters.
    2.  This structure is then pushed onto the shared request queue using the lock-free MPMC queue algorithm.
-   3.  After successfully enqueuing the command, the driver triggers an IPI specifically targeting the hart on which the Secure OS is executing (core 0 in this project). This IPI is typically sent via an `sbi_send_ipi` call provided by OpenSBI.
+   3.  After successfully enqueuing the command, the driver triggers an IPI specifically targeting the hart on which the Secure OS is executing (core 0 in this project). This IPI is typically sent via an sbi_send_ipi call provided by OpenSBI.
    4.  The IPI serves as a signal to the Secure OS, prompting it to check the request queue for new messages. The requesting thread in the Linux driver then typically waits (e.g., blocks on a completion variable) for the response to appear in the response queue.
 
    This IPI-based notification minimizes the latency between a command being sent and the Secure OS beginning its processing.
@@ -625,9 +625,9 @@ Here is the content for Chapter 3, Section 3.3.1 "WorldGuard Configuration":
    A primary reason for this design choice is the potential difficulty in the Linux kernel reliably distinguishing an IPI specifically originating from the Secure OS for TEE communication from other types of IPIs it might receive (e.g., for scheduler KSM, TLB shootdowns, or other kernel subsystems). Incorrectly handling or misinterpreting such IPIs could lead to instability.
 
    Consequently, the communication flow for responses is as follows:
-   1.  The Secure OS processes the request and places the `wg_tee_cmd` response structure into the shared response queue.
+   1.  The Secure OS processes the request and places the wg_tee_cmd response structure into the shared response queue.
    2.  The Linux driver in the Normal World employs a polling mechanism. A dedicated kernel thread or a periodic timer checks the response queue for completed commands.
-   3.  When the polling mechanism finds a response corresponding to a pending request (matched via the `seq` field), it retrieves the response and wakes up the original requesting thread, delivering the result.
+   3.  When the polling mechanism finds a response corresponding to a pending request (matched via the seq field), it retrieves the response and wakes up the original requesting thread, delivering the result.
 
    While polling can introduce some latency compared to a direct interrupt, it simplifies the interrupt management on the Linux side and avoids the complexities of a bidirectional IPI signaling protocol for this specific TEE interaction. The polling frequency can be tuned to balance responsiveness and CPU overhead.
 
@@ -907,6 +907,7 @@ Here is the content for Chapter 3, Section 3.3.1 "WorldGuard Configuration":
     - Concurrent synchronization mechanisms
     - Container utilities (e.g., lists, maps)
     - Typed object and handle access abstraction
+
   ### Handle Operations Specification
    #### Channel Functions
    - channel_read - Read data from a secure communication channel.
@@ -935,6 +936,7 @@ Here is the content for Chapter 3, Section 3.3.1 "WorldGuard Configuration":
    - vprintf - Variadic-style printf handler.
    #### Logging Function
    - tee_log - Internal secure log syscall (invokes SYS_LOG, tagged output).
+
   ### Strings Standard Library Specification
    #### String Utility Functions
    - memset

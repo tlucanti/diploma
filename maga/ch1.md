@@ -248,7 +248,7 @@
   ### 1.4.4 RISC-V's Physical Memory Protection (PMP): Privilege-Level Memory Isolation
 
    #### Overview
-   RISC-V Physical Memory Protection (PMP) is a standard hardware feature defined in the RISC-V Privileged ISA Specification. It provides a mechanism for controlling access rights to physical memory regions. PMP allows privileged software, typically executing in Machine Mode (M-mode), to define multiple memory regions, each with specific access permissions (Read, Write, Execute). These permissions can be set independently for different privilege levels (Machine, Supervisor, User). PMP configuration is managed through a set of Control and Status Registers (CSRs), primarily `pmpcfgN` for configuration and `pmpaddrN` for addresses, where N denotes the PMP entry index.
+   RISC-V Physical Memory Protection (PMP) is a standard hardware feature defined in the RISC-V Privileged ISA Specification. It provides a mechanism for controlling access rights to physical memory regions. PMP allows privileged software, typically executing in Machine Mode (M-mode), to define multiple memory regions, each with specific access permissions (Read, Write, Execute). These permissions can be set independently for different privilege levels (Machine, Supervisor, User). PMP configuration is managed through a set of Control and Status Registers (CSRs), primarily pmpcfgN for configuration and pmpaddrN for addresses, where N denotes the PMP entry index.
 
    #### Advantages
    - Standardized Inclusion: Being part of the base Privileged ISA, PMP is available on most RISC-V processors, offering a baseline memory protection capability without requiring custom extensions or incurring additional licensing costs for this feature.
@@ -349,4 +349,3 @@
 
    #### SiFive's private Secure OS for WorldGuard
    SiFive has developed a private, proprietary Secure OS tailored for its RISC-V cores featuring the WorldGuard security extension. This solution is designed to leverage WorldGuard's hardware capabilities to create isolated execution environments. As a vendor-specific offering, it provides a TEE for SiFive's customers building secure systems with WorldGuard-enabled processors, though its closed nature contrasts with the open ethos of RISC-V itself.
-

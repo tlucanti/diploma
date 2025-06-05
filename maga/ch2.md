@@ -330,17 +330,17 @@
 
    > NOTE: Implementations have the option to logically OR the permissions from all rules that correspond to the access address.
 
-   Should no rule authorize the access, the access is blocked. In instances where subsequent descriptions indicate a violation is logged in the error registers, the `errcause` and `erraddr` registers are updated solely if no prior error is already documented within them (specifically, if both `errcause.ip` and `errcause.be` are zero).
+   Should no rule authorize the access, the access is blocked. In instances where subsequent descriptions indicate a violation is logged in the error registers, the errcause and erraddr registers are updated solely if no prior error is already documented within them (specifically, if both errcause.ip and errcause.be are zero).
 
-   If a transaction is obstructed, and if any rule whose address range encompasses any byte of that transaction has its IR or IW bit activated for read or write operations respectively, or if no rules coincide with the transaction but the `slot[0].cfg.IR` or `slot[0].cfg.IW` bit is activated for reads or writes respectively, then the unsuccessful access attempt will be documented in the checker's error registers and will trigger an interrupt from the checker.
+   If a transaction is obstructed, and if any rule whose address range encompasses any byte of that transaction has its IR or IW bit activated for read or write operations respectively, or if no rules coincide with the transaction but the slot[0].cfg.IR or slot[0].cfg.IW bit is activated for reads or writes respectively, then the unsuccessful access attempt will be documented in the checker's error registers and will trigger an interrupt from the checker.
 
-   If a transaction is obstructed, yet no rule with an address range covering any byte of the transaction has its IR or IW bit activated for reads or writes respectively, or if no rules coincide with the transaction and both `slot[0].cfg.IR` and `slot[0].cfg.IW` are deactivated for reads and writes respectively, then no interrupts will be produced, and no errors will be logged in the checker's error registers.
+   If a transaction is obstructed, yet no rule with an address range covering any byte of the transaction has its IR or IW bit activated for reads or writes respectively, or if no rules coincide with the transaction and both slot[0].cfg.IR and slot[0].cfg.IW are deactivated for reads and writes respectively, then no interrupts will be produced, and no errors will be logged in the checker's error registers.
 
    > NOTE: Permission violations arising from speculative accesses should not be instantaneously reported as errors through interrupts. In certain scenarios, an error signal on the bus transaction allows the originating agent to undertake suitable measures if the speculative access proceeds to commit.
 
-   If a transaction is obstructed, and if any rule whose address range encompasses any byte of that transaction has its ER or EW bit activated for read or write operations respectively, or if no rules coincide with the transaction but the `slot[0].cfg.ER` or `slot[0].cfg.EW` bit is activated for reads or writes respectively, then the unsuccessful access attempt will signal an error in the bus transaction response. The particular error encoding depends on the bus protocol. Read operations will yield zero data accompanied by the error response, while write operations to the intended memory location will be disregarded. Furthermore, this error will be documented in the checker's error registers.
+   If a transaction is obstructed, and if any rule whose address range encompasses any byte of that transaction has its ER or EW bit activated for read or write operations respectively, or if no rules coincide with the transaction but the slot[0].cfg.ER or slot[0].cfg.EW bit is activated for reads or writes respectively, then the unsuccessful access attempt will signal an error in the bus transaction response. The particular error encoding depends on the bus protocol. Read operations will yield zero data accompanied by the error response, while write operations to the intended memory location will be disregarded. Furthermore, this error will be documented in the checker's error registers.
 
-   If a transaction is obstructed, yet no rule with an address range covering any byte of the transaction has its ER or EW bit activated for reads or writes respectively, or if no rules coincide with the transaction and both `slot[0].cfg.ER` and `slot[0].cfg.EW` are deactivated for reads and writes respectively, then read transactions will yield zero data without an error in the response, and write operations will be disregarded but confirmed with no error in the bus transaction response. Barring the activation of the corresponding IR or IW bit, no errors will be logged in the checker's error registers.
+   If a transaction is obstructed, yet no rule with an address range covering any byte of the transaction has its ER or EW bit activated for reads or writes respectively, or if no rules coincide with the transaction and both slot[0].cfg.ER and slot[0].cfg.EW are deactivated for reads and writes respectively, then read transactions will yield zero data without an error in the response, and write operations will be disregarded but confirmed with no error in the bus transaction response. Barring the activation of the corresponding IR or IW bit, no errors will be logged in the checker's error registers.
 
    > NOTE: Certain agents and protocols might lead to system failure upon receiving an unforeseen error response, potentially hindering the reporting and containment of the permission violation. In such situations, the ER/EW bits can be deactivated, with the violation instead reported via the IR/IW bits.
 
@@ -350,11 +350,11 @@
 
    > NOTE: This measure stops a speculative access, which should not trigger a permission failure report, from obstructing the reporting of an actual permission violation.
 
-   If a transaction is obstructed, it has the potential to generate both a bus-error response and an interrupt, provided the relevant IR or IW and ER or EW bits are activated. In such an event, both the `errcause.ip` and `errcause.be` bits will be set when the error is documented in the checker's error registers.
+   If a transaction is obstructed, it has the potential to generate both a bus-error response and an interrupt, provided the relevant IR or IW and ER or EW bits are activated. In such an event, both the errcause.ip and errcause.be bits will be set when the error is documented in the checker's error registers.
 
    #### Checker Reset
-   Upon a system reset, every slot is required to either assume a predetermined platform-specific state or have its `cfg` register cleared, signifying an OFF state and an unlocked status.
-   The `errcause.ip` and `errcause.be` fields are mandated to be cleared as part of the reset process.
+   Upon a system reset, every slot is required to either assume a predetermined platform-specific state or have its cfg register cleared, signifying an OFF state and an unlocked status.
+   The errcause.ip and errcause.be fields are mandated to be cleared as part of the reset process.
 
  ## Boot Sequence and Chain of Trust
   ### 2.4.1 RISC-V Boot Sequence Overview
@@ -398,4 +398,3 @@
 
    #### Secure Boot Implementation
    A full implementation of a secure boot mechanism, from hardware Root of Trust provisioning to the verification of the Rich OS, is beyond the scope of this specific project. However, the Secure OS developed herein is designed with the principles of a Chain of Trust in mind. Its architecture and initialization sequence are structured to seamlessly integrate into a secure boot process. This consideration ensures that there are no inherent limitations preventing the future work of incorporating this Secure OS into a comprehensive RISC-V secure boot solution. The Secure OS expects to be loaded by a trusted entity (e.g., a verified OpenSBI or a preceding secure bootloader) that has already established a secure state for the system.
-
