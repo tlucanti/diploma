@@ -242,6 +242,8 @@
   - FS - File System (Файловая Система)
   - MAC - Mandatory Access Control (Мандатное Управление Доступом)
   - DAC - Discretionary Access Control (Дискреционное Управление Доступом)
+  - HKDF - HMAC-based Key Derivation Function (Функция Генерации Ключей на основе HMAC)
+  - HMAC - Hash-based Message Authentication Code
 
 <div style="page-break-after: always;"></div>
 ---
