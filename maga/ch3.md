@@ -800,6 +800,7 @@ Here is the content for Chapter 3, Section 3.3.1 "WorldGuard Configuration":
    - Method Calls: Operations on objects (e.g., read, write, map) are exposed as system calls.
    - Capability Checks: Before performing any operation, the kernel verifies that the caller’s handle has sufficient permissions.
    - Extensibility: New object types can not define custom methods, which stricts permission volations
+
   ### Capability-Based Access Control
   - The system enforces a strict capability-based security policy, ensuring only authorized handles may invoke methods on objects.
    #### Permissions
@@ -827,6 +828,7 @@ Here is the content for Chapter 3, Section 3.3.1 "WorldGuard Configuration":
 
  ## Secure Syscalls
  - The Secure Operating System exposes a set of privileged system calls (“secure syscalls”) available only to code running in the Trusted Execution Environment (TEE). These syscalls form the backbone of the secure OS abstraction layer and are fundamental to the capability-based model which enforces strict access and isolation. In this section, we describe the secure syscall mechanism, their capability enforcement, and the secure object operations made available to Trusted Applications (TAs).
+
   ### Secure Entry Points
   - The secure syscall interface is the only gateway through which TAs and system objects interact. These system calls are verified and dispatched via central syscall routing infrastructure based on a syscall table indexed by syscall number.
    #### Background on OS System Calls
@@ -855,6 +857,7 @@ Here is the content for Chapter 3, Section 3.3.1 "WorldGuard Configuration":
    - Object accesses are never implicit — they must be manifested in the task manifest.
    - No object leaks across Trusted Application boundaries.
    - Origin and access pathway of each resource is traceable through the handle fabric.
+
   ### Syscall Specification
   - Each system call operates on one or more kernel object handles. Object types include tasks, threads, virtual memory objects (VMOs), factory objects, and channels. Below is an overview of the currently defined syscalls.
    #### SYS_LOG
