@@ -240,6 +240,8 @@
   - MMS - Memory Management Subsistem (Подсистема Управления Памятью)
   - ELF - Executable and Linkable Format (Формат Исполнимых и Компонуемых Файлов)
   - FS - File System (Файловая Система)
+  - MAC - Mandatory Access Control (Мандатное Управление Доступом)
+  - DAC - Discretionary Access Control (Дискреционное Управление Доступом)
 
 <div style="page-break-after: always;"></div>
 ---

@@ -204,24 +204,53 @@ I have a draft of chapter 3:
    #### Opportunities for Improvement
 
 
-Starting with chapter 3.7.2. Task Management
+Starting with chapter 3.8.2. Handles as Encapsulated Capabilities
 I have a draft of chapter sections:
 
-- Механизм управления задачами (Task Management) в Secure OS определяет подсистему, в рамках которой задачи создаются, запускаются и завершаются.
-
-#### Process Model
-   - Процессная модель предполагает, что каждая задача имеет собственное адресное пространство и набор ресурсов, зарегистрированных в ядре.
-   - Создание задачи происходит по запросу пользовательского процесса либо при создании сессии для новой TA, через системный вызов (task_create). Перед запуском задачи ядро выделяет нужные структуры данных, инициализирует объект задачи и подключает его к планировщику. При этом задача находится в состоянии TASK_CREATED, пока не будет вызвана функция task_spawn, переводящая её в состояние TASK_SPAWNED.
-   #### IPC Service
-   - В системе используется механизм IPC на основе каналов (channels). Каждая задача может получить дескрипторы двух сторон канала, позволящие выполнять операции чтения/записи (channel_read()/channel_send()).
-   - Кроме того, для организации группового ожидания сообщений служит вызов wait_object_many, позволяющий одним системным вызовом ожидать события от нескольких объектов.
-   - Затем сообщение извлекается (channel_read) и, результат работы, отправляется обратно (channel_send).
+  - Handles in the Secure OS function as references to system resources (objects). Each handle has associated permissions and metadata defining how it may be accessed or manipulated. Internally, handles map to kernel-managed descriptors that maintain the state, permission bits, and relevant object pointers.
+   #### Design Rationale
+   - Least Privilege Principle: Capabilities ensure that tasks and trusted applications only have the minimum set of privileges needed.
+   - Fine-Grained Access Control: Provides precise control over which resources can be accessed and how they are used.
+   - Lightweight: MAC is very heavy system that includes database in kernel and control list parsers, and it inflates TCB size
+   #### Objects
+   - Definition: Objects represent protected resources (e.g., memory regions, tasks, communication channels).
+   - Creation: created by a specialized factory object
+   - Management: The kernel and corresponding resource managers maintain object lifecycles (allocation, reference counting, destruction).
+   #### Object Handles
+   - Semantics: An object handle is an token referencing an underlying object.
+   - Security Properties: Handles cannot be duplicated or guessed; only the kernel can create valid handles.
+   #### Factory Objects
+   - Factory Concept: There is a singleton act as “factory” capable of creating other objects (e.g., tasks, pipes, or memory objects).
+   - Controlled Creation: A Manifest ensures that only permitted tasks can spawn or instantiate new objects.
+   - Lifecycle: Factoty themselve is created by the kernel.
+   #### Object Methods
+   - Method Calls: Operations on objects (e.g., read, write, map) are exposed as system calls.
+   - Capability Checks: Before performing any operation, the kernel verifies that the caller’s handle has sufficient permissions.
+   - Extensibility: New object types can not define custom methods, which stricts permission volations
+  ### Capability-Based Access Control
+  - The system enforces a strict capability-based security policy, ensuring only authorized handles may invoke methods on objects.
+   #### Permissions
+   - since syscalls act as object methods - there is a fixed number of methods that can be executed on object
+   - each handle has its own permission bits for each syscall
+   - Permission Propagation: When a handle is shared between tasks, permissions can only be stricted, to increased.
+   - Revocation: The kernel can invalidate or downgrade a handle’s permissions at runtime if security conditions change.
+   #### Task Manifests
+   - Manifest Format: Each task has a manifest specifying its initial handles and allowed permissions on those handles.
+   - Initialization: On task creation, the kernel reads the manifest to populate the task’s handle table.
+   - Dynamic Policy: The root task or a privileged controller can update or revoke handles from TA
    #### Root Task
-   - Root Task (root_task.c) является важной задачей, поддерживающей цикл обработки входящих запросов и сообщений от других процессов и ядровых сервисов. Здесь можно заметить:
-   - Использование структуры wait_entry для инициализации нескольких объектов ожидания (каналов).
-   - Циклическую обработку arriving-сообщений.
-   - Вызов nwd_proccess_message для обработки поступивших команд от Normal World
-   - Таким образом, root task служит центральной точкой обмена сообщениями между Secure OS и Normal World.
+   - Privilege Level: The root task is endowed with the highest level of privilege, including the ability to create new tasks and objects
+   - Handle Distribution: Upon launching a new trusted application, the root task provides the necessary initial handles listed in the manifest.
+   - Security Enforcement: The root task can audit or modify the capabilities of any other task if required.
+   #### Method Invocation
+   - Invocation Flow:
+     1. Trusted application issues a syscall to invoke a method on a handle.
+     2. Kernel checks handle validity and permission bits.
+     3. Kernel executes the method if authorized; otherwise returns an error.
+   - Parameter Passing: Depending on the object type, additional data (e.g., memory buffer addresses or message payload) must be specified.
+   - Audit Logging: A log of handle usage may be maintained for debugging, accountability, and forensics.
+   #### Performance Implications
+   - Lookup Overheads: A balanced design attempts to keep handle operations lightweight to avoid excessive overhead.
 
 write contents of these sections based on draft.
 If needed - maybe add some points if there is anything else to say by topic.

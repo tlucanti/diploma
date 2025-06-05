@@ -787,11 +787,10 @@ Here is the content for Chapter 3, Section 3.3.1 "WorldGuard Configuration":
    - Lightweight: MAC is very heavy system that includes database in kernel and control list parsers, and it inflates TCB size
    #### Objects
    - Definition: Objects represent protected resources (e.g., memory regions, tasks, communication channels).
-   - Creation: created by a specialized factory object or created initally by kernel
+   - Creation: created by a specialized factory object
    - Management: The kernel and corresponding resource managers maintain object lifecycles (allocation, reference counting, destruction).
    #### Object Handles
    - Semantics: An object handle is an token referencing an underlying object.
-   - Handle Table: Each task or trusted application maintains a handle table
    - Security Properties: Handles cannot be duplicated or guessed; only the kernel can create valid handles.
    #### Factory Objects
    - Factory Concept: There is a singleton act as “factory” capable of creating other objects (e.g., tasks, pipes, or memory objects).
