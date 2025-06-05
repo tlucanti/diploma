@@ -204,22 +204,95 @@ I have a draft of chapter 3:
    #### Opportunities for Improvement
 
 
-Starting with chapter 3.10.1. Standard Library for Trusted Applications
-I have a draft of chapter sections:
+Starting with following chapters:
+I have a draft of section:
 
-  ### Standard Library for Trusted Applications
-   #### Standard Library Overview
-   - The standard library is a minimal libc equivalent tailored to the Secure OS TEE context. It provides essential functionality typically found in a standard C runtime, excluding non-secure system calls. Implemented entirely in secure world userspace, the library avoids dynamic linking or unnecessary runtime overhead. It includes:
-    - Memory functions (e.g., memcpy, memset)
-    - Formatting and I/O (e.g., printf)
-    - Math functions (including support for hardware-accelerated routines if available)
-    - Cryptographic primitives
-    - Concurrent synchronization mechanisms
-    - Container utilities (e.g., lists, maps)
-    - Typed object and handle access abstraction
+### Strings Standard Library Specification
+#### String Utility Functions
+- memset
+- memcmp
+- memcpy
+- memmove
+- memchr
+- strlen
+- strchr
+- strcmp
+- strtol
+- These are implemented using size-optimized and alignment-aware techniques for low-overhead TA memory environments.
+### Math Standard Library Specification
+#### Algebraic Functions
+- sqrt, pow, log, exp, abs, floor, ceil
+#### Trigonometric Functions
+- sin, cos, tan, asin, acos, atan
+#### Mathematical Constants
+- pi, e, inf, nan
+#### Complex Math Functions
+- Complex number support is syntactically mirrored from real-number APIs.
+### Crypto Standard Library Specification
+#### Hashing Functions
+- sha256(data, len)
+- sha512(data, len)
+- md5(data, len)
+#### Encryption/Decryption Functions
+- in future work support for functionality like:
+- aes_encrypt, aes_decrypt - Support for AES-GCM/CTR if hardware-accelerated
+- chacha20_encrypt, chacha20_decrypt
+#### Key Management and Derivation
+- in future work support for functionality like:
+- hkdf implementation
+- Insecure vs. hardware-sealed key storage distinction
+#### Random Number Generation
+- in future work support for functionality like:
+- crypto_rng - Hardware-backed RNG where available
+- crypto_rng_init_seed - Optional API for seed injection
+### Container Standard Library Specification
+- Note: Trees are all reentrant and zero-alloc in TA context
+#### List Functions
+- Singly Linked List: Init, Push, Pop, Find, Remove
+- Doubly Linked List: Bidirectional traversal APIs with embedded nodes
+#### Radix Tree Functions
+- Insertion, deletion, lookup optimized for dense ID spaces
+#### WAVL Tree Functions
+- Self-balancing tree, relaxed AVL variant, with logarithmic insert/remove
+#### Red-Black Tree Functions
+- Balanced binary tree implemented using node-color rules
+### Concurrency Standard Library Specification
+#### Atomic Operations
+- atomic_add_fetch
+- atomic_sub_fetch
+- atomic_or_fetch, atomic_and_fetch
+- atomic_read, atomic_write
+- Memory barrier primitives: smp_rb() (read barrier), smp_wb() (write barrier)
+#### Mutex API
+- mutex_init(), mutex_lock(), mutex_unlock(), mutex_destroy()
+#### Spinlock API
+- spinlock_init(), spin_lock(), spin_unlock(), spin_trylock()
+#### Semaphore API
+- sem_init(), sem_wait(), sem_post(), sem_destroy()
+#### Conditional Variables
+- cond_init(), cond_wait(), cond_signal(), cond_broadcast()
+### Misc Library Functions Specification
+#### Align Macros
+- align_up(x, a)
+- align_up_ptr(p, a)
+- align_down(x, a)
+- align_down_ptr(p, a)
+- is_aligned(x, a)
+- is_aligned_ptr(p, a)
+#### Bit Manipulation
+- bit32(n), bit64(n)
+- is_power_of_two(x)
+- clz32(x) - Count Leading Zeros (32-bit)
+- clz64(x) - Count Leading Zeros (64-bit)
+- log2(x)
+#### Compiler and Intrinsic Macros
+- barrier() - Compiler-level memory fence
+- container_of(ptr, type, member) - Offset-based typed accessor
+- Standardized __attribute__ usage for alignment/enforced inlining.
+- same_type() - Static type matching check (debug-mode only)
 
-write contents of these section (only 3.10.1, so other sections) based on draft.
+write contents of these section based on draft.
 If needed - maybe add some points if there is anything else to say by topic.
 full structure of whole paper is in the attached file.
-Do not write very much, only a few sentencies
+Do not write very much, only a few sentencies!
 Do not repeat yourself! Do not repeat points from other chapters! Keep it concise! Write only section contents, no summary or reasoning.
