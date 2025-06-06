@@ -10,9 +10,8 @@ function arch() {
   cat $1 | grep -E "^[[:space:]]*#{1,$max_hashes} "
 }
 
-arch ch1.md > arch/a.md
-arch ch2.md >> arch/a.md
-arch ch3.md >> arch/a.md
-arch ch4.md >> arch/a.md
-arch conclusion.md >> arch/a.md
+arch CHAPTER-1.md $1 > arch/a.md
+arch CHAPTER-2.md $1 >> arch/a.md
+arch CHAPTER-3.md $1 >> arch/a.md
+arch CHAPTER-4.md $1 >> arch/a.md
 
