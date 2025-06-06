@@ -104,7 +104,7 @@
    - Attack Setup: Linux kernel driver attempts to read/write physical page mappings belonging to Secure OS.
    - Observation: Memory protection enforced with World Guard prevents access; bus errors raised correctly.
    #### Unauthorized Access to Secure OS/TA Code
-   - Attack Setup: Linux attempts to scan Trusted Application code or Secure OS binary via /dev/mem or similar - - methods.
+   - Attack Setup: Linux attempts to scan Trusted Application code or Secure OS binary via /dev/mem or similar methods.
    Observation: Memory remains inaccessible due to hardware separation and lack of mapping in the normal world.
    #### Attempts to Corrupt Shared Memory Queues
    - Attack Setup: Malformed or oversized requests injected into shared communication pages.

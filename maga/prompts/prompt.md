@@ -65,72 +65,63 @@ I have a draft of chapter 4:
    #### Physical Attacks
    #### Complexity of Trusted Computing Base (TCB)
    #### Chain of Trust Attacks
- ## Performance Evaluation
-  ### Latency of Secure OS Operations
-   #### Session Open Latency
-   #### Command Invocation Latency
-   #### Session Close Latency
-  ### Communication Performance
-   #### Throughput of CWC Channel
-   #### IPI Signaling Overhead
-   #### TA Context Switch Overhead
-   #### Kernel Entry/Exit Transition Overhead
-  ### Memory and Resource Footprint
-   #### Memory Footprint of Secure OS
-   #### Per-TA Resource Consumption
-   #### Shared Queue Overhead
-   #### Scalability Limits and Bottlenecks
+ ## Future Work
+  ### Advanced TA Features
+   #### Secure Storage
+   #### Attestation
+   #### Root of Trust
+   #### Cryptographic Services
+   #### Porting to Real RISC-V Hardware with WorldGuard
+  ### Performance and memory
+   #### Multicore Support for Secure World
+   #### Dynamic TA Loading
+  ### Security enhancments
+   #### Formal Verification of Secure Components
+   #### Enhanced Hardening Against Attacks
 
-Starting with following chapters:
+Starting with following chapter 4.4 Future Work:
 I have a draft of section:
 
- ## Performance Evaluation
- - This section evaluates the runtime behavior, efficiency, and resource usage of the Secure OS, with emphasis on inter-world communication, Trusted Application (TA) execution overhead, and system resource constraints in a constrained RISC-V environment.
- - Measurements are taken on an emulated platform using WorldGuard-enabled QEMU.
-  ### Latency of Secure OS Operations
-  - This subsection presents a detailed breakdown of the latency involved in interaction between the Normal World (Linux) and the Secure World (Secure OS), following the GlobalPlatform API lifecycle: session open, command invocation, session close.
-  - Note: All latency measurements should include mean, standard deviation, and max/min values with multiple runs.
-   #### Session Open Latency
-   - Time required to open a session to a TA via TEEC_OpenSession()
-   - Includes context switch, message construction, capability validation, and TA instantiation
-   - Factors influencing latency (TA manifest size, cold start vs. warm start)
-   #### Command Invocation Latency
-   - Latency of TEEC_InvokeCommand() to a previously opened TA Session
-   - Breakdown of fixed syscall overhead, scheduling delay, and parameter marshalling
-   - Synchronous vs. asynchronous (if supported)
-   #### Session Close Latency
-   - Time to teardown the session and reclaim resources
-   - Includes cleanup of handles, session state, and Secure OS bookkeeping
-  ### Communication Performance
-  - Evaluation of the throughput and timing characteristics of the CWC (Cross World Communication) mechanism, emphasizing Serializable Command Queues backed by Shared Memory.
-   #### Throughput of CWC Channel
-   - Maximum achievable throughput of request/response cycles through shared memory queues
-   - Impact of message size
-   #### IPI Signaling Overhead
-   - Cost of using Inter-Processor Interrupt (IPI) for signaling between worlds
-   - Measurement of context switch delay due to IPI
-   - Comparison of IPI costs under load and idle scenarios
-   #### TA Context Switch Overhead
-   - Cost of switching between multiple TAs or restoring TA context for a scheduled operation
-   #### Kernel Entry/Exit Transition Overhead
-   - Benchmark the time overhead to perform Secure OS syscalls (without actual work)
-   - Use of synthetic minimal syscall to isolate context switch cost
-  ### Memory and Resource Footprint
-  - Analysis of memory usage of the Secure OS and associated components under typical workloads.
-   #### Memory Footprint of Secure OS
-   - Static memory usage (text/data/bss sizes)
-   - Dynamic memory usage at runtime (heap usage, page tables)
-   - Total footprint with N TAs loaded
-   #### Per-TA Resource Consumption
-   - Memory consumption per individual TA context
-   - Number of handles, stack size, VMO usage
-   #### Shared Queue Overhead
-   - Memory and CPU overhead of shared ring buffers for communication queues
-   - Lock-free implementation impact
-   #### Scalability Limits and Bottlenecks
-   - Maximum number of concurrently active TAs
-   - System behavior under memory pressure
-   - Fragmentation and memory management limitations
+ - This chapter outlines promising directions for extending and improving the Secure OS platform for the RISC-V WorldGuard architecture. It includes technical enhancements, additional security features, hardware support expansions, and rigorous verification procedures.
+  ### Advanced TA Features
+  - This section discusses enhancements to the Trusted Application (TA) framework that would allow TAs to offer more sophisticated services while still retaining minimal TCB and robust isolation.
+   #### Secure Storage
+   - Introduce support for tamper-resistant persistent storage to enable confidential data access, including sealed key-value storage SDK for TAs.
+   #### Attestation
+   - Add support for both local and remote attestation with cryptographic proof of measurement and TA identity, potentially backed by a platform Root-of-Trust chain.
+   #### Root of Trust
+   - Define or integrate a hardware/software Root of Trust, including secure provisioning mechanisms and interaction with system boot.
+   #### Cryptographic Services
+   - Provide Trusted Applications with a standardized, hardware-accelerated crypto runtime offering: symmetric encryption/decryption, asymmetric crypto, hashing, digital signatures, and secure RNG.
+   #### Porting to Real RISC-V Hardware with WorldGuard
+   - Move from QEMU-based evaluation to physical RISC-V hardware that implements the WorldGuard extension for real-world performance measurements and evaluation under physically observable systems.
+   - Identify WorldGuard-compatible silicon platforms
+   - Implement board-specific OpenSBI and bootloader adaptations
+   - Hardware debugging framework integration
+  ### Performance and memory
+   #### Multicore Support for Secure World
+   - Extend the Secure OS runtime to allow execution on multiple cores, introducing challenges around synchronization, inter-core TA instance affinity, and capability tracking in a multithreaded environment.
+   - Secure world scheduling policy for multiple harts
+   - Shared state consistency between cores
+   - Scalability tuning and bottleneck analysis
+   #### Dynamic TA Loading
+   - Introduce support for on-demand loading and unloading of TAs to reduce secure world memory usage and enable more complex applications.
+   - TA cryptographic signature verification before loading
+   - TA manifest validation and integration with runtime capability system
+   - Secure memory isolation upon load/unload
+  ### Security enhancments
+   #### Formal Verification of Secure Components
+   - Augment Secure OS with formal verification techniques for core components, especially the kernel, capability system, and secure IPC primitives, in order to reduce the Trusted Computing Base risk and improve assurance.
+   - Kernel API model verification
+   - Memory safety guarantees via static analysis
+   - Proofs for capability propagation correctness
+   #### Enhanced Hardening Against Attacks
+   - Additional work on increasing robustness of the Secure OS and its communication mechanisms against advanced offensive threats.
+   - Side-channel mitigation techniques (cache partitioning, temporal fuzzing, constant-time algorithms)
+   - Memory fault injection resilience
+   - Kernel fuzzing and semi-automated stress testing
+   - System defenses against speculative execution and timing inference
+
 
 write contents of these section based on draft.
 If needed - maybe add some points if there is anything else to say by topic.
