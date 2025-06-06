@@ -84,42 +84,53 @@ I have a draft of chapter 4:
 Starting with following chapters:
 I have a draft of section:
 
- ## Software Stack Setup
- - This section provides a detailed description of the full software environment used to support and validate the Secure OS, focusing on emulation, build infrastructure, and integration with toolchains.
- - This chapter is essential to reproduce the development setup and benchmark context.
-  ### Toolchains
-  - Description of RISC-V GCC or LLVM toolchain versions, secure OS and TA compilation flags, linker scripts used, and build script wrappers.
-   #### Development Environment
-   - Recommended dev environment setup: OS dependencies, Make/CMake/gcc versions, scripting helpers, debugging support (e.g., GDB hooks to Secure OS), and virtual machine setup, if applicable.
-  ### Emulation Environment
-  - A robust emulation setup using QEMU provides a virtual platform to simulate the RISC-V World Guard hardware and enables rapid development and testing.
-   #### QEMU with WorldGuard Support
-   - Explanation of QEMU version used and modifications or forks maintained to support the World Guard extension.
-   #### QEMU Configuration
-   - QEMU settings used during emulation: memory map, number of harts, device tree blob (DTB) settings, and boot arguments necessary to launch both Secure OS and Linux.
-   - Also covers usage of debugging options and UART output customization.
-  ### Linux
-  - A Secure World-aware Linux kernel build is a key part of the integration testing, providing the userland-controlled "Normal World" for Secure OS interaction.
-   #### Linux with WorldGuard Support
-   - Brief explanation of the version/fork of the Linux kernel used, including any upstream or out-of-tree patches to support Secure OS interaction and WorldGuard.
-   #### Linux Configuration
-   - Kernel config menu options (e.g., minimal init system, character device support, TEE driver integration) and explanation of chosen configurations.
-   #### Linux Image
-   - Process of creating the kernel image and initial RAM filesystem (initramfs); integration into QEMU boot flow and linkage with rootfs/init and Secure OS debug output collection.
-  ### Build System
-  - The build system is centralized and modular to build various components including the kernel, trusted applications, OpenSBI, and Linux.
-   #### CMake Configuration
-   - How the overall build system is managed using CMake files: compiler toolchains, cross-compilation targets, component path registration, and reusability across Secure OS kernel and TA build systems.
-   #### CMake Build System Design
-   - Code organization and dependency separation. Build phases: TA compilation, kernel linking, staging and image generation. Covers options or build presets (e.g., debug vs release), and the way it cooperates with toolchains and QEMU images.
-   #### Trusted Application (TA) Build Flow
-   - Explains how a TA is built, manifests are generated, linking to standard libraries, and embedding into final system images.
-  ### CI Integration
-  - Automated testing ensures regression-free development and reliable build stability.
-   #### Continuous Integration Setup
-   - Framework used for testing (e.g., GitHub Actions, GitLab CI, Jenkins), pipeline stages—such as QEMU boot test, TA invocation test—and artifacts generation.
-   #### Automated Testing Scripts
-   - Details on scripts and system outputs validated within CI. Boot success, basic syscall availability and secure/normal world boundary integrity.
+ ## Performance Evaluation
+ - This section evaluates the runtime behavior, efficiency, and resource usage of the Secure OS, with emphasis on inter-world communication, Trusted Application (TA) execution overhead, and system resource constraints in a constrained RISC-V environment.
+ - Measurements are taken on an emulated platform using WorldGuard-enabled QEMU.
+  ### Latency of Secure OS Operations
+  - This subsection presents a detailed breakdown of the latency involved in interaction between the Normal World (Linux) and the Secure World (Secure OS), following the GlobalPlatform API lifecycle: session open, command invocation, session close.
+  - Note: All latency measurements should include mean, standard deviation, and max/min values with multiple runs.
+   #### Session Open Latency
+   - Time required to open a session to a TA via TEEC_OpenSession()
+   - Includes context switch, message construction, capability validation, and TA instantiation
+   - Factors influencing latency (TA manifest size, cold start vs. warm start)
+   #### Command Invocation Latency
+   - Latency of TEEC_InvokeCommand() to a previously opened TA Session
+   - Breakdown of fixed syscall overhead, scheduling delay, and parameter marshalling
+   - Synchronous vs. asynchronous (if supported)
+   #### Session Close Latency
+   - Time to teardown the session and reclaim resources
+   - Includes cleanup of handles, session state, and Secure OS bookkeeping
+  ### Communication Performance
+  - Evaluation of the throughput and timing characteristics of the CWC (Cross World Communication) mechanism, emphasizing Serializable Command Queues backed by Shared Memory.
+   #### Throughput of CWC Channel
+   - Maximum achievable throughput of request/response cycles through shared memory queues
+   - Impact of message size
+   #### IPI Signaling Overhead
+   - Cost of using Inter-Processor Interrupt (IPI) for signaling between worlds
+   - Measurement of context switch delay due to IPI
+   - Comparison of IPI costs under load and idle scenarios
+   #### TA Context Switch Overhead
+   - Cost of switching between multiple TAs or restoring TA context for a scheduled operation
+   #### Kernel Entry/Exit Transition Overhead
+   - Benchmark the time overhead to perform Secure OS syscalls (without actual work)
+   - Use of synthetic minimal syscall to isolate context switch cost
+  ### Memory and Resource Footprint
+  - Analysis of memory usage of the Secure OS and associated components under typical workloads.
+   #### Memory Footprint of Secure OS
+   - Static memory usage (text/data/bss sizes)
+   - Dynamic memory usage at runtime (heap usage, page tables)
+   - Total footprint with N TAs loaded
+   #### Per-TA Resource Consumption
+   - Memory consumption per individual TA context
+   - Number of handles, stack size, VMO usage
+   #### Shared Queue Overhead
+   - Memory and CPU overhead of shared ring buffers for communication queues
+   - Lock-free implementation impact
+   #### Scalability Limits and Bottlenecks
+   - Maximum number of concurrently active TAs
+   - System behavior under memory pressure
+   - Fragmentation and memory management limitations
 
 write contents of these section based on draft.
 If needed - maybe add some points if there is anything else to say by topic.
