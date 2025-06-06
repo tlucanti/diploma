@@ -9,8 +9,8 @@ for fname in [
     # "CHAPTER-1.md",
     # "CHAPTER-2.md",
     # "CHAPTER-3.md",
-    "CHAPTER-4.md",
-    "conclusion.md",
+    # "CHAPTER-4.md",
+    "CONCLUSION.md",
 ]:
     with open(fname) as f:
         print(f"adding {fname}")
