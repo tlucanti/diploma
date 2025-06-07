@@ -1,0 +1,135 @@
+<svg viewBox="0 0 800 650" xmlns="http://www.w3.org/2000/svg">
+  <!-- Определение стрелок -->
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" 
+            refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#a2b9e8" />
+    </marker>
+  </defs>
+
+  <!-- Заголовок -->
+  <text x="400" y="30" text-anchor="middle" font-family="Arial, sans-serif" 
+        font-size="24" font-weight="bold" fill="#7491c9">Архитектура Intel SGX</text>
+
+  <!-- Untrusted Environment -->
+  <g id="untrusted-env">
+    <rect x="50" y="80" width="700" height="250" rx="15" ry="15" 
+          fill="#f1cdcc" stroke="#d9a8a6" stroke-width="2"/>
+    <text x="400" y="110" text-anchor="middle" font-family="Arial, sans-serif" 
+          font-size="18" font-weight="bold" fill="#b88785">Недоверенная среда</text>
+    
+    <!-- Operating System -->
+    <rect x="70" y="140" width="200" height="80" rx="10" ry="10" 
+          fill="#fae5ce" stroke="#e8c8a3" stroke-width="1"/>
+    <text x="170" y="175" text-anchor="middle" font-family="Arial, sans-serif" 
+          font-size="14" fill="#c9a47b">Операционная система</text>
+    <text x="170" y="195" text-anchor="middle" font-family="Arial, sans-serif" 
+          font-size="14" fill="#d4b88a">(Windows/Linux)</text>
+    
+    <!-- Untrusted Application -->
+    <rect x="300" y="140" width="200" height="80" rx="10" ry="10" 
+          fill="#fdf2cd" stroke="#e6d4a3" stroke-width="1"/>
+    <text x="400" y="175" text-anchor="middle" font-family="Arial, sans-serif" 
+          font-size="14" fill="#c2a878">Недоверенное</text>
+    <text x="400" y="195" text-anchor="middle" font-family="Arial, sans-serif" 
+          font-size="14" fill="#c2a878">приложение</text>
+    
+    <!-- Other Apps -->
+    <rect x="530" y="140" width="200" height="80" rx="10" ry="10" 
+          fill="#e3b9b0" stroke="#c89a91" stroke-width="1"/>
+    <text x="630" y="175" text-anchor="middle" font-family="Arial, sans-serif" 
+          font-size="14" fill="#a67b73">Другие процессы</text>
+    <text x="630" y="195" text-anchor="middle" font-family="Arial, sans-serif" 
+          font-size="14" fill="#b88785">и приложения</text>
+    
+    <!-- Untrusted Runtime -->
+    <rect x="300" y="240" width="200" height="70" rx="10" ry="10" 
+          fill="#d9d2e9" stroke="#b8acd1" stroke-width="1"/>
+    <text x="400" y="270" text-anchor="middle" font-family="Arial, sans-serif" 
+          font-size="13" fill="#9081b3">Недоверенная часть</text>
+    <text x="400" y="290" text-anchor="middle" font-family="Arial, sans-serif" 
+          font-size="14" fill="#a293c2">(uRTS)</text>
+  </g>
+
+  <!-- Enclave Area -->
+  <g id="enclave-area">
+    <rect x="200" y="410" width="400" height="200" rx="15" ry="15" 
+          fill="#daead3" stroke="#b5d1a9" stroke-width="3"/>
+    <text x="400" y="440" text-anchor="middle" font-family="Arial, sans-serif" 
+          font-size="18" font-weight="bold" fill="#8fb380">Enclave (Защищённая область)</text>
+    
+    <!-- Trusted Code -->
+    <rect x="220" y="460" width="160" height="60" rx="10" ry="10" 
+          fill="#ccdaf7" stroke="#a2b9e8" stroke-width="1"/>
+    <text x="300" y="485" text-anchor="middle" font-family="Arial, sans-serif" 
+          font-size="13" fill="#7491c9">Доверенный код</text>
+    <text x="300" y="505" text-anchor="middle" font-family="Arial, sans-serif" 
+          font-size="11" fill="#8fabc9">приложения</text>
+    
+    <!-- Enclave Data -->
+    <rect x="420" y="460" width="160" height="60" rx="10" ry="10" 
+          fill="#d1e2f3" stroke="#a8bed7" stroke-width="1"/>
+    <text x="500" y="485" text-anchor="middle" font-family="Arial, sans-serif" 
+          font-size="13" fill="#7c9cbd">Защищённые</text>
+    <text x="500" y="505" text-anchor="middle" font-family="Arial, sans-serif" 
+          font-size="11" fill="#8fabc9">данные</text>
+    
+    <!-- Trusted Runtime -->
+    <rect x="320" y="535" width="160" height="60" rx="10" ry="10" 
+          fill="#d1e0e3" stroke="#a9c2c6" stroke-width="1"/>
+    <text x="400" y="560" text-anchor="middle" font-family="Arial, sans-serif" 
+          font-size="13" fill="#7fa1a6">Доверенная часть</text>
+    <text x="400" y="580" text-anchor="middle" font-family="Arial, sans-serif" 
+          font-size="14" fill="#92b2b6">(tRTS)</text>
+  </g>
+
+  <!-- ECALL/OCALL arrows -->
+  <line x1="400" y1="310" x2="400" y2="410" stroke="#7491c9" stroke-width="2" 
+        marker-end="url(#arrowhead)"/>
+  <text x="350" y="370" text-anchor="middle" font-family="Arial, sans-serif" 
+        font-size="14" fill="#7491c9">ECALL</text>
+  
+  <line x1="420" y1="410" x2="420" y2="310" stroke="#9081b3" stroke-width="2" 
+        marker-end="url(#arrowhead)"/>
+  <text x="470" y="370" text-anchor="middle" font-family="Arial, sans-serif" 
+        font-size="14" fill="#9081b3">OCALL</text>
+
+  <!-- Memory Protection -->
+  <rect x="180" y="400" width="440" height="220" rx="20" ry="20" 
+        fill="none" stroke="#e9d1dc" stroke-width="3" stroke-dasharray="5,5"/>
+  <text x="200" y="385" font-family="Arial, sans-serif" 
+        font-size="16" fill="#c193a6">Защита памяти (MEE)</text>
+
+  <!-- Side annotations -->
+  <g id="features">
+    <text x="50" y="400" font-family="Arial, sans-serif" 
+          font-size="11" fill="#8fb380">Возможности:</text>
+    <text x="50" y="420" font-family="Arial, sans-serif" 
+          font-size="12" fill="#92b2b6">• Шифрование памяти</text>
+    <text x="50" y="440" font-family="Arial, sans-serif" 
+          font-size="12" fill="#92b2b6">• Изоляция процессов</text>
+    <text x="50" y="460" font-family="Arial, sans-serif" 
+          font-size="12" fill="#92b2b6">• Аттестация</text>
+    <text x="50" y="480" font-family="Arial, sans-serif" 
+          font-size="12" fill="#92b2b6">• Защита от ОС</text>
+  </g>
+
+  <g id="threats">
+    <text x="650" y="400" font-family="Arial, sans-serif" 
+          font-size="11" fill="#b88785">Защита от:</text>
+    <text x="650" y="420" font-family="Arial, sans-serif" 
+          font-size="12" fill="#c89a98">• Вредоносной ОС</text>
+    <text x="650" y="440" font-family="Arial, sans-serif" 
+          font-size="12" fill="#c89a98">• Гипервизора</text>
+    <text x="650" y="460" font-family="Arial, sans-serif" 
+          font-size="12" fill="#c89a98">• BIOS/UEFI</text>
+    <text x="650" y="480" font-family="Arial, sans-serif" 
+          font-size="12" fill="#c89a98">• Других процессов</text>
+  </g>
+
+  <!-- CPU indicator -->
+  <rect x="350" y="50" width="100" height="20" rx="5" ry="5" 
+        fill="#e9d1dc" stroke="#c193a6" stroke-width="1"/>
+  <text x="400" y="64" text-anchor="middle" font-family="Arial, sans-serif" 
+        font-size="11" fill="#a07589">Процессор Intel</text>
+</svg>
