@@ -1,0 +1,169 @@
+<svg viewBox="0 0 1200 900" xmlns="http://www.w3.org/2000/svg">
+  <!-- Определение стрелок -->
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" 
+            refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#a2b9e8" />
+    </marker>
+  </defs>
+
+  <!-- Заголовок -->
+  <text x="600" y="25" text-anchor="middle" font-family="Arial, sans-serif" 
+        font-size="32" font-weight="bold" fill="#7491c9">Архитектура RISC-V WorldGuard</text>
+
+  <!-- World 0 - Trusted World -->
+  <rect x="50" y="100" width="500" height="650" rx="20" ry="20" 
+        fill="#daead3" stroke="#b5d1a9" stroke-width="3"/>
+  <text x="300" y="140" text-anchor="middle" font-family="Arial, sans-serif" 
+        font-size="24" font-weight="bold" fill="#8fb380">World 0 (Trusted)</text>
+  
+  <!-- M-mode in World 0 -->
+  <rect x="80" y="180" width="440" height="100" rx="15" ry="15" 
+        fill="#d9d2e9" stroke="#b8acd1" stroke-width="2"/>
+  <text x="300" y="215" text-anchor="middle" font-family="Arial, sans-serif" 
+        font-size="20" font-weight="bold" fill="#9081b3">M-mode (WID=0)</text>
+  <text x="300" y="245" text-anchor="middle" font-family="Arial, sans-serif" 
+        font-size="16" fill="#a293c2">Управление WorldGuard</text>
+  <text x="300" y="265" text-anchor="middle" font-family="Arial, sans-serif" 
+        font-size="16" fill="#a293c2">CSR: mlwid, mwiddeleg</text>
+
+  <!-- S-mode in World 0 -->
+  <rect x="80" y="320" width="200" height="80" rx="12" ry="12" 
+        fill="#e9d1dc" stroke="#d2a9bc" stroke-width="2"/>
+  <text x="180" y="355" text-anchor="middle" font-family="Arial, sans-serif" 
+        font-size="18" fill="#c193a6">S-mode TEE OS</text>
+  <text x="180" y="380" text-anchor="middle" font-family="Arial, sans-serif" 
+        font-size="16" fill="#d4aab9">(WID=0)</text>
+
+  <!-- U-mode in World 0 -->
+  <rect x="320" y="320" width="200" height="80" rx="12" ry="12" 
+        fill="#ccdaf7" stroke="#a2b9e8" stroke-width="2"/>
+  <text x="420" y="355" text-anchor="middle" font-family="Arial, sans-serif" 
+        font-size="18" fill="#7491c9">U-mode TA</text>
+  <text x="420" y="380" text-anchor="middle" font-family="Arial, sans-serif" 
+        font-size="16" fill="#8fabc9">(WID=0)</text>
+
+  <!-- World 0 Resources -->
+  <rect x="80" y="440" width="440" height="120" rx="15" ry="15" 
+        fill="#d1e0e3" stroke="#a9c2c6" stroke-width="2"/>
+  <text x="300" y="475" text-anchor="middle" font-family="Arial, sans-serif" 
+        font-size="18" font-weight="bold" fill="#7fa1a6">Защищённые ресурсы</text>
+  <text x="300" y="505" text-anchor="middle" font-family="Arial, sans-serif" 
+        font-size="16" fill="#92b2b6">• Криптоключи</text>
+  <text x="300" y="530" text-anchor="middle" font-family="Arial, sans-serif" 
+        font-size="16" fill="#92b2b6">• Защищённая память</text>
+
+  <!-- World 1 - Normal World -->
+  <rect x="650" y="100" width="500" height="650" rx="20" ry="20" 
+        fill="#f1cdcc" stroke="#d9a8a6" stroke-width="3"/>
+  <text x="900" y="140" text-anchor="middle" font-family="Arial, sans-serif" 
+        font-size="24" font-weight="bold" fill="#b88785">World 1 (Normal)</text>
+
+  <!-- S-mode in World 1 -->
+  <rect x="680" y="180" width="440" height="100" rx="15" ry="15" 
+        fill="#fae5ce" stroke="#e8c8a3" stroke-width="2"/>
+  <text x="900" y="215" text-anchor="middle" font-family="Arial, sans-serif" 
+        font-size="20" font-weight="bold" fill="#c9a47b">S-mode Rich OS</text>
+  <text x="900" y="245" text-anchor="middle" font-family="Arial, sans-serif" 
+        font-size="16" fill="#d4b88a">(Linux/Android)</text>
+  <text x="900" y="265" text-anchor="middle" font-family="Arial, sans-serif" 
+        font-size="16" fill="#d4b88a">CSR: slwid (WID=1)</text>
+
+  <!-- U-mode applications in World 1 -->
+  <rect x="680" y="320" width="200" height="80" rx="12" ry="12" 
+        fill="#fdf2cd" stroke="#e6d4a3" stroke-width="2"/>
+  <text x="780" y="355" text-anchor="middle" font-family="Arial, sans-serif" 
+        font-size="18" fill="#c2a878">U-mode App 1</text>
+  <text x="780" y="380" text-anchor="middle" font-family="Arial, sans-serif" 
+        font-size="16" fill="#d4b88a">(WID=1)</text>
+
+  <rect x="920" y="320" width="200" height="80" rx="12" ry="12" 
+        fill="#fdf2cd" stroke="#e6d4a3" stroke-width="2"/>
+  <text x="1020" y="355" text-anchor="middle" font-family="Arial, sans-serif" 
+        font-size="18" fill="#c2a878">U-mode App 2</text>
+  <text x="1020" y="380" text-anchor="middle" font-family="Arial, sans-serif" 
+        font-size="16" fill="#d4b88a">(WID=1)</text>
+
+  <!-- World 1 Resources -->
+  <rect x="680" y="440" width="440" height="120" rx="15" ry="15" 
+        fill="#e3b9b0" stroke="#c89a91" stroke-width="2"/>
+  <text x="900" y="475" text-anchor="middle" font-family="Arial, sans-serif" 
+        font-size="18" font-weight="bold" fill="#a67b73">Обычные ресурсы</text>
+  <text x="900" y="505" text-anchor="middle" font-family="Arial, sans-serif" 
+        font-size="16" fill="#b88785">• Общая память</text>
+  <text x="900" y="530" text-anchor="middle" font-family="Arial, sans-serif" 
+        font-size="16" fill="#b88785">• Периферийные устройства</text>
+
+  <!-- WG Checker -->
+  <rect x="300" y="600" width="600" height="120" rx="15" ry="15" 
+        fill="#d1e2f3" stroke="#a8bed7" stroke-width="3"/>
+  <text x="600" y="635" text-anchor="middle" font-family="Arial, sans-serif" 
+        font-size="20" font-weight="bold" fill="#7c9cbd">WorldGuard Checker</text>
+  <text x="600" y="665" text-anchor="middle" font-family="Arial, sans-serif" 
+        font-size="16" fill="#8fabc9">Проверка разрешений (R/W/X)</text>
+  <text x="600" y="690" text-anchor="middle" font-family="Arial, sans-serif" 
+        font-size="16" fill="#8fabc9">До 16 правил с NAPOT/TOR адресацией</text>
+
+  <!-- Physical Memory -->
+  <rect x="50" y="780" width="1100" height="80" rx="15" ry="15" 
+        fill="#d1e0e3" stroke="#a9c2c6" stroke-width="2"/>
+  <text x="150" y="825" font-family="Arial, sans-serif" 
+        font-size="20" font-weight="bold" fill="#7fa1a6">Физическая память:</text>
+  <text x="450" y="825" font-family="Arial, sans-serif" 
+        font-size="18" fill="#92b2b6">ROM</text>
+  <text x="600" y="825" font-family="Arial, sans-serif" 
+        font-size="18" fill="#92b2b6">RAM</text>
+  <text x="750" y="825" font-family="Arial, sans-serif" 
+        font-size="18" fill="#92b2b6">MMIO</text>
+  <text x="900" y="825" font-family="Arial, sans-serif" 
+        font-size="18" fill="#92b2b6">Периферия</text>
+
+  <!-- Arrows -->
+  <line x1="300" y1="560" x2="480" y2="600" stroke="#8fb380" stroke-width="3" 
+        marker-end="url(#arrowhead)"/>
+  <text x="290" y="590" font-family="Arial, sans-serif" 
+        font-size="16" fill="#8fb380">WID=0</text>
+
+  <line x1="900" y1="560" x2="720" y2="600" stroke="#b88785" stroke-width="3" 
+        marker-end="url(#arrowhead)"/>
+  <text x="850" y="590" font-family="Arial, sans-serif" 
+        font-size="16" fill="#b88785">WID=1</text>
+
+  <line x1="600" y1="720" x2="600" y2="780" stroke="#7c9cbd" stroke-width="3" 
+        marker-end="url(#arrowhead)"/>
+
+  <!-- World separation line -->
+  <line x1="600" y1="100" x2="600" y2="560" stroke="#c193a6" stroke-width="4" 
+        stroke-dasharray="8,4"/>
+  
+  <!-- Features -->
+  <g id="features">
+    <text x="50" y="60" font-family="Arial, sans-serif" 
+          font-size="18" font-weight="bold" fill="#7491c9">WorldGuard функции:</text>
+    <text x="300" y="60" font-family="Arial, sans-serif" 
+          font-size="16" fill="#8fabc9">• Изоляция миров</text>
+    <text x="500" y="60" font-family="Arial, sans-serif" 
+          font-size="16" fill="#8fabc9">• WID маркировка</text>
+    <text x="700" y="60" font-family="Arial, sans-serif" 
+          font-size="16" fill="#8fabc9">• Гибкие правила</text>
+    <text x="900" y="60" font-family="Arial, sans-serif" 
+          font-size="16" fill="#8fabc9">• До 32 миров</text>
+  </g>
+
+  <!-- Shared memory indication -->
+  <rect x="80" y="630" width="160" height="60" rx="10" ry="10" 
+        fill="#daead3" stroke="#b5d1a9" stroke-width="2" opacity="0.7"/>
+  <text x="160" y="665" text-anchor="middle" font-family="Arial, sans-serif" 
+        font-size="16" fill="#8fb380">Общая память</text>
+
+  <rect x="960" y="630" width="160" height="60" rx="10" ry="10" 
+        fill="#f1cdcc" stroke="#d9a8a6" stroke-width="2" opacity="0.7"/>
+  <text x="1040" y="665" text-anchor="middle" font-family="Arial, sans-serif" 
+        font-size="16" fill="#b88785">Общая память</text>
+
+  <!-- Connection lines for shared memory -->
+  <line x1="240" y1="660" x2="300" y2="660" stroke="#8fb380" stroke-width="2" 
+        stroke-dasharray="3,3"/>
+  <line x1="960" y1="660" x2="900" y2="660" stroke="#b88785" stroke-width="2" 
+        stroke-dasharray="3,3"/>
+</svg>

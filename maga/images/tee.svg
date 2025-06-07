@@ -1,0 +1,105 @@
+<svg width="800" height="600" xmlns="http://www.w3.org/2000/svg">
+  <!-- Определение стилей -->
+  <style>
+    .text-style {
+      font-family: Arial, sans-serif;
+      font-size: 16px;
+      font-weight: 500;
+    }
+    .small-text {
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+    }
+  </style>
+
+  <!-- Основная система -->
+  <rect x="50" y="50" width="700" height="500" rx="15" ry="15" 
+        fill="#fae5ce" stroke="#d4a574" stroke-width="2"/>
+  <text x="400" y="80" text-anchor="middle" class="text-style" fill="#a67c52">Устройство</text>
+
+  <!-- Обычная среда (Rich OS) -->
+  <rect x="80" y="120" width="300" height="380" rx="10" ry="10" 
+        fill="#d1e0e3" stroke="#7fa8b0" stroke-width="2"/>
+  <text x="230" y="150" text-anchor="middle" class="text-style" fill="#5a7a82">Универсальная среда (REE)</text>
+
+  <!-- Приложения в обычной среде -->
+  <rect x="100" y="180" width="120" height="60" rx="8" ry="8" 
+        fill="#ccdaf7" stroke="#7fa0d4" stroke-width="1.5"/>
+  <text x="160" y="215" text-anchor="middle" class="small-text" fill="#5b7fb8">Приложение 1</text>
+
+  <rect x="240" y="180" width="120" height="60" rx="8" ry="8" 
+        fill="#d9d2e9" stroke="#a794c7" stroke-width="1.5"/>
+  <text x="300" y="215" text-anchor="middle" class="small-text" fill="#8470a8">Приложение 2</text>
+
+  <!-- API в обычной среде -->
+  <rect x="100" y="280" width="260" height="50" rx="8" ry="8" 
+        fill="#daead3" stroke="#8fb380" stroke-width="1.5"/>
+  <text x="230" y="310" text-anchor="middle" class="small-text" fill="#6b8a60">TEE Client API</text>
+
+  <!-- Драйвер -->
+  <rect x="100" y="370" width="260" height="50" rx="8" ry="8" 
+        fill="#e9d1dc" stroke="#c794a8" stroke-width="1.5"/>
+  <text x="230" y="400" text-anchor="middle" class="small-text" fill="#a67389">Драйвер TEE</text>
+
+  <!-- Безопасная среда (TEE) -->
+  <rect x="420" y="120" width="300" height="380" rx="10" ry="10" 
+        fill="#e3b9b0" stroke="#c48979" stroke-width="2"/>
+  <text x="570" y="150" text-anchor="middle" class="text-style" fill="#a06d5f">Безопасная среда (TEE)</text>
+
+  <!-- Trusted OS -->
+  <rect x="440" y="180" width="260" height="80" rx="8" ry="8" 
+        fill="#f1cdcc" stroke="#d49594" stroke-width="1.5"/>
+  <text x="570" y="215" text-anchor="middle" class="small-text" fill="#b87877">Trusted OS</text>
+  <text x="570" y="235" text-anchor="middle" class="small-text" fill="#b87877">(Безопасная ОС)</text>
+
+  <!-- Trusted Applications -->
+  <rect x="440" y="280" width="120" height="60" rx="8" ry="8" 
+        fill="#fdf2cd" stroke="#d4b574" stroke-width="1.5"/>
+  <text x="500" y="305" text-anchor="middle" class="small-text" fill="#a68c52">Доверенное</text>
+  <text x="500" y="320" text-anchor="middle" class="small-text" fill="#a68c52">приложение 1</text>
+
+  <rect x="580" y="280" width="120" height="60" rx="8" ry="8" 
+        fill="#fdf2cd" stroke="#d4b574" stroke-width="1.5"/>
+  <text x="640" y="305" text-anchor="middle" class="small-text" fill="#a68c52">Доверенное</text>
+  <text x="640" y="320" text-anchor="middle" class="small-text" fill="#a68c52">приложение 2</text>
+
+  <!-- Secure Storage -->
+  <rect x="440" y="370" width="120" height="50" rx="8" ry="8" 
+        fill="#d1e2f3" stroke="#7fa8c9" stroke-width="1.5"/>
+  <text x="500" y="390" text-anchor="middle" class="small-text" fill="#5a7aa3">Безопасное</text>
+  <text x="500" y="405" text-anchor="middle" class="small-text" fill="#5a7aa3">хранилище</text>
+
+  <!-- Crypto Engine -->
+  <rect x="580" y="370" width="120" height="50" rx="8" ry="8" 
+        fill="#d1e2f3" stroke="#7fa8c9" stroke-width="1.5"/>
+  <text x="640" y="400" text-anchor="middle" class="small-text" fill="#5a7aa3">Крипто-движок</text>
+
+  <!-- Аппаратная защита -->
+  <rect x="440" y="440" width="260" height="40" rx="8" ry="8" 
+        fill="#e9d1dc" stroke="#c794a8" stroke-width="1.5"/>
+  <text x="570" y="465" text-anchor="middle" class="small-text" fill="#a67389">Аппаратная защита</text>
+
+  <!-- Стрелки связи -->
+  <path d="M 360 310 L 440 310" stroke="#8fb380" stroke-width="2" fill="none" 
+        marker-end="url(#arrowgreen)"/>
+  <path d="M 360 400 L 440 400" stroke="#c794a8" stroke-width="2" fill="none" 
+        marker-end="url(#arrowpink)"/>
+
+  <!-- Определение маркеров для стрелок -->
+  <defs>
+    <marker id="arrowgreen" markerWidth="10" markerHeight="10" 
+            refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#8fb380"/>
+    </marker>
+    <marker id="arrowpink" markerWidth="10" markerHeight="10" 
+            refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#c794a8"/>
+    </marker>
+  </defs>
+
+  <!-- Подписи (вертикальный текст) -->
+  <text x="410" y="275" text-anchor="middle" class="small-text" fill="#6b8a60" 
+        transform="rotate(-90 400 270)">API вызовы</text>
+  <text x="290" y="365" text-anchor="middle" class="small-text" fill="#a67389" 
+        transform="rotate(-90 400 360)">Аппаратный канал</text>
+</svg>

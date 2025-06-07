@@ -1,0 +1,61 @@
+<svg width="800" height="800" xmlns="http://www.w3.org/2000/svg">
+  
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" 
+            refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#d1e0e3" />
+    </marker>
+  </defs>
+  
+  
+  <rect x="300" y="250" width="200" height="80" rx="15" ry="15" fill="#d1e0e3" stroke="#ccdaf7" stroke-width="0"/>
+  <text x="400" y="295" font-family="Arial, sans-serif" font-size="26" font-weight="bold" text-anchor="middle" fill="#2c5f7c">RISC-V</text>
+  
+  
+  
+  <line x1="300" y1="260" x2="210" y2="180" stroke="#d1e0e3" stroke-width="2" stroke-dasharray="5,5" marker-end="url(#arrowhead)"/>
+  
+  
+  <line x1="500" y1="260" x2="590" y2="180" stroke="#d1e0e3" stroke-width="2" stroke-dasharray="5,5" marker-end="url(#arrowhead)"/>
+  
+  
+  <line x1="300" y1="320" x2="210" y2="400" stroke="#d1e0e3" stroke-width="2" stroke-dasharray="5,5" marker-end="url(#arrowhead)"/>
+  
+  
+  <line x1="500" y1="320" x2="590" y2="400" stroke="#d1e0e3" stroke-width="2" stroke-dasharray="5,5" marker-end="url(#arrowhead)"/>
+  
+  
+  <line x1="400" y1="330" x2="400" y2="570" stroke="#d1e0e3" stroke-width="2" stroke-dasharray="5,5" marker-end="url(#arrowhead)"/>
+  
+  
+  <rect x="50" y="80" width="320" height="100" rx="12" ry="12" fill="#fae5ce" stroke="#fdf2cd" stroke-width="0"/>
+  <text x="210" y="115" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#8b5a3c">Промышленный контроль</text>
+  <text x="210" y="140" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" fill="#8b5a3c">и автоматизация</text>
+  <text x="210" y="165" font-family="Arial, sans-serif" font-size="16" font-style="italic" text-anchor="middle" fill="#8b5a3c">производства</text>
+  
+  
+  <rect x="430" y="80" width="320" height="100" rx="12" ry="12" fill="#daead3" stroke="#d1e0e3" stroke-width="0"/>
+  <text x="590" y="115" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#2e7d32">Облачные платформы</text>
+  <text x="590" y="140" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" fill="#2e7d32">• Индивидуальные решения</text>
+  <text x="590" y="165" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" fill="#2e7d32">• Ускорители приложений</text>
+  
+  
+  <rect x="50" y="400" width="320" height="120" rx="12" ry="12" fill="#d9d2e9" stroke="#ccdaf7" stroke-width="0"/>
+  <text x="210" y="435" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#6a1b9a">Сетевое оборудование</text>
+  <text x="210" y="460" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" fill="#6a1b9a">• Маршрутизаторы</text>
+  <text x="210" y="480" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" fill="#6a1b9a">• Коммутаторы</text>
+  <text x="210" y="500" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" fill="#6a1b9a">• Сетевые интерфейсы</text>
+  
+  
+  <rect x="430" y="400" width="320" height="120" rx="12" ry="12" fill="#e3b9b0" stroke="#f1cdcc" stroke-width="0"/>
+  <text x="590" y="435" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#bf360c">Встраиваемая электроника</text>
+  <text x="590" y="460" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" fill="#bf360c">• Устройства умного дома</text>
+  <text x="590" y="480" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" fill="#bf360c">• Портативные устройства</text>
+  <text x="590" y="500" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" fill="#bf360c">• Микроконтроллеры</text>
+  
+  
+  <rect x="240" y="570" width="320" height="100" rx="12" ry="12" fill="#d1e2f3" stroke="#e9d1dc" stroke-width="0"/>
+  <text x="400" y="605" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#00695c">Транспорт и медиасистемы</text>
+  <text x="400" y="630" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" fill="#00695c">• Автомобилестроение</text>
+  <text x="400" y="650" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" fill="#00695c">• Мультимедийные устройства</text>
+</svg>
