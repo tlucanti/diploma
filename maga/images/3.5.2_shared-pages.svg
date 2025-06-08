@@ -1,0 +1,121 @@
+<svg width="1000" height="800" xmlns="http://www.w3.org/2000/svg">
+  <!-- Обычный мир -->
+  <rect x="50" y="50" width="900" height="120" rx="15" ry="15" fill="#ccdaf7" stroke="#7ba5d9" stroke-width="2"/>
+  <text x="500" y="80" text-anchor="middle" font-family="Arial" font-size="20" font-weight="bold" fill="#5a8bc4">Обычный мир (WID 1)</text>
+  
+  <!-- Linux Kernel Driver -->
+  <rect x="80" y="100" width="200" height="50" rx="10" ry="10" fill="#d1e2f3" stroke="#8fb4d8" stroke-width="2"/>
+  <text x="180" y="130" text-anchor="middle" font-family="Arial" font-size="16" fill="#6a95c7">Linux Kernel Driver</text>
+  
+  <!-- Producer/Consumer индикаторы -->
+  <rect x="320" y="100" width="120" height="25" rx="5" ry="5" fill="#e9d1dc" stroke="#c997b0" stroke-width="1"/>
+  <text x="380" y="118" text-anchor="middle" font-family="Arial" font-size="14" fill="#b5789c">Producer</text>
+  
+  <rect x="460" y="125" width="120" height="25" rx="5" ry="5" fill="#d9d2e9" stroke="#b3a1d0" stroke-width="1"/>
+  <text x="520" y="143" text-anchor="middle" font-family="Arial" font-size="14" fill="#9682b8">Consumer</text>
+  
+  <!-- Polling mechanism -->
+  <rect x="620" y="100" width="140" height="25" rx="5" ry="5" fill="#fdf2cd" stroke="#e6d88f" stroke-width="1"/>
+  <text x="690" y="118" text-anchor="middle" font-family="Arial" font-size="14" fill="#c9b65c">Polling mechanism</text>
+
+  <!-- Разделяемая память -->
+  <rect x="50" y="200" width="900" height="380" rx="15" ry="15" fill="#fae5ce" stroke="#e6b77a" stroke-width="2"/>
+  <text x="500" y="230" text-anchor="middle" font-family="Arial" font-size="20" font-weight="bold" fill="#d19945">Разделяемая память</text>
+
+  <!-- Канареечная страница 1 -->
+  <rect x="80" y="250" width="840" height="30" rx="8" ry="8" fill="#e3b9b0" stroke="#c8886e" stroke-width="2"/>
+  <text x="500" y="270" text-anchor="middle" font-family="Arial" font-size="16" fill="#b5744a">Канареечная страница (запрет доступа)</text>
+
+  <!-- Очередь запросов -->
+  <rect x="80" y="300" width="400" height="80" rx="10" ry="10" fill="#daead3" stroke="#a8cc8f" stroke-width="2"/>
+  <text x="280" y="325" text-anchor="middle" font-family="Arial" font-size="18" font-weight="bold" fill="#7eb55a">Очередь запросов</text>
+  <text x="280" y="345" text-anchor="middle" font-family="Arial" font-size="14" fill="#6ea048">Кольцевой буфер</text>
+  <text x="280" y="365" text-anchor="middle" font-family="Arial" font-size="14" fill="#6ea048">структуры wg_tee_cmd</text>
+
+  <!-- Очередь ответов -->
+  <rect x="520" y="300" width="400" height="80" rx="10" ry="10" fill="#d1e0e3" stroke="#8fb9c1" stroke-width="2"/>
+  <text x="720" y="325" text-anchor="middle" font-family="Arial" font-size="18" font-weight="bold" fill="#6ba0aa">Очередь ответов</text>
+  <text x="720" y="345" text-anchor="middle" font-family="Arial" font-size="14" fill="#5a8b95">Кольцевой буфер</text>
+  <text x="720" y="365" text-anchor="middle" font-family="Arial" font-size="14" fill="#5a8b95">структуры wg_tee_cmd</text>
+
+  <!-- Канареечная страница 2 -->
+  <rect x="80" y="400" width="840" height="30" rx="8" ry="8" fill="#e3b9b0" stroke="#c8886e" stroke-width="2"/>
+  <text x="500" y="420" text-anchor="middle" font-family="Arial" font-size="16" fill="#b5744a">Канареечная страница (запрет доступа)</text>
+
+  <!-- Области разделяемой памяти -->
+  <rect x="80" y="450" width="840" height="60" rx="10" ry="10" fill="#f1cdcc" stroke="#db9690" stroke-width="2"/>
+  <text x="500" y="475" text-anchor="middle" font-family="Arial" font-size="18" font-weight="bold" fill="#c5735d">Области разделяемой памяти</text>
+  <text x="500" y="495" text-anchor="middle" font-family="Arial" font-size="14" fill="#b8654f">Динамически выделяемые блоки для больших данных</text>
+
+  <!-- Канареечная страница 3 -->
+  <rect x="80" y="530" width="840" height="30" rx="8" ry="8" fill="#e3b9b0" stroke="#c8886e" stroke-width="2"/>
+  <text x="500" y="550" text-anchor="middle" font-family="Arial" font-size="16" fill="#b5744a">Канареечная страница (запрет доступа)</text>
+
+  <!-- Защищенный мир -->
+  <rect x="50" y="610" width="900" height="120" rx="15" ry="15" fill="#daead3" stroke="#a8cc8f" stroke-width="2"/>
+  <text x="500" y="640" text-anchor="middle" font-family="Arial" font-size="20" font-weight="bold" fill="#7eb55a">Защищенный мир (WID 0)</text>
+  
+  <!-- Безопасная ОС -->
+  <rect x="80" y="660" width="200" height="50" rx="10" ry="10" fill="#e6f2df" stroke="#b8d59b" stroke-width="2"/>
+  <text x="180" y="690" text-anchor="middle" font-family="Arial" font-size="16" fill="#8bc066">Безопасная ОС</text>
+  
+  <!-- Доверенные приложения -->
+  <rect x="320" y="660" width="140" height="50" rx="10" ry="10" fill="#e6f2df" stroke="#b8d59b" stroke-width="2"/>
+  <text x="390" y="680" text-anchor="middle" font-family="Arial" font-size="16" fill="#8bc066">Доверенные</text>
+  <text x="390" y="700" text-anchor="middle" font-family="Arial" font-size="16" fill="#8bc066">приложения</text>
+
+  <!-- Consumer/Producer индикаторы для защищенного мира -->
+  <rect x="500" y="660" width="120" height="25" rx="5" ry="5" fill="#d9d2e9" stroke="#b3a1d0" stroke-width="1"/>
+  <text x="560" y="678" text-anchor="middle" font-family="Arial" font-size="14" fill="#9682b8">Consumer</text>
+  
+  <rect x="640" y="685" width="120" height="25" rx="5" ry="5" fill="#e9d1dc" stroke="#c997b0" stroke-width="1"/>
+  <text x="700" y="703" text-anchor="middle" font-family="Arial" font-size="14" fill="#b5789c">Producer</text>
+
+  <!-- WorldGuard Controller -->
+  <rect x="780" y="660" width="140" height="50" rx="10" ry="10" fill="#fdf2cd" stroke="#e6d88f" stroke-width="2"/>
+  <text x="850" y="680" text-anchor="middle" font-family="Arial" font-size="14" fill="#c9b65c">WorldGuard</text>
+  <text x="850" y="700" text-anchor="middle" font-family="Arial" font-size="14" fill="#c9b65c">Controller</text>
+
+  <!-- Стрелки -->
+  <!-- Producer стрелка от Linux к очереди запросов -->
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" 
+     refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#7eb55a" />
+    </marker>
+    <marker id="arrowhead2" markerWidth="10" markerHeight="7" 
+     refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#6ba0aa" />
+    </marker>
+    <marker id="arrowhead3" markerWidth="10" markerHeight="7" 
+     refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#d19945" />
+    </marker>
+  </defs>
+
+  <!-- Стрелка от Linux Driver к очереди запросов -->
+  <path d="M 180 150 Q 200 180 250 290" stroke="#7eb55a" stroke-width="3" fill="none" marker-end="url(#arrowhead)"/>
+  
+  <!-- Стрелка от очереди ответов к Linux Driver -->
+  <path d="M 720 300 Q 650 220 280 150" stroke="#6ba0aa" stroke-width="3" fill="none" marker-end="url(#arrowhead2)"/>
+  
+  <!-- Стрелка от очереди запросов к Безопасной ОС -->
+  <path d="M 280 380 Q 220 520 180 660" stroke="#7eb55a" stroke-width="3" fill="none" marker-end="url(#arrowhead)"/>
+  
+  <!-- Стрелка от Безопасной ОС к очереди ответов -->
+  <path d="M 280 660 Q 500 520 720 380" stroke="#6ba0aa" stroke-width="3" fill="none" marker-end="url(#arrowhead2)"/>
+
+  <!-- IPI сигналы (пунктирные линии) -->
+  <path d="M 400 170 L 400 610" stroke="#d19945" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrowhead3)"/>
+  <text x="420" y="390" font-family="Arial" font-size="14" fill="#d19945">IPI</text>
+
+  <!-- Операции TEE -->
+  <rect x="80" y="750" width="200" height="25" rx="5" ry="5" fill="#f1cdcc" stroke="#db9690" stroke-width="1"/>
+  <text x="180" y="768" text-anchor="middle" font-family="Arial" font-size="14" fill="#c5735d">mpmc_queue_push</text>
+  
+  <rect x="320" y="750" width="280" height="25" rx="5" ry="5" fill="#f1cdcc" stroke="#db9690" stroke-width="1"/>
+  <text x="460" y="768" text-anchor="middle" font-family="Arial" font-size="14" fill="#c5735d">TEE_CMD_ID_MAP_SHARED_MEM</text>
+  
+  <rect x="630" y="750" width="285" height="25" rx="5" ry="5" fill="#f1cdcc" stroke="#db9690" stroke-width="1"/>
+  <text x="770" y="768" text-anchor="middle" font-family="Arial" font-size="14" fill="#c5735d">TEE_CMD_ID_UNMAP_SHARED_MEM</text>
+</svg>

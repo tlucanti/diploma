@@ -1,0 +1,178 @@
+<svg width="1000" height="800" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Определяем стили для стрелок -->
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" 
+     refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#8b5a4a" />
+    </marker>
+    
+    <marker id="arrowhead-bi" markerWidth="10" markerHeight="7" 
+     refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#4a7c8b" />
+    </marker>
+  </defs>
+  
+  <!-- Обычный Мир (Normal World) -->
+  <rect x="50" y="50" width="900" height="120" rx="15" ry="15" 
+        fill="#d1e2f3" stroke="#4a7c8b" stroke-width="2"/>
+  <text x="500" y="80" text-anchor="middle" font-size="20" font-weight="bold" fill="#2d5a6b">
+    Обычный Мир (Normal World)
+  </text>
+  
+  <!-- Linux OS -->
+  <rect x="80" y="100" width="150" height="50" rx="10" ry="10" 
+        fill="#ccdaf7" stroke="#3d6b8a" stroke-width="1"/>
+  <text x="155" y="130" text-anchor="middle" font-size="16" fill="#2d4d6b">Linux OS</text>
+  
+  <!-- Client Applications -->
+  <rect x="260" y="100" width="180" height="50" rx="10" ry="10" 
+        fill="#ccdaf7" stroke="#3d6b8a" stroke-width="1"/>
+  <text x="350" y="125" text-anchor="middle" font-size="16" fill="#2d4d6b">Клиентские</text>
+  <text x="350" y="145" text-anchor="middle" font-size="16" fill="#2d4d6b">приложения (CA)</text>
+  
+  <!-- TEE Driver -->
+  <rect x="470" y="100" width="150" height="50" rx="10" ry="10" 
+        fill="#ccdaf7" stroke="#3d6b8a" stroke-width="1"/>
+  <text x="545" y="130" text-anchor="middle" font-size="16" fill="#2d4d6b">TEE драйвер</text>
+  
+  <!-- Аппаратное разделение -->
+  <rect x="650" y="100" width="280" height="50" rx="10" ry="10" 
+        fill="#e9d1dc" stroke="#8b4a6b" stroke-width="1"/>
+  <text x="790" y="130" text-anchor="middle" font-size="16" fill="#6b2d4d">CPU1+ (Normal World)</text>
+  
+  <!-- Интерфейс взаимодействия -->
+  <rect x="200" y="200" width="600" height="100" rx="15" ry="15" 
+        fill="#fae5ce" stroke="#b8824a" stroke-width="2"/>
+  <text x="500" y="230" text-anchor="middle" font-size="18" font-weight="bold" fill="#8b5a2d">
+    Интерфейс взаимодействия
+  </text>
+  
+  <!-- Request Queue -->
+  <rect x="230" y="250" width="150" height="40" rx="8" ry="8" 
+        fill="#fdf2cd" stroke="#a68a3d" stroke-width="1"/>
+  <text x="305" y="275" text-anchor="middle" font-size="16" fill="#735f2d">Request Queue</text>
+  
+  <!-- Response Queue -->
+  <rect x="420" y="250" width="150" height="40" rx="8" ry="8" 
+        fill="#fdf2cd" stroke="#a68a3d" stroke-width="1"/>
+  <text x="495" y="275" text-anchor="middle" font-size="16" fill="#735f2d">Response Queue</text>
+  
+  <!-- IPI -->
+  <rect x="610" y="250" width="150" height="40" rx="8" ry="8" 
+        fill="#fdf2cd" stroke="#a68a3d" stroke-width="1"/>
+  <text x="685" y="275" text-anchor="middle" font-size="16" fill="#735f2d">IPI механизм</text>
+  
+  <!-- Защищенный Мир (Secure World) -->
+  <rect x="50" y="330" width="900" height="460" rx="15" ry="15" 
+        fill="#daead3" stroke="#4a8b5a" stroke-width="2"/>
+  <text x="500" y="360" text-anchor="middle" font-size="20" font-weight="bold" fill="#2d6b3d">
+    Защищенный Мир (Secure World)
+  </text>
+  
+  <!-- Сервисы TEE -->
+  <rect x="80" y="380" width="840" height="80" rx="12" ry="12" 
+        fill="#d1e0e3" stroke="#4a6b8b" stroke-width="1"/>
+  <text x="500" y="405" text-anchor="middle" font-size="18" font-weight="bold" fill="#2d4d6b">
+    Сервисы TEE
+  </text>
+  
+  <rect x="120" y="420" width="200" height="30" rx="6" ry="6" 
+        fill="#e8f2f4" stroke="#5a7b8b" stroke-width="1"/>
+  <text x="220" y="440" text-anchor="middle" font-size="16" fill="#3d5d6b">Управление сессиями</text>
+  
+  <rect x="400" y="420" width="180" height="30" rx="6" ry="6" 
+        fill="#e8f2f4" stroke="#5a7b8b" stroke-width="1"/>
+  <text x="490" y="440" text-anchor="middle" font-size="16" fill="#3d5d6b">Обработка команд</text>
+  
+  <rect x="630" y="420" width="270" height="30" rx="6" ry="6" 
+        fill="#e8f2f4" stroke="#5a7b8b" stroke-width="1"/>
+  <text x="760" y="440" text-anchor="middle" font-size="16" fill="#3d5d6b">Криптографические сервисы</text>
+  
+  <!-- Менеджеры ресурсов -->
+  <rect x="80" y="480" width="560" height="80" rx="12" ry="12" 
+        fill="#d9d2e9" stroke="#6b4a8b" stroke-width="1"/>
+  <text x="370" y="505" text-anchor="middle" font-size="18" font-weight="bold" fill="#4d2d6b">
+    Менеджеры ресурсов
+  </text>
+  
+  <rect x="100" y="520" width="150" height="30" rx="6" ry="6" 
+        fill="#e5def0" stroke="#7b5a8b" stroke-width="1"/>
+  <text x="175" y="540" text-anchor="middle" font-size="16" fill="#5d3d6b">Task Manager</text>
+  
+  <rect x="280" y="520" width="160" height="30" rx="6" ry="6" 
+        fill="#e5def0" stroke="#7b5a8b" stroke-width="1"/>
+  <text x="360" y="540" text-anchor="middle" font-size="16" fill="#5d3d6b">Memory Manager</text>
+  
+  <rect x="470" y="520" width="150" height="30" rx="6" ry="6" 
+        fill="#e5def0" stroke="#7b5a8b" stroke-width="1"/>
+  <text x="545" y="540" text-anchor="middle" font-size="16" fill="#5d3d6b">IPC Manager</text>
+  
+  <!-- Доверенные приложения -->
+  <rect x="660" y="480" width="260" height="80" rx="12" ry="12" 
+        fill="#f1cdcc" stroke="#8b4a5a" stroke-width="1"/>
+  <text x="790" y="505" text-anchor="middle" font-size="18" font-weight="bold" fill="#6b2d3d">
+    Доверенные приложения
+  </text>
+  
+  <rect x="680" y="520" width="50" height="30" rx="6" ry="6" 
+        fill="#f5dbd9" stroke="#9b5a6a" stroke-width="1"/>
+  <text x="705" y="540" text-anchor="middle" font-size="16" fill="#7b3d4d">TA1</text>
+  
+  <rect x="770" y="520" width="50" height="30" rx="6" ry="6" 
+        fill="#f5dbd9" stroke="#9b5a6a" stroke-width="1"/>
+  <text x="795" y="540" text-anchor="middle" font-size="16" fill="#7b3d4d">TA2</text>
+  
+  <rect x="850" y="520" width="50" height="30" rx="6" ry="6" 
+        fill="#f5dbd9" stroke="#9b5a6a" stroke-width="1"/>
+  <text x="875" y="540" text-anchor="middle" font-size="16" fill="#7b3d4d">TA3</text>
+  
+  <!-- Микроядро -->
+  <rect x="80" y="580" width="840" height="80" rx="12" ry="12" 
+        fill="#e3b9b0" stroke="#8b5a4a" stroke-width="1"/>
+  <text x="500" y="605" text-anchor="middle" font-size="18" font-weight="bold" fill="#6b3d2d">
+    Микроядро
+  </text>
+  
+  <rect x="120" y="620" width="220" height="30" rx="6" ry="6" 
+        fill="#edc7be" stroke="#9b6a5a" stroke-width="1"/>
+  <text x="230" y="640" text-anchor="middle" font-size="16" fill="#7b4d3d">Capability-based security</text>
+  
+  <rect x="390" y="620" width="275" height="30" rx="6" ry="6" 
+        fill="#edc7be" stroke="#9b6a5a" stroke-width="1"/>
+  <text x="530" y="640" text-anchor="middle" font-size="16" fill="#7b4d3d">Управление прерываниями</text>
+  
+  <rect x="700" y="620" width="170" height="30" rx="6" ry="6" 
+        fill="#edc7be" stroke="#9b6a5a" stroke-width="1"/>
+  <text x="790" y="640" text-anchor="middle" font-size="16" fill="#7b4d3d">CPU0 (Secure)</text>
+  
+  <!-- Аппаратный уровень -->
+  <rect x="80" y="680" width="840" height="80" rx="12" ry="12" 
+        fill="#f1cdcc" stroke="#8b4a5a" stroke-width="2"/>
+  <text x="500" y="705" text-anchor="middle" font-size="18" font-weight="bold" fill="#6b2d3d">
+    Аппаратный уровень
+  </text>
+  
+  <rect x="160" y="715" width="250" height="30" rx="5" ry="5" 
+        fill="#f5dbd9" stroke="#9b5a6a" stroke-width="1"/>
+  <text x="300" y="735" text-anchor="middle" font-size="16" fill="#7b3d4d">WorldGuard + PMP</text>
+  
+  <rect x="500" y="715" width="350" height="30" rx="5" ry="5" 
+        fill="#f5dbd9" stroke="#9b5a6a" stroke-width="1"/>
+  <text x="680" y="735" text-anchor="middle" font-size="16" fill="#7b3d4d">Физическая память с разделением</text>
+  
+  <!-- Стрелки -->
+  <!-- Request Queue стрелка вниз -->
+  <line x1="305" y1="170" x2="305" y2="250" stroke="#8b5a4a" stroke-width="2" marker-end="url(#arrowhead)"/>
+  
+  <!-- Response Queue стрелка вверх -->
+  <line x1="495" y1="250" x2="495" y2="170" stroke="#8b5a4a" stroke-width="2" marker-end="url(#arrowhead)"/>
+  
+  <!-- IPI двунаправленные стрелки -->
+  <line x1="685" y1="170" x2="685" y2="250" stroke="#4a7c8b" stroke-width="2" marker-end="url(#arrowhead-bi)"/>
+  <line x1="675" y1="250" x2="675" y2="170" stroke="#4a7c8b" stroke-width="2" marker-end="url(#arrowhead-bi)"/>
+  
+  <!-- Стрелка от интерфейса к сервисам -->
+  <line x1="495" y1="380" x2="495" y2="290" stroke="#8b5a4a" stroke-width="2" marker-end="url(#arrowhead)"/>
+    <line x1="305" y1="290" x2="305" y2="380" stroke="#8b5a4a" stroke-width="2" marker-end="url(#arrowhead)"/>
+  
+</svg>

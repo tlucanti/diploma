@@ -1,0 +1,79 @@
+<svg width="800" height="900" xmlns="http://www.w3.org/2000/svg">
+  <!-- Включение питания -->
+  <rect x="50" y="50" width="300" height="100" rx="15" ry="15" 
+        fill="#f1cdcc" stroke="#c8a19a" stroke-width="2"/>
+  <text x="200" y="110" text-anchor="middle" font-family="Arial, sans-serif" 
+        font-size="16" fill="#a67c73">Включение питания</text>
+  
+  <!-- Стрелка вниз -->
+  <path d="M200 150 L200 180 M190 170 L200 180 L210 170" 
+        stroke="#a67c73" stroke-width="2" fill="none"/>
+  
+  <!-- Первый уровень загрузки -->
+  <rect x="50" y="190" width="300" height="100" rx="15" ry="15" 
+        fill="#fae5ce" stroke="#d4b89e" stroke-width="2"/>
+  <text x="200" y="230" text-anchor="middle" font-family="Arial, sans-serif" 
+        font-size="16" fill="#b5956b">Первый уровень загрузки</text>
+  <text x="200" y="255" text-anchor="middle" font-family="Arial, sans-serif" 
+        font-size="16" fill="#b5956b">(Загрузчик из ROM)</text>
+  
+  <!-- Стрелка вниз -->
+  <path d="M200 290 L200 320 M190 310 L200 320 L210 310" 
+        stroke="#b5956b" stroke-width="2" fill="none"/>
+  
+  <!-- Второй уровень загрузки -->
+  <rect x="50" y="330" width="300" height="100" rx="15" ry="15" 
+        fill="#fdf2cd" stroke="#d6c89d" stroke-width="2"/>
+  <text x="200" y="370" text-anchor="middle" font-family="Arial, sans-serif" 
+        font-size="16" fill="#b8a870">Второй уровень загрузки</text>
+  <text x="200" y="395" text-anchor="middle" font-family="Arial, sans-serif" 
+        font-size="16" fill="#b8a870">(Загрузчик из Flash памяти)</text>
+  
+  <!-- Стрелка вниз -->
+  <path d="M200 430 L200 460 M190 450 L200 460 L210 450" 
+        stroke="#b8a870" stroke-width="2" fill="none"/>
+  
+  <!-- Загрузка SecureOS -->
+  <rect x="50" y="470" width="300" height="100" rx="15" ry="15" 
+        fill="#daead3" stroke="#b5c9a3" stroke-width="2"/>
+  <text x="200" y="530" text-anchor="middle" font-family="Arial, sans-serif" 
+        font-size="16" fill="#91a876">Загрузка SecureOS</text>
+  
+  <!-- Стрелка вправо -->
+  <path d="M350 520 L420 520 M410 510 L420 520 L410 530" 
+        stroke="#91a876" stroke-width="2" fill="none"/>
+  
+  <!-- Загрузчик общего назначения -->
+  <rect x="430" y="470" width="300" height="100" rx="15" ry="15" 
+        fill="#d1e0e3" stroke="#a4bdc3" stroke-width="2"/>
+  <text x="580" y="510" text-anchor="middle" font-family="Arial, sans-serif" 
+        font-size="16" fill="#7a9aa3">Загрузчик общего</text>
+  <text x="580" y="535" text-anchor="middle" font-family="Arial, sans-serif" 
+        font-size="16" fill="#7a9aa3">назначения</text>
+  
+  <!-- Стрелка вниз -->
+  <path d="M580 570 L580 600 M570 590 L580 600 L590 590" 
+        stroke="#7a9aa3" stroke-width="2" fill="none"/>
+  
+  <!-- Загрузка ОС Linux -->
+  <rect x="430" y="610" width="300" height="100" rx="15" ry="15" 
+        fill="#ccdaf7" stroke="#9fb5e7" stroke-width="2"/>
+  <text x="580" y="670" text-anchor="middle" font-family="Arial, sans-serif" 
+        font-size="16" fill="#7590c7">Загрузка ОС Linux</text>
+  
+  <!-- Стрелка вниз -->
+  <path d="M580 710 L580 740 M570 730 L580 740 L590 730" 
+        stroke="#7590c7" stroke-width="2" fill="none"/>
+  
+  <!-- Запуск пользовательского ПО -->
+  <rect x="430" y="750" width="300" height="100" rx="15" ry="15" 
+        fill="#d9d2e9" stroke="#b5a5c9" stroke-width="2"/>
+  <text x="580" y="790" text-anchor="middle" font-family="Arial, sans-serif" 
+        font-size="16" fill="#9380a9">Запуск пользовательского</text>
+  <text x="580" y="815" text-anchor="middle" font-family="Arial, sans-serif" 
+        font-size="16" fill="#9380a9">ПО</text>
+  
+  <!-- Пунктирная линия разделения -->
+  <line x1="380" y1="50" x2="380" y2="850" stroke="#a67c73" 
+        stroke-width="2" stroke-dasharray="10,5"/>
+</svg>

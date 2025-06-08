@@ -1,0 +1,136 @@
+<svg width="1200" height="800" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Определение стрелок -->
+    <marker id="redArrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <polygon points="0,0 0,6 9,3" fill="#c85450"/>
+    </marker>
+    <marker id="orangeArrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <polygon points="0,0 0,6 9,3" fill="#d4924e"/>
+    </marker>
+    <marker id="yellowArrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <polygon points="0,0 0,6 9,3" fill="#e6c84a"/>
+    </marker>
+    <marker id="purpleArrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <polygon points="0,0 0,6 9,3" fill="#9d7db5"/>
+    </marker>
+    <marker id="brownArrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <polygon points="0,0 0,6 9,3" fill="#a67c52"/>
+    </marker>
+    <marker id="grayArrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <polygon points="0,0 0,6 9,3" fill="#c9a8b8"/>
+    </marker>
+  </defs>
+
+  <!-- Заголовок -->
+  <text x="500" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#8b6b47">
+    Модель угроз TEE: архитектура и векторы атак
+  </text>
+
+  <!-- Нормальный мир -->
+  <g id="normal-world">
+    <!-- Контейнер нормального мира -->
+    <rect x="50" y="80" width="300" height="400" rx="15" ry="15" fill="#f1cdcc" stroke="#d4a09a" stroke-width="2"/>
+    <text x="200" y="105" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#a67c6b">
+      Нормальный мир
+    </text>
+    
+    <!-- Rich OS -->
+    <rect x="70" y="120" width="120" height="70" rx="10" ry="10" fill="#e3b9b0" stroke="#c49087" stroke-width="1"/>
+    <text x="130" y="145" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#8b6b5c">Rich OS</text>
+    <text x="130" y="165" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#8b6b5c">(недоверенная)</text>
+    
+    <!-- Недоверенные приложения -->
+    <rect x="210" y="120" width="120" height="70" rx="10" ry="10" fill="#e3b9b0" stroke="#c49087" stroke-width="1"/>
+    <text x="270" y="145" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#8b6b5c">Недоверенные</text>
+    <text x="270" y="165" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#8b6b5c">приложения</text>
+    
+    <!-- Периферийные устройства -->
+    <rect x="70" y="210" width="120" height="70" rx="10" ry="10" fill="#fae5ce" stroke="#e6c09a" stroke-width="1"/>
+    <text x="130" y="235" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#a6825c">Периферийные</text>
+    <text x="130" y="255" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#a6825c">устройства</text>
+    
+    <!-- DMA контроллеры -->
+    <rect x="210" y="210" width="120" height="70" rx="10" ry="10" fill="#fae5ce" stroke="#e6c09a" stroke-width="1"/>
+    <text x="270" y="235" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#a6825c">DMA</text>
+    <text x="270" y="255" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#a6825c">контроллеры</text>
+  </g>
+
+  <!-- Аппаратные механизмы защиты -->
+  <g id="hardware-protection">
+    <rect x="380" y="300" width="180" height="120" rx="15" ry="15" fill="#daead3" stroke="#b8c9a8" stroke-width="2"/>
+    <text x="470" y="325" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#6b8c5c">
+      Аппаратная защита
+    </text>
+    
+    <rect x="390" y="340" width="160" height="25" rx="5" ry="5" fill="#ccdaf7" stroke="#a3b8d9" stroke-width="1"/>
+    <text x="470" y="357" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#5c7db5">RISC-V WorldGuard</text>
+    
+    <rect x="390" y="370" width="70" height="25" rx="5" ry="5" fill="#ccdaf7" stroke="#a3b8d9" stroke-width="1"/>
+    <text x="425" y="387" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#5c7db5">IOMMU</text>
+    
+    <rect x="470" y="370" width="80" height="25" rx="5" ry="5" fill="#ccdaf7" stroke="#a3b8d9" stroke-width="1"/>
+    <text x="510" y="387" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#5c7db5">CPU Core</text>
+  </g>
+
+  <!-- Безопасный мир -->
+  <g id="secure-world">
+    <rect x="620" y="80" width="300" height="400" rx="15" ry="15" fill="#d1e0e3" stroke="#a3c2c9" stroke-width="2"/>
+    <text x="770" y="105" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#5c7d85">
+      Безопасный мир
+    </text>
+    
+    <!-- Secure OS -->
+    <rect x="640" y="120" width="120" height="70" rx="10" ry="10" fill="#d1e2f3" stroke="#a3c2d9" stroke-width="1"/>
+    <text x="700" y="145" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#5c7db5">Secure OS</text>
+    <text x="700" y="165" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#5c7db5">(доверенная)</text>
+    
+    <!-- Доверенные приложения -->
+    <rect x="780" y="120" width="120" height="70" rx="10" ry="10" fill="#d1e2f3" stroke="#a3c2d9" stroke-width="1"/>
+    <text x="840" y="140" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#5c7db5">Доверенные</text>
+    <text x="840" y="160" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#5c7db5">приложения</text>
+    <text x="840" y="180" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#5c7db5">(TA)</text>
+    
+    <!-- Защищенная память -->
+    <rect x="640" y="210" width="120" height="70" rx="10" ry="10" fill="#d9d2e9" stroke="#b8a8c9" stroke-width="1"/>
+    <text x="700" y="235" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#7d6b8c">Защищенная</text>
+    <text x="700" y="255" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#7d6b8c">память</text>
+    
+    <!-- Криптографические ключи -->
+    <rect x="780" y="210" width="120" height="70" rx="10" ry="10" fill="#e9d1dc" stroke="#c9a8b8" stroke-width="1"/>
+    <text x="840" y="230" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#8c6b7d">Крипто-</text>
+    <text x="840" y="250" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#8c6b7d">графические</text>
+    <text x="840" y="270" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#8c6b7d">ключи</text>
+  </g>
+
+  <!-- Векторы атак -->
+  <!-- DMA атаки (красные) -->
+  <line x1="330" y1="245" x2="620" y2="245" stroke="#c85450" stroke-width="3" marker-end="url(#redArrow)"/>
+  <text x="475" y="240" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#c85450">DMA атаки</text>
+
+  <!-- API атаки (оранжевые) -->
+  <line x1="350" y1="155" x2="620" y2="155" stroke="#d4924e" stroke-width="3" marker-end="url(#orangeArrow)"/>
+  <text x="485" y="150" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#d4924e">API атаки</text>
+
+  <!-- MITM атаки (желтые) - перемещена ниже -->
+  <line x1="350" y1="450" x2="620" y2="450" stroke="#e6c84a" stroke-width="3" marker-end="url(#yellowArrow)"/>
+  <text x="485" y="475" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#e6c84a">MITM атаки</text>
+
+  <!-- DoS атаки - теперь указывает на безопасный мир -->
+  <line x1="350" y1="200" x2="620" y2="200" stroke="#c9a8b8" stroke-width="3" marker-end="url(#grayArrow)"/>
+  <text x="485" y="195" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#c9a8b8">DoS атаки</text>
+
+  <!-- Атаки по сторонним каналам (фиолетовые, изогнутые) -->
+  <path d="M 200 300 Q 450 550 700 300" stroke="#9d7db5" stroke-width="3" fill="none" marker-end="url(#purpleArrow)"/>
+  <text x="480" y="440" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#9d7db5">Атаки по сторонним каналам</text>
+
+  <!-- Физические атаки (коричневые, снизу) -->
+  <line x1="200" y1="520" x2="770" y2="520" stroke="#a67c52" stroke-width="3" marker-end="url(#brownArrow)"/>
+  <text x="485" y="545" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#a67c52">Физические атаки</text>
+
+  <!-- Зоны доверия (полупрозрачные области) -->
+  <rect x="45" y="75" width="310" height="410" rx="20" ry="20" fill="none" stroke="#c85450" stroke-width="2" stroke-dasharray="5,5" opacity="0.7"/>
+  <text x="55" y="70" font-family="Arial, sans-serif" font-size="16" fill="#c85450">Недоверенная зона</text>
+  
+  <rect x="615" y="75" width="310" height="410" rx="20" ry="20" fill="none" stroke="#5c7db5" stroke-width="2" stroke-dasharray="5,5" opacity="0.7"/>
+  <text x="625" y="70" font-family="Arial, sans-serif" font-size="16" fill="#5c7db5">Доверенная зона</text>
+</svg>

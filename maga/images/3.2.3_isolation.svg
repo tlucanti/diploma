@@ -1,0 +1,116 @@
+<svg width="1000" height="800" xmlns="http://www.w3.org/2000/svg">
+  <!-- Заголовок -->
+  <text x="500" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#8b5a4c">Схема распределения памяти и изоляции миров</text>
+  
+  <!-- Уровень процессорных ядер -->
+  <text x="50" y="80" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#8b5a4c">Процессорные ядра:</text>
+  
+  <!-- Безопасное ядро -->
+  <rect x="100" y="100" width="280" height="120" rx="15" ry="15" fill="#e3b9b0" stroke="#c19489" stroke-width="2"/>
+  <text x="240" y="125" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#8b5a4c">Безопасное ядро</text>
+  <text x="240" y="150" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#9d6b60">Secure OS</text>
+  <text x="240" y="175" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#9d6b60">Регистр SATP</text>
+  <text x="240" y="200" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#9d6b60">World ID: Secure</text>
+  
+  <!-- Обычное ядро -->
+  <rect x="620" y="100" width="280" height="120" rx="15" ry="15" fill="#ccdaf7" stroke="#a8c2e8" stroke-width="2"/>
+  <text x="760" y="125" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#4a6ba8">Обычное ядро</text>
+  <text x="760" y="150" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#5d7db8">Normal World OS</text>
+  <text x="760" y="175" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#5d7db8">Регистр SATP</text>
+  <text x="760" y="200" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#5d7db8">World ID: Normal</text>
+  
+  <!-- Стрелки к WorldGuard -->
+  <path d="M 380 160 Q 450 160 470 280" stroke="#8b5a4c" stroke-width="3" fill="none" marker-end="url(#arrowhead-secure)"/>
+  <path d="M 620 160 Q 550 160 530 280" stroke="#4a6ba8" stroke-width="3" fill="none" marker-end="url(#arrowhead-normal)"/>
+  
+  <!-- WorldGuard контроллер -->
+  <rect x="400" y="280" width="200" height="100" rx="15" ry="15" fill="#d9d2e9" stroke="#c1b3d6" stroke-width="2"/>
+  <text x="500" y="305" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#6d5a8a">WorldGuard</text>
+  <text x="500" y="330" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#7d6a9a">Проверка прав</text>
+  <text x="500" y="350" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#7d6a9a">доступа</text>
+  <text x="500" y="370" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#7d6a9a">Генерация исключений</text>
+  
+  <!-- Стрелка к физической памяти -->
+  <path d="M 500 380 L 500 430" stroke="#6d5a8a" stroke-width="3" fill="none" marker-end="url(#arrowhead-worldguard)"/>
+  
+  <!-- Физическая память -->
+  <text x="50" y="460" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#8b5a4c">Физическая память:</text>
+  
+  <!-- Secure World память -->
+  <rect x="80" y="480" width="200" height="80" rx="15" ry="15" fill="#f1cdcc" stroke="#e3b0ad" stroke-width="2"/>
+  <text x="180" y="505" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#a8524b">Secure World</text>
+  <text x="180" y="525" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#b85f58">Эксклюзивная</text>
+  <text x="180" y="545" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#b85f58">память</text>
+  
+  <!-- Разделяемая память -->
+  <rect x="320" y="480" width="160" height="80" rx="15" ry="15" fill="#fdf2cd" stroke="#f7e6a8" stroke-width="2"/>
+  <text x="400" y="505" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#a6934a">Разделяемая</text>
+  <text x="400" y="525" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#b8a45a">память</text>
+  <text x="400" y="545" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#b8a45a">Очереди</text>
+  
+  <!-- Очереди -->
+  <rect x="520" y="480" width="120" height="35" rx="10" ry="10" fill="#fae5ce" stroke="#f2d4a8" stroke-width="1"/>
+  <text x="580" y="502" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#a68952">Request Queue</text>
+  
+  <rect x="520" y="525" width="120" height="35" rx="10" ry="10" fill="#fae5ce" stroke="#f2d4a8" stroke-width="1"/>
+  <text x="580" y="547" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#a68952">Response Queue</text>
+  
+  <!-- Normal World память -->
+  <rect x="720" y="480" width="200" height="80" rx="15" ry="15" fill="#d1e2f3" stroke="#b8d1e8" stroke-width="2"/>
+  <text x="820" y="505" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#4a6ba8">Normal World</text>
+  <text x="820" y="525" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#5d7db8">Эксклюзивная</text>
+  <text x="820" y="545" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#5d7db8">память</text>
+  
+  <!-- Виртуальная адресация -->
+  <text x="50" y="620" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#8b5a4c">Виртуальная адресация:</text>
+  
+  <!-- Secure Virtual Space -->
+  <rect x="120" y="640" width="280" height="100" rx="15" ry="15" fill="#daead3" stroke="#c4deb8" stroke-width="2"/>
+  <text x="260" y="665" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#4a7a3c">Виртуальное адресное</text>
+  <text x="260" y="685" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#4a7a3c">пространство Secure World</text>
+  <text x="260" y="710" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#5a8a4c">Таблицы страниц Secure OS</text>
+  <text x="260" y="730" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#5a8a4c">Доверенные приложения</text>
+  
+  <!-- Normal Virtual Space -->
+  <rect x="600" y="640" width="280" height="100" rx="15" ry="15" fill="#d1e0e3" stroke="#b8d1d6" stroke-width="2"/>
+  <text x="740" y="665" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#3c6b75">Виртуальное адресное</text>
+  <text x="740" y="685" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#3c6b75">пространство Normal World</text>
+  <text x="740" y="710" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#4c7b85">Таблицы страниц Normal OS</text>
+  <text x="740" y="730" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#4c7b85">Обычные приложения</text>
+  
+  <!-- Стрелки трансляции -->
+  <path d="M 260 640 L 180 560" stroke="#4a7a3c" stroke-width="2" fill="none" stroke-dasharray="5,5"/>
+  <path d="M 740 640 L 820 560" stroke="#3c6b75" stroke-width="2" fill="none" stroke-dasharray="5,5"/>
+  
+  <!-- Стрелки взаимодействия с очередями -->
+  <path d="M 400 640 L 580 560" stroke="#a68952" stroke-width="2" fill="none" marker-end="url(#arrowhead-shared1)"/>
+  <path d="M 600 640 L 580 560" stroke="#a68952" stroke-width="2" fill="none" marker-end="url(#arrowhead-shared2)"/>
+  
+  <!-- Легенда -->
+  <text x="50" y="790" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#8b5a4c">Легенда:</text>
+  <rect x="150" y="775" width="20" height="15" rx="3" ry="3" fill="#f1cdcc"/>
+  <text x="180" y="787" font-family="Arial, sans-serif" font-size="16" fill="#8b5a4c">Secure Only</text>
+  <rect x="300" y="775" width="20" height="15" rx="3" ry="3" fill="#fdf2cd"/>
+  <text x="330" y="787" font-family="Arial, sans-serif" font-size="16" fill="#8b5a4c">Shared</text>
+  <rect x="420" y="775" width="20" height="15" rx="3" ry="3" fill="#d1e2f3"/>
+  <text x="450" y="787" font-family="Arial, sans-serif" font-size="16" fill="#8b5a4c">Normal Only</text>
+  
+  <!-- Определение стрелок -->
+  <defs>
+    <marker id="arrowhead-secure" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#8b5a4c"/>
+    </marker>
+    <marker id="arrowhead-normal" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#4a6ba8"/>
+    </marker>
+    <marker id="arrowhead-worldguard" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#6d5a8a"/>
+    </marker>
+    <marker id="arrowhead-shared1" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#a68952"/>
+    </marker>
+    <marker id="arrowhead-shared2" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#a68952"/>
+    </marker>
+  </defs>
+</svg>

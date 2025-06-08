@@ -1,0 +1,155 @@
+<svg width="1100" height="1400" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .start-end { fill: #d1e0e3; stroke: #8fb5bb; stroke-width: 2; }
+      .process { fill: #f1cdcc; stroke: #c48a82; stroke-width: 2; }
+      .decision { fill: #fae5ce; stroke: #d4a373; stroke-width: 2; }
+      .normal-world { fill: #daead3; stroke: #9bb889; stroke-width: 2; }
+      .trusted-app { fill: #ccdaf7; stroke: #7ba3d9; stroke-width: 2; }
+      .secure-os { fill: #e9d1dc; stroke: #d194b8; stroke-width: 2; }
+      .text { font-family: Arial, sans-serif; font-size: 16px; text-anchor: middle; dominant-baseline: middle; }
+      .text-start { fill: #5a7a7f; }
+      .text-process { fill: #8a4a42; }
+      .text-decision { fill: #9a6633; }
+      .text-normal { fill: #5a7a49; }
+      .text-trusted { fill: #4a6ab9; }
+      .text-secure { fill: #a15478; }
+      .arrow { stroke: #666; stroke-width: 2; fill: none; marker-end: url(#arrowhead); }
+    </style>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#666" />
+    </marker>
+  </defs>
+
+  <!-- Начало -->
+  <rect x="425" y="20" width="250" height="80" rx="15" class="start-end"/>
+  <text x="550" y="50" class="text text-start">Обнаружение нарушения</text>
+  <text x="550" y="70" class="text text-start">доступа WorldGuard</text>
+
+  <!-- Стрелка вниз -->
+  <line x1="550" y1="100" x2="550" y2="130" class="arrow"/>
+
+  <!-- Генерация прерывания -->
+  <rect x="425" y="130" width="250" height="80" rx="15" class="process"/>
+  <text x="550" y="160" class="text text-process">Генерация прерывания</text>
+  <text x="550" y="180" class="text text-process">в Secure OS</text>
+
+  <!-- Стрелка вниз -->
+  <line x1="550" y1="210" x2="550" y2="240" class="arrow"/>
+
+  <!-- Чтение регистров -->
+  <rect x="425" y="240" width="250" height="80" rx="15" class="process"/>
+  <text x="550" y="270" class="text text-process">Чтение регистров</text>
+  <text x="550" y="290" class="text text-process">errcause и erraddr</text>
+
+  <!-- Стрелка вниз -->
+  <line x1="550" y1="320" x2="550" y2="350" class="arrow"/>
+
+  <!-- Анализ WID -->
+  <rect x="425" y="350" width="250" height="80" rx="15" class="decision"/>
+  <text x="550" y="380" class="text text-decision">Анализ WID нарушителя</text>
+  <text x="550" y="400" class="text text-decision">(определение источника)</text>
+
+  <!-- Стрелки к трем ветвям -->
+  <line x1="475" y1="430" x2="175" y2="490" class="arrow"/>
+  <line x1="550" y1="430" x2="550" y2="490" class="arrow"/>
+  <line x1="625" y1="430" x2="925" y2="490" class="arrow"/>
+
+  <!-- Ветвь A: Обычный Мир -->
+  <!-- Проверка обычного мира -->
+  <rect x="50" y="490" width="250" height="80" rx="15" class="decision"/>
+  <text x="175" y="520" class="text text-decision">WID указывает на</text>
+  <text x="175" y="540" class="text text-decision">Нормальный Мир?</text>
+
+  <line x1="175" y1="570" x2="175" y2="600" class="arrow"/>
+
+  <!-- Аппаратная блокировка -->
+  <rect x="50" y="600" width="250" height="80" rx="15" class="normal-world"/>
+  <text x="175" y="630" class="text text-normal">Аппаратная блокировка</text>
+  <text x="175" y="650" class="text text-normal">доступа</text>
+
+  <line x1="175" y1="680" x2="175" y2="710" class="arrow"/>
+
+  <!-- Передача обработки -->
+  <rect x="50" y="710" width="250" height="80" rx="15" class="normal-world"/>
+  <text x="175" y="740" class="text text-normal">Передача обработки</text>
+  <text x="175" y="760" class="text text-normal">в Normal World</text>
+
+  <line x1="175" y1="790" x2="175" y2="820" class="arrow"/>
+
+  <!-- Завершение A -->
+  <rect x="50" y="820" width="250" height="80" rx="15" class="start-end"/>
+  <text x="175" y="860" class="text text-start">Завершение</text>
+
+  <!-- Ветвь B: Доверенное Приложение -->
+  <!-- Проверка ДП -->
+  <rect x="425" y="490" width="250" height="80" rx="15" class="decision"/>
+  <text x="550" y="520" class="text text-decision">WID указывает на ДП</text>
+  <text x="550" y="540" class="text text-decision">в Защищенном Мире?</text>
+
+  <line x1="550" y1="570" x2="550" y2="600" class="arrow"/>
+
+  <!-- Завершение ДП -->
+  <rect x="425" y="600" width="250" height="80" rx="15" class="trusted-app"/>
+  <text x="550" y="630" class="text text-trusted">Принудительное</text>
+  <text x="550" y="650" class="text text-trusted">завершение ДП</text>
+
+  <line x1="550" y1="680" x2="550" y2="710" class="arrow"/>
+
+  <!-- Освобождение ресурсов -->
+  <rect x="425" y="710" width="250" height="80" rx="15" class="trusted-app"/>
+  <text x="550" y="740" class="text text-trusted">Освобождение</text>
+  <text x="550" y="760" class="text text-trusted">ресурсов ДП</text>
+
+  <line x1="550" y1="790" x2="550" y2="820" class="arrow"/>
+
+  <!-- Уведомление клиента -->
+  <rect x="425" y="820" width="250" height="80" rx="15" class="trusted-app"/>
+  <text x="550" y="850" class="text text-trusted">Уведомление клиента</text>
+  <text x="550" y="870" class="text text-trusted">в Normal World</text>
+
+  <line x1="550" y1="900" x2="550" y2="930" class="arrow"/>
+
+  <!-- Завершение B -->
+  <rect x="425" y="930" width="250" height="80" rx="15" class="start-end"/>
+  <text x="550" y="970" class="text text-start">Завершение</text>
+
+  <!-- Ветвь C: Ядро Secure OS -->
+  <!-- Проверка ядра -->
+  <rect x="800" y="490" width="250" height="80" rx="15" class="decision"/>
+  <text x="925" y="520" class="text text-decision">Нарушение от</text>
+  <text x="925" y="540" class="text text-decision">ядра Secure OS?</text>
+
+  <line x1="925" y1="570" x2="925" y2="600" class="arrow"/>
+
+  <!-- Логирование -->
+  <rect x="800" y="600" width="250" height="80" rx="15" class="secure-os"/>
+  <text x="925" y="630" class="text text-secure">Попытка логирования</text>
+  <text x="925" y="650" class="text text-secure">диагностики</text>
+
+  <line x1="925" y1="680" x2="925" y2="710" class="arrow"/>
+
+  <!-- Паника -->
+  <rect x="800" y="710" width="250" height="80" rx="15" class="secure-os"/>
+  <text x="925" y="740" class="text text-secure">Переход в состояние</text>
+  <text x="925" y="760" class="text text-secure">контролируемой паники</text>
+
+  <line x1="925" y1="790" x2="925" y2="820" class="arrow"/>
+
+  <!-- Остановка операций -->
+  <rect x="800" y="820" width="250" height="80" rx="15" class="secure-os"/>
+  <text x="925" y="850" class="text text-secure">Остановка операций</text>
+  <text x="925" y="870" class="text text-secure">Защищенного Мира</text>
+
+  <line x1="925" y1="900" x2="925" y2="930" class="arrow"/>
+
+  <!-- Критическое завершение -->
+  <rect x="800" y="930" width="250" height="80" rx="15" class="start-end"/>
+  <text x="925" y="960" class="text text-start">Критическое</text>
+  <text x="925" y="980" class="text text-start">завершение</text>
+
+  <!-- Подписи ветвей -->
+  <text x="175" y="455" class="text text-normal" font-weight="bold">Обычный Мир</text>
+  <text x="550" y="455" class="text text-trusted" font-weight="bold">Доверенное Приложение</text>
+  <text x="925" y="455" class="text text-secure" font-weight="bold">Ядро Secure OS</text>
+</svg>
