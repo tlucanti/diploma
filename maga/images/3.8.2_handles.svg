@@ -1,0 +1,167 @@
+<svg width="1060" height="800" xmlns="http://www.w3.org/2000/svg">
+  
+  <defs>
+    <marker id="arrowBlue" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <polygon points="0,0 0,6 9,3" fill="#5a8bb8"/>
+    </marker>
+    <marker id="arrowGreen" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <polygon points="0,0 0,6 9,3" fill="#8bb85a"/>
+    </marker>
+    <marker id="arrowRed" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <polygon points="0,0 0,6 9,3" fill="#b85a5a"/>
+    </marker>
+  </defs>
+
+  
+  <text x="500" y="30" font-size="20" font-weight="bold" text-anchor="middle" fill="#8b6b6b">Архитектура capability-based модели безопасности</text>
+
+  
+  <text x="70" y="80" font-size="18" font-weight="bold" fill="#b8816b">Пользовательское пространство</text>
+  
+  
+  <rect x="80" y="100" width="200" height="80" rx="10" fill="#fae5ce" stroke="#d4b89a" stroke-width="2"/>
+  <text x="180" y="125" font-size="16" text-anchor="middle" fill="#b8816b">Доверенное </text>
+  <text x="180" y="145" font-size="16" text-anchor="middle" fill="#b8816b">приложение</text>
+  <text x="180" y="165" font-size="16" text-anchor="middle" fill="#b8816b">🔧</text>
+
+  
+  <rect x="320" y="100" width="180" height="80" rx="10" fill="#fdf2cd" stroke="#d9c293" stroke-width="2"/>
+  <text x="410" y="125" font-size="16" text-anchor="middle" fill="#c4a85a">Манифест</text>
+  <text x="410" y="145" font-size="16" text-anchor="middle" fill="#c4a85a">приложения</text>
+  <text x="410" y="165" font-size="16" text-anchor="middle" fill="#c4a85a">📋</text>
+
+  
+  <rect x="540" y="100" width="120" height="35" rx="8" fill="#d1e0e3" stroke="#9bb3b8" stroke-width="2"/>
+  <text x="600" y="123" font-size="16" text-anchor="middle" fill="#6b8b90">🔑 Handle 1</text>
+  
+  <rect x="680" y="100" width="120" height="35" rx="8" fill="#d1e0e3" stroke="#9bb3b8" stroke-width="2"/>
+  <text x="740" y="123" font-size="16" text-anchor="middle" fill="#6b8b90">🔑 Handle 2</text>
+  
+  <rect x="820" y="100" width="120" height="35" rx="8" fill="#d1e0e3" stroke="#9bb3b8" stroke-width="2"/>
+  <text x="880" y="123" font-size="16" text-anchor="middle" fill="#6b8b90">🔑 Handle 3</text>
+
+  
+  <line x1="70" y1="250" x2="950" y2="250" stroke="#b85a5a" stroke-width="3" stroke-dasharray="10,5"/>
+  <text x="520" y="240" font-size="18" font-weight="bold" text-anchor="middle" fill="#b85a5a">Граница ядра - Интерфейс системных вызовов</text>
+
+  
+  <rect x="410" y="280" width="230" height="50" rx="10" fill="#e9d1dc" stroke="#c49bb3" stroke-width="2"/>
+  <text x="520" y="310" font-size="16" text-anchor="middle" fill="#a16b83">🛡️ Проверка разрешений</text>
+
+  
+  <text x="70" y="380" font-size="18" font-weight="bold" fill="#6b7bb8">Пространство ядра</text>
+
+  
+  <rect x="80" y="400" width="350" height="220" rx="10" fill="#ccdaf7" stroke="#8ba8d9" stroke-width="2"/>
+  <text x="255" y="425" font-size="18" font-weight="bold" text-anchor="middle" fill="#5a73b8">Таблица дескрипторов</text>
+  
+  
+  <text x="105" y="450" font-size="16" fill="#5a73b8">Handle ID</text>
+  <text x="190" y="450" font-size="16" fill="#5a73b8">Object Ref</text>
+  <text x="290" y="450" font-size="16" fill="#5a73b8">Permissions</text>
+  <text x="370" y="450" font-size="16" fill="#5a73b8">Status</text>
+  
+  
+  
+  <rect x="90" y="465" width="330" height="30" rx="5" fill="#d9d2e9" stroke="#b8a8d9" stroke-width="1"/>
+  <text x="105" y="485" font-size="16" fill="#8b73b8">0x001</text>
+  <text x="190" y="485" font-size="16" fill="#8b73b8">🌐 Sockets</text>
+  <text x="290" y="485" font-size="16" fill="#8b73b8">R</text>
+  <text x="370" y="485" font-size="16" fill="#8b73b8">✅</text>
+  
+  
+  <rect x="90" y="500" width="330" height="30" rx="5" fill="#daead3" stroke="#a8c49b" stroke-width="1"/>
+  <text x="105" y="520" font-size="16" fill="#73a85a">0x002</text>
+  <text x="190" y="520" font-size="16" fill="#73a85a">📁 File</text>
+  <text x="290" y="520" font-size="16" fill="#73a85a">RW</text>
+  <text x="370" y="520" font-size="16" fill="#73a85a">✅</text>
+  
+  
+  <rect x="90" y="535" width="330" height="30" rx="5" fill="#f1cdcc" stroke="#d99b98" stroke-width="1"/>
+  <text x="105" y="555" font-size="16" fill="#b86b68">0x003</text>
+  <text x="190" y="555" font-size="16" fill="#b86b68">⚙️ Process</text>
+  <text x="290" y="555" font-size="16" fill="#b86b68">RW</text>
+  <text x="370" y="555" font-size="16" fill="#b86b68">✅</text>
+
+  
+  <rect x="90" y="570" width="330" height="30" rx="5" fill="#e3b9b0" stroke="#c98b7a" stroke-width="1"/>
+  <text x="105" y="590" font-size="16" fill="#a85a4b">0x004</text>
+  <text x="190" y="590" font-size="16" fill="#a85a4b">🖥️ Device</text>
+  <text x="290" y="590" font-size="16" fill="#a85a4b">W</text>
+  <text x="370" y="590" font-size="16" fill="#a85a4b">✅</text>
+
+  
+  <rect x="520" y="420" width="120" height="60" rx="10" fill="#daead3" stroke="#a8c49b" stroke-width="2"/>
+  <text x="580" y="440" font-size="16" text-anchor="middle" fill="#73a85a">File Object</text>
+  <text x="580" y="464" font-size="20" text-anchor="middle" fill="#73a85a">📁</text>
+
+  <rect x="660" y="420" width="120" height="60" rx="10" fill="#d9d2e9" stroke="#b8a8d9" stroke-width="2"/>
+  <text x="720" y="440" font-size="16" text-anchor="middle" fill="#8b73b8">Socket Object</text>
+  <text x="720" y="464" font-size="20" text-anchor="middle" fill="#8b73b8">🌐</text>
+
+  <rect x="520" y="500" width="120" height="60" rx="10" fill="#f1cdcc" stroke="#d99b98" stroke-width="2"/>
+  <text x="580" y="520" font-size="16" text-anchor="middle" fill="#b86b68">Process Object</text>
+  <text x="580" y="545" font-size="20" text-anchor="middle" fill="#b86b68">⚙️</text>
+
+  <rect x="660" y="500" width="120" height="60" rx="10" fill="#e3b9b0" stroke="#c98b7a" stroke-width="2"/>
+  <text x="720" y="520" font-size="16" text-anchor="middle" fill="#a85a4b">Device Object</text>
+  <text x="720" y="545" font-size="20" text-anchor="middle" fill="#a85a4b">🖥️</text>
+
+  
+  
+  <path d="M 280 120 Q 400 40 540 118" stroke="#5a8bb8" stroke-width="2" fill="none" marker-end="url(#arrowBlue)"/>
+  
+  
+  <line x1="600" y1="135" x2="520" y2="280" stroke="#b85a5a" stroke-width="2" marker-end="url(#arrowRed)"/>
+  <line x1="740" y1="135" x2="520" y2="280" stroke="#b85a5a" stroke-width="2" marker-end="url(#arrowRed)"/>
+  
+  
+  <line x1="470" y1="330" x2="320" y2="400" stroke="#8bb85a" stroke-width="2" marker-end="url(#arrowGreen)"/>
+  
+  
+  
+  <path d="M 420 480 Q 540 340 660 430" stroke="#8bb85a" stroke-width="2" fill="none" marker-end="url(#arrowGreen)"/>
+  
+  
+  <line x1="420" y1="515" x2="520" y2="450" stroke="#8bb85a" stroke-width="2" marker-end="url(#arrowGreen)"/>
+  
+  
+  <line x1="420" y1="550" x2="520" y2="530" stroke="#8bb85a" stroke-width="2" marker-end="url(#arrowGreen)"/>
+  
+  
+  <path d="M 420 585 Q 600 620 660 550" stroke="#8bb85a" stroke-width="2" fill="none" marker-end="url(#arrowGreen)"/>
+
+  
+  <line x1="180" y1="180" x2="580" y2="420" stroke="#b85a5a" stroke-width="2" stroke-dasharray="5,5" marker-end="url(#arrowRed)"/>
+  <text x="280" y="290" font-size="16" fill="#b85a5a" transform="rotate(32 320 280)">Прямой доступ невозможен</text>
+  <text x="370" y="310" font-size="20" fill="#b85a5a">❌</text>
+
+  
+  <rect x="800" y="280" width="200" height="280" rx="10" fill="#f8f8f8" stroke="#ccc" stroke-width="1"/>
+  <text x="900" y="305" font-size="18" font-weight="bold" text-anchor="middle" fill="#666">Легенда</text>
+  
+  <text x="810" y="330" font-size="16" fill="#5a8bb8">🔑 Валидный</text>
+  <text x="835" y="350" font-size="16" fill="#5a8bb8">дескриптор</text>
+  
+  <text x="810" y="380" font-size="16" fill="#b85a5a">❌ Заблокированный</text>
+  <text x="835" y="400" font-size="16" fill="#b85a5a">доступ</text>
+  
+  <text x="810" y="430" font-size="16" fill="#8bb85a">✅ Разрешенная</text>
+  <text x="835" y="450" font-size="16" fill="#8bb85a">операция</text>
+  
+  <text x="810" y="480" font-size="16" fill="#a16b83">🛡️ Проверка</text>
+  <text x="835" y="500" font-size="16" fill="#a16b83">безопасности</text>
+  
+  <text x="810" y="530" font-size="16" fill="#666">- - Прямой доступ</text>
+  <text x="835" y="550" font-size="16" fill="#666">запрещен</text>
+
+  
+  <rect x="10" y="90" width="50" height="120" rx="5" fill="#fae5ce" stroke="#d4b89a" stroke-width="2" opacity="0.7"/>
+  <text x="5" y="125" font-size="16" text-anchor="middle" fill="#b8816b" transform="rotate(-90 35 120)">User Space</text>
+  
+  <rect x="10" y="260" width="50" height="100" rx="5" fill="#e9d1dc" stroke="#c49bb3" stroke-width="2" opacity="0.7"/>
+  <text x="10" y="290" font-size="16" text-anchor="middle" fill="#a16b83" transform="rotate(-90 35 285)">Kernel API</text>
+  
+  <rect x="10" y="380" width="50" height="240" rx="5" fill="#ccdaf7" stroke="#8ba8d9" stroke-width="2" opacity="0.7"/>
+  <text x="5" y="465" font-size="16" text-anchor="middle" fill="#6b7bb8" transform="rotate(-90 35 460)">Kernel Space</text>
+</svg>

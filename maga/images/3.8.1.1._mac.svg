@@ -1,0 +1,76 @@
+<svg width="800" height="500" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .text { font-family: Arial, sans-serif; font-size: 16px; text-anchor: middle; dominant-baseline: middle; }
+      .arrow { stroke-width: 2; fill: none; }
+      .blocked { stroke-width: 3; fill: none; }
+    </style>
+    <marker id="arrowhead-brown" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#a67c7c" />
+    </marker>
+    <marker id="arrowhead-green" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#7db87d" />
+    </marker>
+    <marker id="arrowhead-red" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#d67c7c" />
+    </marker>
+  </defs>
+
+  <!-- Субъект с высоким уровнем доступа -->
+  <rect x="50" y="50" width="200" height="80" rx="15" ry="15" fill="#d1e0e3" stroke="#a1c5cc" stroke-width="2"/>
+  <text x="150" y="75" class="text" fill="#6b9aa3">Субъект с высоким</text>
+  <text x="150" y="105" class="text" fill="#6b9aa3">уровнем доступа</text>
+
+  <!-- Объект с высоким уровнем секретности -->
+  <rect x="450" y="50" width="200" height="80" rx="15" ry="15" fill="#f1cdcc" stroke="#d99f96" stroke-width="2"/>
+  <text x="550" y="75" class="text" fill="#c5726b">Объект с высоким</text>
+  <text x="550" y="105" class="text" fill="#c5726b">уровнем секретности</text>
+
+  <!-- Объект с низким уровнем секретности -->
+  <rect x="50" y="320" width="200" height="80" rx="15" ry="15" fill="#fae5ce" stroke="#e6c095" stroke-width="2"/>
+  <text x="150" y="345" class="text" fill="#cc9e5c">Объект с низким</text>
+  <text x="150" y="375" class="text" fill="#cc9e5c">уровнем секретности</text>
+
+  <!-- Субъект с низким уровнем доступа -->
+  <rect x="450" y="320" width="200" height="80" rx="15" ry="15" fill="#ccdaf7" stroke="#9ac4f2" stroke-width="2"/>
+  <text x="550" y="345" class="text" fill="#6ba3e6">Субъект с низким</text>
+  <text x="550" y="375" class="text" fill="#6ba3e6">уровнем доступа</text>
+
+  <!-- Горизонтальные стрелки разрешенных операций -->
+  <!-- запись: субъект высокий -> объект высокий -->
+  <line x1="250" y1="80" x2="450" y2="80" class="arrow" stroke="#a67c7c" marker-end="url(#arrowhead-brown)"/>
+  <text x="350" y="65" class="text" fill="#a67c7c">запись</text>
+
+  <!-- чтение: объект высокий -> субъект высокий -->
+  <line x1="450" y1="100" x2="250" y2="100" class="arrow" stroke="#a67c7c" marker-end="url(#arrowhead-brown)"/>
+  <text x="350" y="115" class="text" fill="#a67c7c">чтение</text>
+
+  <!-- запись: объект низкий -> субъект низкий -->
+  <line x1="250" y1="350" x2="450" y2="350" class="arrow" stroke="#a67c7c" marker-end="url(#arrowhead-brown)"/>
+  <text x="350" y="335" class="text" fill="#a67c7c">запись</text>
+
+  <!-- чтение: субъект низкий -> объект низкий -->
+  <line x1="450" y1="370" x2="250" y2="370" class="arrow" stroke="#a67c7c" marker-end="url(#arrowhead-brown)"/>
+  <text x="350" y="385" class="text" fill="#a67c7c">чтение</text>
+
+  <!-- Вертикальные стрелки -->
+  <!-- Разрешенное чтение: объект низкий -> субъект высокий -->
+  <line x1="150" y1="320" x2="150" y2="130" class="arrow" stroke="#7db87d" marker-end="url(#arrowhead-green)"/>
+  <text x="120" y="225" class="text" fill="#7db87d" transform="rotate(-90, 120, 225)">чтение</text>
+
+  <!-- Блокированная запись: субъект высокий -> объект низкий -->
+  <line x1="170" y1="130" x2="170" y2="320" class="arrow" stroke="#d67c7c" marker-end="url(#arrowhead-red)"/>
+  <line x1="160" y1="215" x2="180" y2="235" stroke="#d67c7c" stroke-width="4"/>
+  <line x1="180" y1="215" x2="160" y2="235" stroke="#d67c7c" stroke-width="4"/>
+  <text x="200" y="225" class="text" fill="#d67c7c" transform="rotate(-90, 200, 225)">запись</text>
+
+  <!-- Разрешенная запись: субъект низкий -> объект высокий -->
+  <line x1="550" y1="320" x2="550" y2="130" class="arrow" stroke="#7db87d" marker-end="url(#arrowhead-green)"/>
+  <text x="580" y="225" class="text" fill="#7db87d" transform="rotate(-90, 580, 225)">запись</text>
+
+  <!-- Блокированное чтение: объект высокий -> субъект низкий -->
+  <line x1="530" y1="130" x2="530" y2="320" class="arrow" stroke="#d67c7c" marker-end="url(#arrowhead-red)"/>
+  <line x1="520" y1="215" x2="540" y2="235" stroke="#d67c7c" stroke-width="4"/>
+  <line x1="540" y1="215" x2="520" y2="235" stroke="#d67c7c" stroke-width="4"/>
+  <text x="500" y="225" class="text" fill="#d67c7c" transform="rotate(-90, 500, 225)">чтение</text>
+</svg>

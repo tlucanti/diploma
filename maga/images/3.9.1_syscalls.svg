@@ -1,0 +1,82 @@
+<svg width="1100" height="600" xmlns="http://www.w3.org/2000/svg">
+  
+  <!-- Time labels -->
+  <text x="50" y="330" font-family="Arial" font-size="16" fill="#8a7a6b" text-anchor="start">Время</text>
+  
+  <!-- User Space initial -->
+  <rect x="70" y="150" width="170" height="100" rx="15" ry="15" fill="#f1cdcc" stroke="#c4938a" stroke-width="2"/>
+  <text x="155" y="175" font-family="Arial" font-size="18" fill="#8a5d56" text-anchor="middle" font-weight="bold">User Space</text>
+  <text x="155" y="195" font-family="Arial" font-size="16" fill="#8a5d56" text-anchor="middle">Приложение</text>
+  <text x="155" y="215" font-family="Arial" font-size="16" fill="#8a5d56" text-anchor="middle">выполняется</text>
+  <text x="155" y="235" font-family="Arial" font-size="16" fill="#8a5d56" text-anchor="middle">в пользовательском</text>
+  
+  <!-- System call invocation -->
+  <rect x="270" y="150" width="170" height="300" rx="15" ry="15" fill="#fae5ce" stroke="#d4a373" stroke-width="2"/>
+  <text x="355" y="175" font-family="Arial" font-size="18" fill="#8a6b3d" text-anchor="middle" font-weight="bold">Системный</text>
+  <text x="355" y="195" font-family="Arial" font-size="18" fill="#8a6b3d" text-anchor="middle" font-weight="bold">вызов</text>
+  <text x="355" y="215" font-family="Arial" font-size="16" fill="#8a6b3d" text-anchor="middle">Переход в</text>
+  <text x="355" y="235" font-family="Arial" font-size="16" fill="#8a6b3d" text-anchor="middle">режим ядра</text>
+  
+  <!-- Kernel Space execution -->
+  <rect x="470" y="350" width="170" height="100" rx="15" ry="15" fill="#ccdaf7" stroke="#7ba3db" stroke-width="2"/>
+  <text x="555" y="375" font-family="Arial" font-size="18" fill="#4a6b8a" text-anchor="middle" font-weight="bold">Kernel Space</text>
+  <text x="555" y="395" font-family="Arial" font-size="16" fill="#4a6b8a" text-anchor="middle">Выполнение</text>
+  <text x="555" y="415" font-family="Arial" font-size="16" fill="#4a6b8a" text-anchor="middle">системной</text>
+  <text x="555" y="435" font-family="Arial" font-size="16" fill="#4a6b8a" text-anchor="middle">процедуры</text>
+  
+  <!-- Return to user space -->
+  <rect x="670" y="150" width="170" height="300" rx="15" ry="15" fill="#daead3" stroke="#a8c49a" stroke-width="2"/>
+  <text x="755" y="375" font-family="Arial" font-size="18" fill="#5a7a4d" text-anchor="middle" font-weight="bold">Возврат</text>
+  <text x="755" y="395" font-family="Arial" font-size="18" fill="#5a7a4d" text-anchor="middle" font-weight="bold">результата</text>
+  <text x="755" y="415" font-family="Arial" font-size="16" fill="#5a7a4d" text-anchor="middle">Переход в</text>
+  <text x="755" y="435" font-family="Arial" font-size="16" fill="#5a7a4d" text-anchor="middle">пользовательский</text>
+  
+  <!-- User Space final -->
+  <rect x="870" y="150" width="170" height="100" rx="15" ry="15" fill="#e9d1dc" stroke="#d4a8c0" stroke-width="2"/>
+  <text x="955" y="175" font-family="Arial" font-size="18" fill="#8a5d73" text-anchor="middle" font-weight="bold">User Space</text>
+  <text x="955" y="195" font-family="Arial" font-size="16" fill="#8a5d73" text-anchor="middle">Продолжение</text>
+  <text x="955" y="215" font-family="Arial" font-size="16" fill="#8a5d73" text-anchor="middle">выполнения</text>
+  <text x="955" y="235" font-family="Arial" font-size="16" fill="#8a5d73" text-anchor="middle">приложения</text>
+  
+  <!-- Arrows between stages -->
+  <path d="M 240 200 L 270 200" stroke="#8a7a6b" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+  <path d="M 440 200 Q 455 275 470 400" stroke="#8a7a6b" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+  <path d="M 640 400 Q 655 275 670 200" stroke="#8a7a6b" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+  <path d="M 840 200 L 870 200" stroke="#8a7a6b" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+  
+  <!-- Arrow marker definition -->
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#8a7a6b"/>
+    </marker>
+  </defs>
+  
+  <!-- Space labels -->
+  <rect x="70" y="50" width="360" height="40" rx="10" ry="10" fill="#fdf2cd" stroke="#d4c373" stroke-width="2"/>
+  <text x="250" y="75" font-family="Arial" font-size="18" fill="#8a7a3d" text-anchor="middle" font-weight="bold">Пользовательское пространство</text>
+  
+  <rect x="70" y="480" width="360" height="40" rx="10" ry="10" fill="#d1e0e3" stroke="#a8c4c9" stroke-width="2"/>
+  <text x="250" y="505" font-family="Arial" font-size="18" fill="#4a6b73" text-anchor="middle" font-weight="bold">Пространство ядра</text>
+
+  <!-- Timeline line -->
+  <line x1="50" y1="300" x2="1050" y2="300" stroke="#8a7a6b" stroke-width="3"/>
+
+  <!-- Timeline arrows -->
+  <polygon points="1040,295 1050,300 1040,305" fill="#8a7a6b"/>
+  
+  <!-- Step numbers aligned with rectangles -->
+  <circle cx="155" cy="280" r="15" fill="#e3b9b0" stroke="#c4938a" stroke-width="2"/>
+  <text x="155" y="287" font-family="Arial" font-size="16" fill="#8a5d56" text-anchor="middle" font-weight="bold">1</text>
+  
+  <circle cx="355" cy="280" r="15" fill="#e3b9b0" stroke="#c4938a" stroke-width="2"/>
+  <text x="355" y="287" font-family="Arial" font-size="16" fill="#8a5d56" text-anchor="middle" font-weight="bold">2</text>
+  
+  <circle cx="555" cy="280" r="15" fill="#e3b9b0" stroke="#c4938a" stroke-width="2"/>
+  <text x="555" y="287" font-family="Arial" font-size="16" fill="#8a5d56" text-anchor="middle" font-weight="bold">3</text>
+  
+  <circle cx="755" cy="280" r="15" fill="#e3b9b0" stroke="#c4938a" stroke-width="2"/>
+  <text x="755" y="287" font-family="Arial" font-size="16" fill="#8a5d56" text-anchor="middle" font-weight="bold">4</text>
+  
+  <circle cx="955" cy="280" r="15" fill="#e3b9b0" stroke="#c4938a" stroke-width="2"/>
+  <text x="955" y="287" font-family="Arial" font-size="16" fill="#8a5d56" text-anchor="middle" font-weight="bold">5</text>
+</svg>

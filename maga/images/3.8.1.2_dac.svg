@@ -1,0 +1,121 @@
+<svg width="950" height="600" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .text { font-family: Arial, sans-serif; font-size: 16px; text-anchor: middle; dominant-baseline: middle; }
+      .small-text { font-family: Arial, sans-serif; font-size: 14px; text-anchor: middle; dominant-baseline: middle; }
+      .arrow { stroke-width: 2; fill: none; }
+      .blocked { stroke-width: 3; fill: none; }
+    </style>
+    <marker id="arrowhead-green" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#7db87d" />
+    </marker>
+    <marker id="arrowhead-red" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#d67c7c" />
+    </marker>
+    <marker id="arrowhead-blue" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#6ba3e6" />
+    </marker>
+  </defs>
+
+  <!-- Заголовок -->
+  <text x="475" y="30" class="text" fill="#6b9aa3" style="font-size: 20px; font-weight: bold;">Дискреционный контроль доступа</text>
+
+  <!-- Владелец -->
+  <rect x="50" y="80" width="180" height="80" rx="15" ry="15" fill="#d1e0e3" stroke="#a1c5cc" stroke-width="2"/>
+  <text x="140" y="105" class="text" fill="#6b9aa3">Владелец</text>
+  <text x="140" y="135" class="text" fill="#6b9aa3">(Пользователь А)</text>
+
+  <!-- Объект 1 (принадлежит владельцу) -->
+  <rect x="360" y="80" width="180" height="80" rx="15" ry="15" fill="#daead3" stroke="#b8d4a8" stroke-width="2"/>
+  <text x="450" y="105" class="text" fill="#7db87d">Объект 1</text>
+  <text x="450" y="135" class="text" fill="#7db87d">(Файл владельца)</text>
+
+  <!-- Пользователь Б (имеет права) -->
+  <rect x="50" y="250" width="180" height="80" rx="15" ry="15" fill="#ccdaf7" stroke="#9ac4f2" stroke-width="2"/>
+  <text x="140" y="275" class="text" fill="#6ba3e6">Пользователь Б</text>
+  <text x="140" y="305" class="text" fill="#6ba3e6">(Авторизован)</text>
+
+  <!-- Объект 2 (общий) -->
+  <rect x="360" y="250" width="180" height="80" rx="15" ry="15" fill="#fdf2cd" stroke="#f0d885" stroke-width="2"/>
+  <text x="450" y="275" class="text" fill="#d4b847">Объект 2</text>
+  <text x="450" y="305" class="text" fill="#d4b847">(Общий файл)</text>
+
+  <!-- Пользователь В (нет прав) -->
+  <rect x="50" y="420" width="180" height="80" rx="15" ry="15" fill="#e9d1dc" stroke="#d9a8c4" stroke-width="2"/>
+  <text x="140" y="445" class="text" fill="#c5789f">Пользователь В</text>
+  <text x="140" y="475" class="text" fill="#c5789f">(Не авторизован)</text>
+
+  <!-- Объект 3 (приватный) -->
+  <rect x="360" y="420" width="180" height="80" rx="15" ry="15" fill="#f1cdcc" stroke="#d99f96" stroke-width="2"/>
+  <text x="450" y="445" class="text" fill="#c5726b">Объект 3</text>
+  <text x="450" y="475" class="text" fill="#c5726b">(Приватный файл)</text>
+
+  <!-- Матрица доступа (увеличена) -->
+  <rect x="600" y="80" width="300" height="260" rx="10" ry="10" fill="#fae5ce" stroke="#e6c095" stroke-width="2"/>
+  <text x="750" y="105" class="text" fill="#cc9e5c" style="font-weight: bold;">Матрица контроля доступа</text>
+  
+  <!-- Заголовки таблицы -->
+  <text x="670" y="135" class="small-text" fill="#cc9e5c">Субъект</text>
+  <text x="770" y="135" class="small-text" fill="#cc9e5c">Объект</text>
+  <text x="850" y="135" class="small-text" fill="#cc9e5c">Права</text>
+  
+  <!-- Строки матрицы -->
+  <line x1="610" y1="145" x2="890" y2="145" stroke="#e6c095" stroke-width="1"/>
+  
+  <text x="670" y="165" class="small-text" fill="#6b9aa3">Пользователь А</text>
+  <text x="770" y="165" class="small-text" fill="#7db87d">Объект 1</text>
+  <text x="850" y="165" class="small-text" fill="#7db87d">RWX</text>
+  
+  <text x="670" y="185" class="small-text" fill="#6ba3e6">Пользователь Б</text>
+  <text x="770" y="185" class="small-text" fill="#d4b847">Объект 2</text>
+  <text x="850" y="185" class="small-text" fill="#7db87d">RW</text>
+  
+  <text x="670" y="205" class="small-text" fill="#6b9aa3">Пользователь А</text>
+  <text x="770" y="205" class="small-text" fill="#d4b847">Объект 2</text>
+  <text x="850" y="205" class="small-text" fill="#7db87d">RWX</text>
+  
+  <text x="670" y="225" class="small-text" fill="#6b9aa3">Пользователь А</text>
+  <text x="770" y="225" class="small-text" fill="#c5726b">Объект 3</text>
+  <text x="850" y="225" class="small-text" fill="#7db87d">RWX</text>
+  
+  <text x="670" y="245" class="small-text" fill="#c5789f">Пользователь В</text>
+  <text x="770" y="245" class="small-text" fill="#c5726b">Объект 3</text>
+  <text x="850" y="245" class="small-text" fill="#d67c7c">-</text>
+  
+  <text x="670" y="265" class="small-text" fill="#c5789f">Пользователь В</text>
+  <text x="770" y="265" class="small-text" fill="#7db87d">Объект 1</text>
+  <text x="850" y="265" class="small-text" fill="#d67c7c">-</text>
+  
+  <text x="750" y="305" class="small-text" fill="#cc9e5c">R - чтение, W - запись, X - выполнение</text>
+  <text x="750" y="325" class="small-text" fill="#cc9e5c">"−" - доступ запрещен</text>
+
+  <!-- Стрелки разрешенного доступа -->
+  <!-- Владелец -> Объект 1 -->
+  <line x1="230" y1="120" x2="360" y2="120" class="arrow" stroke="#7db87d" marker-end="url(#arrowhead-green)"/>
+  <text x="295" y="105" class="small-text" fill="#7db87d">Полный доступ</text>
+
+  <!-- Пользователь Б -> Объект 2 -->
+  <line x1="230" y1="290" x2="360" y2="290" class="arrow" stroke="#7db87d" marker-end="url(#arrowhead-green)"/>
+  <text x="325" y="275" class="small-text" fill="#7db87d">RW</text>
+
+  <!-- Владелец -> Объект 2 (диагональная стрелка) -->
+  <line x1="200" y1="160" x2="380" y2="250" class="arrow" stroke="#6ba3e6" marker-end="url(#arrowhead-blue)"/>
+  <text x="280" y="185" class="small-text" fill="#6ba3e6" transform="rotate(25, 280, 190)">Управление</text>
+
+  <!-- Владелец -> Объект 3 (диагональная стрелка) -->
+  <line x1="180" y1="160" x2="380" y2="420" class="arrow" stroke="#7db87d" marker-end="url(#arrowhead-green)"/>
+  <text x="350" y="260" class="small-text" fill="#7db87d" transform="rotate(50, 250, 310)">Полный доступ</text>
+
+  <!-- Заблокированный доступ: Пользователь В -> Объект 3 -->
+  <line x1="230" y1="460" x2="360" y2="460" class="arrow" stroke="#d67c7c" marker-end="url(#arrowhead-red)"/>
+  <line x1="285" y1="450" x2="305" y2="470" stroke="#d67c7c" stroke-width="4"/>
+  <line x1="305" y1="450" x2="285" y2="470" stroke="#d67c7c" stroke-width="4"/>
+  <text x="295" y="440" class="small-text" fill="#d67c7c">Доступ запрещен</text>
+
+  <!-- Заблокированный доступ: Пользователь В -> Объект 1 (диагональная) -->
+  <line x1="160" y1="420" x2="380" y2="160" class="arrow" stroke="#d67c7c" marker-end="url(#arrowhead-red)"/>
+  <line x1="182" y1="372" x2="202" y2="392" stroke="#d67c7c" stroke-width="4"/>
+  <line x1="202" y1="372" x2="182" y2="392" stroke="#d67c7c" stroke-width="4"/>
+  <text x="220" y="250" class="small-text" fill="#d67c7c" transform="rotate(-50, 320, 350)">Нет прав</text>
+
+</svg>

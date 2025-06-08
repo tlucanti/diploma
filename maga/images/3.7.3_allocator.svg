@@ -1,0 +1,125 @@
+<svg width="1200" height="800" xmlns="http://www.w3.org/2000/svg">
+  <!-- Определение маркеров стрелок -->
+  <defs>
+    <marker id="arrowhead-brown" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#8b5a50"/>
+    </marker>
+    <marker id="arrowhead-green" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#5a7d47"/>
+    </marker>
+    <marker id="arrowhead-orange" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#8b6d3a"/>
+    </marker>
+    <marker id="arrowhead-blue" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#2e5cb8"/>
+    </marker>
+    <marker id="arrowhead-gray" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#4a6b70"/>
+    </marker>
+    <marker id="arrowhead-purple" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#6b5394"/>
+    </marker>
+  </defs>
+
+  <!-- Стрелки на заднем фоне -->
+  <!-- Стрелки от Slab аллокатора к slabs -->
+  <path d="M 300 500 L 160 540" stroke="#2e5cb8" stroke-width="3" fill="none" marker-end="url(#arrowhead-blue)"/>
+  <path d="M 400 500 L 420 540" stroke="#2e5cb8" stroke-width="3" fill="none" marker-end="url(#arrowhead-blue)"/>
+  <path d="M 500 500 L 680 540" stroke="#2e5cb8" stroke-width="3" fill="none" marker-end="url(#arrowhead-blue)"/>
+  <path d="M 520 480 L 900 540" stroke="#2e5cb8" stroke-width="3" fill="none" marker-end="url(#arrowhead-blue)"/>
+  
+  <!-- Закругленная стрелка от аллокатора страниц к Slab аллокатору -->
+  <path d="M 950 200 Q 950 420 600 440" stroke="#4a6b70" stroke-width="3" fill="none" marker-end="url(#arrowhead-gray)"/>
+
+  <!-- Заголовок -->
+  <text x="600" y="40" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#8b5a50">
+    Устройство физического аллокатора страниц и Slab аллокатора
+  </text>
+  
+  <!-- Физическая память -->
+  <rect x="50" y="80" width="300" height="120" rx="15" ry="15" fill="#f1cdcc" stroke="#c89891" stroke-width="2"/>
+  <text x="200" y="110" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#8b5a50">Физическая память</text>
+  <text x="200" y="135" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#8b5a50">Разделена на страницы</text>
+  <text x="200" y="155" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#8b5a50">4KB</text>
+  
+  <!-- Free List -->
+  <rect x="420" y="80" width="300" height="120" rx="15" ry="15" fill="#daead3" stroke="#a8c191" stroke-width="2"/>
+  <text x="570" y="110" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#5a7d47">Free List</text>
+  <text x="570" y="135" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#5a7d47">Список свободных</text>
+  <text x="570" y="155" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#5a7d47">страниц памяти</text>
+  
+  <!-- Аллокатор страниц -->
+  <rect x="780" y="80" width="320" height="120" rx="15" ry="15" fill="#d1e0e3" stroke="#9bb5b9" stroke-width="2"/>
+  <text x="940" y="110" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#4a6b70">Аллокатор страниц</text>
+  <text x="940" y="135" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#4a6b70">Выделяет/освобождает</text>
+  <text x="940" y="155" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#4a6b70">целые страницы</text>
+  
+  <!-- Стрелки между компонентами верхнего уровня -->
+  <path d="M 360 140 L 410 140" stroke="#8b5a50" stroke-width="3" fill="none" marker-end="url(#arrowhead-brown)"/>
+  <path d="M 730 140 L 770 140" stroke="#5a7d47" stroke-width="3" fill="none" marker-end="url(#arrowhead-green)"/>
+  
+  <!-- Детали Free List (увеличены) -->
+  <rect x="80" y="250" width="220" height="80" rx="12" ry="12" fill="#fae5ce" stroke="#d4b899" stroke-width="2"/>
+  <text x="190" y="275" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#8b6d3a">Свободная страница 1</text>
+  <text x="190" y="295" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#8b6d3a">4KB</text>
+  <text x="190" y="315" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#8b6d3a">указатель → след.</text>
+  
+  <rect x="330" y="250" width="220" height="80" rx="12" ry="12" fill="#fae5ce" stroke="#d4b899" stroke-width="2"/>
+  <text x="440" y="275" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#8b6d3a">Свободная страница 2</text>
+  <text x="440" y="295" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#8b6d3a">4KB</text>
+  <text x="440" y="315" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#8b6d3a">указатель → след.</text>
+  
+  <rect x="580" y="250" width="220" height="80" rx="12" ry="12" fill="#fae5ce" stroke="#d4b899" stroke-width="2"/>
+  <text x="690" y="275" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#8b6d3a">Свободная страница N</text>
+  <text x="690" y="295" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#8b6d3a">4KB</text>
+  <text x="690" y="315" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#8b6d3a">указатель → NULL</text>
+  
+  <!-- Стрелки между страницами -->
+  <path d="M 310 290 L 320 290" stroke="#8b6d3a" stroke-width="2" fill="none" marker-end="url(#arrowhead-orange)"/>
+  <path d="M 560 290 L 570 290" stroke="#8b6d3a" stroke-width="2" fill="none" marker-end="url(#arrowhead-orange)"/>
+  
+  <!-- Стрелка от Free List к деталям -->
+  <path d="M 520 200 L 450 240" stroke="#5a7d47" stroke-width="2" fill="none" marker-end="url(#arrowhead-green)" stroke-dasharray="5,5"/>
+  
+  <!-- Slab аллокатор -->
+  <rect x="200" y="400" width="400" height="100" rx="15" ry="15" fill="#ccdaf7" stroke="#8fb3f0" stroke-width="2"/>
+  <text x="400" y="430" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#2e5cb8">Slab Аллокатор</text>
+  <text x="400" y="455" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#2e5cb8">Работает поверх аллокатора страниц</text>
+  <text x="400" y="475" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#2e5cb8">Выделяет объекты фиксированного размера</text>
+  
+  <!-- Slabs -->
+  <rect x="50" y="550" width="220" height="120" rx="12" ry="12" fill="#d9d2e9" stroke="#b8a8d4" stroke-width="2"/>
+  <text x="160" y="580" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#6b5394">Slab для объектов 64B</text>
+  <text x="160" y="605" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#6b5394">1 страница = 64 объекта</text>
+  <text x="160" y="625" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#6b5394">Bitmap свободных</text>
+  <text x="160" y="645" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#6b5394">объектов</text>
+  
+  <rect x="310" y="550" width="220" height="120" rx="12" ry="12" fill="#d9d2e9" stroke="#b8a8d4" stroke-width="2"/>
+  <text x="420" y="580" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#6b5394">Slab для объектов 128B</text>
+  <text x="420" y="605" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#6b5394">1 страница = 32 объекта</text>
+  <text x="420" y="625" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#6b5394">Bitmap свободных</text>
+  <text x="420" y="645" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#6b5394">объектов</text>
+  
+  <rect x="570" y="550" width="220" height="120" rx="12" ry="12" fill="#d9d2e9" stroke="#b8a8d4" stroke-width="2"/>
+  <text x="680" y="580" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#6b5394">Slab для объектов 256B</text>
+  <text x="680" y="605" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#6b5394">1 страница = 16 объектов</text>
+  <text x="680" y="625" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#6b5394">Bitmap свободных</text>
+  <text x="680" y="645" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#6b5394">объектов</text>
+  
+  <rect x="830" y="550" width="220" height="120" rx="12" ry="12" fill="#d9d2e9" stroke="#b8a8d4" stroke-width="2"/>
+  <text x="940" y="580" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#6b5394">Slab для объектов 1KB</text>
+  <text x="940" y="605" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#6b5394">1 страница = 4 объекта</text>
+  <text x="940" y="625" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#6b5394">Bitmap свободных</text>
+  <text x="940" y="645" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#6b5394">объектов</text>
+  
+  <!-- Текст для закругленной стрелки -->
+  <text x="850" y="400" font-family="Arial, sans-serif" font-size="16" fill="#4a6b70">Запрашивает страницы</text>
+  
+  <!-- Пример выделения объекта -->
+  <rect x="850" y="720" width="280" height="60" rx="12" ry="12" fill="#e9d1dc" stroke="#d1a5bb" stroke-width="2"/>
+  <text x="990" y="745" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#a85d84">Выделение объекта 100B</text>
+  <text x="990" y="765" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#a85d84">→ Slab 128B</text>
+  
+  <!-- Закругленная пунктирная стрелка от Slab 128B к примеру -->
+  <path d="M 420 670 Q 420 700 850 750" stroke="#6b5394" stroke-width="2" fill="none" marker-end="url(#arrowhead-purple)" stroke-dasharray="5,5"/>
+</svg>
