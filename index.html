@@ -609,7 +609,7 @@
             opacity: 1;
             transform: translateX(0);
         }
-        
+
         /* Loyalty Program Modal Styles */
         .loyalty-modal {
             display: none;
@@ -873,22 +873,22 @@
             .loyalty-tiers {
                 flex-direction: column;
             }
-            
+
             .loyalty-modal-content {
                 width: 95%;
                 margin: 5% auto;
                 padding: 20px;
             }
-            
+
             .program-name {
                 font-size: 1.8rem;
             }
-            
+
             .wind-icon {
                 display: none;
             }
         }
-        
+
         /* Language Dropdown Styles */
         .lang-dropdown {
             position: relative;
@@ -1047,7 +1047,7 @@
             list-style: none;
             gap: 15px; /* Reduced from 20px to create more space */
         }
-        
+
         /* Make nav a flex container to properly position the button */
         nav {
             display: flex;
@@ -1236,24 +1236,20 @@
             <div>
                 <h4>О проекте</h4>
                 <p>Discover Primorye - ваш гид по Приморскому краю. Помогаем туристам из Азии открыть для себя Дальний Восток России.</p>
-                <nav>
                         <a></a>
                         <a href="#">О нас</a>
                         <a href="#">Контакты</a>
                         <a href="#">Политика конфиденциальности</a>
                         <a href="#">Пользовательское соглашение</a>
                         <a href="#">Карта сайта</a>
-                </nav>
             </div>
             <div>
                 <h4>Быстрые ссылки</h4>
-                <nav>
                     <a href="#">Достопримечательности</a>
                     <a href="#">Забронировать отель</a>
                     <a href="#">Экскурсии</a>
                     <a href="#">Культурные советы</a>
                     <a href="#">Форум</a>
-                </nav>
             </div>
             <div>
                 <h4>Наши партнеры</h4>
@@ -1322,12 +1318,12 @@
                 Откройте для себя программу лояльности
                 <span class="program-name">«Приморский ветер»</span>
             </h2>
-            
+
             <div class="loyalty-description">
                 <p>Мы разработали программу лояльности для гостей Приморья, чтобы вы смогли воспользоваться бонусами и скидками от наших партнеров</p>
                 <div class="wind-icon">🌬️</div>
             </div>
-            
+
             <div class="loyalty-tiers">
                 <div class="loyalty-tier">
                     <h3>Base</h3>
@@ -1457,7 +1453,7 @@
 
         // Initialize carousel
         resetCarouselInterval();
-        
+
         // Loyalty Program Modal functionality
         const startJourneyButton = document.getElementById('startJourneyBtn');
         const loyaltyModal = document.getElementById('loyaltyModal');
@@ -1480,7 +1476,7 @@
                 loyaltyModal.classList.remove('show');
             }
         });
-        
+
         // Register button click event
         document.querySelector('.loyalty-register-button').addEventListener('click', function() {
             alert('Переход на страницу регистрации');

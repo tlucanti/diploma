@@ -581,11 +581,11 @@
             header nav {
                 display: none;
             }
-            
+
             .content-grid {
                 grid-template-columns: 1fr;
             }
-            
+
             .gallery-item {
                 flex: 0 0 calc(50% - 10px);
                 min-width: calc(50% - 10px);
@@ -824,7 +824,7 @@
         <section id="content" class="content-section fade-in-delay">
             <h2 class="section-title">Уникальный пляж России</h2>
             <p>В пригороде Владивостока расположен самый удивительный пляж в России. Этот пляж, берег которого усеян разноцветным окатанным стеклом, находится в бухте Стеклянная. Или как называют его местные жители – <strong>Стекляшка</strong>.</p>
-            
+
             <h2 class="section-title">История возникновения</h2>
             <div class="content-grid">
                 <div class="slide-in-left">
@@ -836,19 +836,19 @@
                     <p>Во время подготовки Владивостока к саммиту АТЭС-2012 дымящийся мусорный полигон был рекультивирован. И сегодня Стекляшка – популярное место отдыха.</p>
                 </div>
             </div>
-            
+
             <div class="highlight-box fade-in">
                 <h2>Лучшее время для посещения</h2>
                 <p>Лучше всего приезжать на пляж <strong>рано утром</strong>, когда стёкла в полосе прибоя переливаются и блестят в лучах восходящего солнца.</p>
             </div>
-            
+
             <div class="warning-box fade-in-delay">
                 <strong>Внимание!</strong> Вывоз стекла из бухты Стеклянная запрещён!
             </div>
-            
+
             <h2 class="section-title">Маршрут до бухты Стеклянная</h2>
             <p>Проще всего добраться до бухты Стеклянной на машине. Пляж находится примерно в 10 километрах от города. Двигайтесь по трассе Владивосток-Артём вдоль Уссурийского залива, минуйте посёлок Рыбачий и через 2 километра по правой стороне увидите плакат «Бухта Стеклянная».</p>
-            
+
             <p>Если у вас нет личного авто, можно заказать такси. Третий вариант — городской автобус №26 «Луговая — бухта Десантная». Однако автобусной остановки рядом со Стекляшкой нет. Попросите водителя высадить вас напротив бухты.</p>
         </section>
 
@@ -879,39 +879,39 @@
                 </div>
             </div>
         </section>
-        
+
         <section class="map-section fade-in-delay">
             <h2>Как добраться</h2>
             <div class="map-container">
-                <iframe 
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d12000!2d132.056439!3d43.145365!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNDPCsDA4JzQzLjMiTiAxMzLCsDAzJzIzLjIiRQ!5e0!3m2!1sru!2sru!4v1620000000000!5m2!1sru!2sru" 
-                    width="100%" 
-                    height="400" 
-                    style="border:0; border-radius: 10px;" 
-                    allowfullscreen="" 
+                <iframe
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d12000!2d132.056439!3d43.145365!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNDPCsDA4JzQzLjMiTiAxMzLCsDAzJzIzLjIiRQ!5e0!3m2!1sru!2sru!4v1620000000000!5m2!1sru!2sru"
+                    width="100%"
+                    height="400"
+                    style="border:0; border-radius: 10px;"
+                    allowfullscreen=""
                     loading="lazy"
                     referrerpolicy="no-referrer-when-downgrade"
                     title="Карта расположения бухты Стеклянная">
                 </iframe>
             </div>
-            
+
             <div class="directions-container">
                 <div class="directions-box">
                     <h3><span class="directions-icon">🚗</span> На автомобиле</h3>
                     <p>Двигайтесь по трассе Владивосток-Артём вдоль Уссурийского залива, минуйте посёлок Рыбачий и через 2 километра по правой стороне увидите плакат «Бухта Стеклянная».</p>
                 </div>
-                
+
                 <div class="directions-box">
                     <h3><span class="directions-icon">🚕</span> На такси</h3>
                     <p>Закажите такси до бухты Стеклянная. Время в пути от центра Владивостока около 20-25 минут.</p>
                 </div>
-                
+
                 <div class="directions-box">
                     <h3><span class="directions-icon">🚌</span> На автобусе</h3>
                     <p>Городской автобус №26 «Луговая — бухта Десантная». Автобусной остановки рядом нет, попросите водителя высадить вас напротив бухты.</p>
                 </div>
             </div>
-            
+
             <div style="text-align: center; margin-top: 40px;">
                 <a href="https://maps.google.com/?q=43.145365,132.056439" target="_blank" class="button purple-button">Открыть в Google Maps</a>
             </div>
@@ -1022,15 +1022,15 @@
         // Run animation check on load and scroll
         window.addEventListener('load', animateOnScroll);
         window.addEventListener('scroll', animateOnScroll);
-        
+
         // Smooth scroll for anchor links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
-                
+
                 const targetId = this.getAttribute('href');
                 const targetElement = document.querySelector(targetId);
-                
+
                 if (targetElement) {
                     window.scrollTo({
                         top: targetElement.offsetTop - 80,
@@ -1039,7 +1039,7 @@
                 }
             });
         });
-        
+
         // Photo gallery carousel functionality
         let currentPhoto = 0;
         const totalPhotos = document.querySelectorAll('.gallery-item').length;
@@ -1083,9 +1083,9 @@
 
         // Initialize photo carousel
         startPhotoInterval();
-        
+
         // Map pin click event - No longer needed as Google Maps handles this
-        
+
         // Make photos responsive
         window.addEventListener('resize', updatePhotoCarousel);
     </script>
